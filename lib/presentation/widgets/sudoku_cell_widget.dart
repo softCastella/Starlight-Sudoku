@@ -68,12 +68,15 @@ class SudokuCellWidget extends StatelessWidget {
 
   Widget _buildValueDisplay() {
     return Center(
-      child: Text(
-        '$value',
-        style: TextStyle(
-          fontSize: 23,
-          fontWeight: isFixed ? FontWeight.bold : FontWeight.w500,
-          color: isFixed ? const Color(0xFF24452D) : const Color(0xFFB85C38),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          '$value',
+          style: TextStyle(
+            fontSize: 34,
+            fontWeight: isFixed ? FontWeight.bold : FontWeight.w700,
+            color: isFixed ? const Color(0xFF24452D) : const Color(0xFFB85C38),
+          ),
         ),
       ),
     );

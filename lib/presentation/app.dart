@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
-import 'package:sudoku_game/presentation/screens/home_screen.dart';
+import 'package:sudoku_game/presentation/screens/splash_screen.dart';
 
 /// 메인 앱 위젯
 class SudokuApp extends StatelessWidget {
@@ -14,7 +14,7 @@ class SudokuApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GameNotifier()),
       ],
       child: MaterialApp(
-        title: 'Sudoku Cozy Puzzle',
+        title: '별빛 스도쿠',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
@@ -53,7 +53,7 @@ class SudokuApp extends StatelessWidget {
             ),
           ),
         ),
-        home: HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

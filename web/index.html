@@ -18,29 +18,49 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="별빛 스도쿠 - 퍼즐을 풀고 마을을 복원하는 게임">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="sudoku_game">
+  <meta name="apple-mobile-web-app-title" content="별빛 스도쿠">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>sudoku_game</title>
+  <title>별빛 스도쿠</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #ffffff;
+    }
+    #launch-splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+    }
+    #launch-splash img {
+      width: min(420px, 80vw);
+      height: auto;
+    }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <div id="launch-splash">
+    <img src="assets/assets/images/Spark_Lineup_Logo.png" alt="Tyche Spark">
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var splash = document.getElementById('launch-splash');
+      if (splash) splash.remove();
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

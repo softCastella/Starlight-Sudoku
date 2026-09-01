@@ -4,6 +4,7 @@ import 'package:sudoku_game/core/village/building_progress.dart';
 import 'package:sudoku_game/core/village/village_story.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
+import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_map_widget.dart';
 
 /// Shows the restoration progress unlocked by completed puzzles.
@@ -23,7 +24,8 @@ class VillageScreen extends StatelessWidget {
             color: const Color(0xFFF4F8EE),
             child: SafeArea(
               top: false,
-              child: ListView(
+              child: PlayViewport(
+                child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
                   Text(
@@ -79,6 +81,7 @@ class VillageScreen extends StatelessWidget {
                     ),
                   ],
                 ],
+                ),
               ),
             ),
           );

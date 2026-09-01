@@ -7,6 +7,7 @@ import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
+import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 
 /// Sudoku 게임 메인 화면
 class GameScreen extends StatefulWidget {
@@ -65,39 +66,32 @@ class _GameScreenState extends State<GameScreen> {
               ),
           ],
         ),
-        body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-          child: Column(
-            children: [
-              // 시간, 난이도, 보상을 한 줄 상태 바로 표시
-              const TimerWidget(),
-              const SizedBox(height: 12),
-
-              // Sudoku 보드
-              SudokuBoardWidget(
-                key: _boardKey,
-                onCellSelected: () {
-                  setState(() {});
-                },
+        body: PlayViewport(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              child: Column(
+                children: [
+                  const TimerWidget(),
+                  const SizedBox(height: 12),
+                  SudokuBoardWidget(
+                    key: _boardKey,
+                    onCellSelected: () {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 18),
+                  _buildNumberPanel(),
+                  const SizedBox(height: 16),
+                  _buildMemoToggle(),
+                  const SizedBox(height: 10),
+                  _buildPuzzleTools(),
+                  const SizedBox(height: 16),
+                  _buildActionButtons(),
+                ],
               ),
-              const SizedBox(height: 18),
-
-              // 숫자 입력 패널
-              _buildNumberPanel(),
-              SizedBox(height: 16),
-
-              // 메모 모드 토글
-              _buildMemoToggle(),
-              const SizedBox(height: 10),
-              _buildPuzzleTools(),
-              const SizedBox(height: 16),
-
-              // 액션 버튼
-              _buildActionButtons(),
-            ],
+            ),
           ),
-        ),
         ),
       ),
     );
@@ -120,12 +114,11 @@ class _GameScreenState extends State<GameScreen> {
             crossAxisCount: 5,
             mainAxisSpacing: 6,
             crossAxisSpacing: 6,
+            childAspectRatio: 1.15,
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
-              // 0 (삭제)
               _buildNumberButton(0, '삭제'),
-              // 1-9
               ...List.generate(9, (index) {
                 return _buildNumberButton(index + 1, '${index + 1}');
               }),
@@ -137,23 +130,23 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildNumberButton(int number, String label) {
-    return SizedBox(
-      height: 42,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: number == 0 ? Colors.red[400] : Colors.blue[400],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7),
-          ),
-          padding: EdgeInsets.zero,
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: number == 0 ? Colors.red[400] : Colors.blue[400],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
         ),
-        onPressed: () {
-          _handleNumberInput(number);
-        },
+        padding: EdgeInsets.zero,
+      ),
+      onPressed: () {
+        _handleNumberInput(number);
+      },
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
         child: Text(
           label,
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),

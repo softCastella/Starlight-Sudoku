@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/game_screen.dart';
+import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 
 /// 난이도 선택 화면
 class DifficultySelectionScreen extends StatelessWidget {
@@ -15,22 +16,24 @@ class DifficultySelectionScreen extends StatelessWidget {
         title: Text('난이도 선택'),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                '어떤 난이도로 플레이하시겠어요?',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+      body: PlayViewport(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  '어떤 난이도로 플레이하시겠어요?',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: 24),
-              ..._buildDifficultyCards(context),
-            ],
+                const SizedBox(height: 24),
+                ..._buildDifficultyCards(context),
+              ],
+            ),
           ),
         ),
       ),
