@@ -1,0 +1,135 @@
+import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/core/sudoku/sudoku_board.dart';
+import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
+import 'package:sudoku_game/core/sudoku/sudoku_generator.dart';
+import 'package:sudoku_game/core/sudoku/sudoku_validator.dart';
+
+/// 게임 상태를 관리하는 ChangeNotifier
+/// Core 엔진과 UI를 연결하는 브릿지 역할
+class GameNotifier extends ChangeNotifier {
+  late SudokuBoard _board;
+  late SudokuDifficulty _difficulty;
+  late int _elapsedSeconds = 0;
+  late int _totalStarLight = 0;
+
+  // Getters
+  SudokuBoard get board => _board;
+  SudokuDifficulty get difficulty => _difficulty;
+  int get elapsedSeconds => _elapsedSeconds;
+  int get totalStarLight => _totalStarLight;
+
+  bool get isPuzzleComplete {
+    if (!_board.isFilled()) return false;
+    return SudokuValidator.isPuzzleComplete(_board.playerBoard, _board.solution);
+  }
+
+  List<(int, int)> get invalidCells {
+    return SudokuValidator.getInvalidCells(_board.playerBoard, _board.solution);
+  }
+
+  /// 새로운 게임 시작
+  void startNewGame(SudokuDifficulty difficulty) {
+    _difficulty = difficulty;
+    final puzzle = SudokuGenerator.generatePuzzle(difficulty);
+    final solution = SudokuGenerator.generateSolution();
+
+    _board = SudokuBoard(
+      solution: solution,
+      puzzle: puzzle,
+    );
+
+    _elapsedSeconds = 0;
+    _totalStarLight = 0;
+
+    notifyListeners();
+  }
+
+  /// 셀에 값 설정
+  void setCellValue(int row, int col, int value) {
+    if (value == 0) {
+      _board.setValue(row, col, 0);
+    } else if (value >= 1 && value <= 9) {
+      _board.setValue(row, col, value);
+    }
+    notifyListeners();
+  }
+
+  /// 메모 추가
+  void addMemo(int row, int col, int number) {
+    _board.addMemo(row, col, number);
+    notifyListeners();
+  }
+
+  /// 메모 제거
+  void removeMemo(int row, int col, int number) {
+    _board.removeMemo(row, col, number);
+    notifyListeners();
+  }
+
+  /// 메모 모두 제거
+  void clearMemo(int row, int col) {
+    _board.clearMemo(row, col);
+    notifyListeners();
+  }
+
+  /// 실행 취소 (한 단계 뒤로)
+  void undo() {
+    // TODO: 나중에 히스토리 구현
+    notifyListeners();
+  }
+
+  /// 힌트 표시
+  void showHint(int row, int col) {
+    if (_board.playerBoard[row][col] == 0) {
+      _board.setValue(row, col, _board.solution[row][col]);
+      notifyListeners();
+    }
+  }
+
+  /// 게임 일시 중지 (타이머 멈춤)
+  bool _isPaused = false;
+  bool get isPaused => _isPaused;
+
+  void togglePause() {
+    _isPaused = !_isPaused;
+    notifyListeners();
+  }
+
+  /// 타이머 증가 (매초 호출)
+  void incrementTimer() {
+    if (!_isPaused && !isPuzzleComplete) {
+      _elapsedSeconds++;
+      notifyListeners();
+    }
+  }
+
+  /// 게임 포기 (리셋)
+  void giveUp() {
+    _board = SudokuBoard(
+      solution: _board.solution,
+      puzzle: _board.puzzle,
+    );
+    _elapsedSeconds = 0;
+    _totalStarLight = 0;
+    notifyListeners();
+  }
+
+  /// 게임 완료시 점수 계산
+  void completeGame() {
+    // 난이도별 StarLight 보상 (기본값)
+    final config = DifficultyConfig.getConfig(_difficulty);
+    _totalStarLight = config.starLightReward;
+
+    // 시간 보너스 (선택사항)
+    // 빠를수록 더 많은 보너스
+
+    notifyListeners();
+  }
+
+  /// 게임 상태 리셋
+  void reset() {
+    _elapsedSeconds = 0;
+    _totalStarLight = 0;
+    _isPaused = false;
+  }
+}
