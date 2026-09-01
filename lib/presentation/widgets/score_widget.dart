@@ -12,6 +12,7 @@ class ScoreWidget extends StatelessWidget {
     return Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
         final starLight = gameNotifier.totalStarLight;
+        final potentialReward = gameNotifier.potentialStarLightReward;
         final difficulty = gameNotifier.difficulty;
         final config = DifficultyConfig.getConfig(difficulty);
 
@@ -38,7 +39,9 @@ class ScoreWidget extends StatelessWidget {
                   Icon(Icons.star, color: Colors.amber[700]),
                   SizedBox(width: 8),
                   Text(
-                    'StarLight: $starLight / ${config.starLightReward}',
+                    starLight > 0
+                      ? '획득 StarLight: $starLight'
+                      : '예상 StarLight: $potentialReward',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -47,6 +50,13 @@ class ScoreWidget extends StatelessWidget {
                   ),
                 ],
               ),
+              if (gameNotifier.hintsUsed > 0) ...[
+                SizedBox(height: 4),
+                Text(
+                  '힌트 ${gameNotifier.hintsUsed}/3 · 힌트당 -10',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                ),
+              ],
             ],
           ),
         );

@@ -84,7 +84,9 @@ class _GameScreenState extends State<GameScreen> {
 
               // 메모 모드 토글
               _buildMemoToggle(),
-              SizedBox(height: 16),
+              const SizedBox(height: 10),
+              _buildPuzzleTools(),
+              const SizedBox(height: 16),
 
               // 액션 버튼
               _buildActionButtons(),
@@ -208,6 +210,52 @@ class _GameScreenState extends State<GameScreen> {
     HapticFeedback.mediumImpact();
     SystemSound.play(SystemSoundType.alert);
     _showCompletionDialog();
+  }
+
+  Widget _buildPuzzleTools() {
+    return Consumer<GameNotifier>(
+      builder: (context, gameNotifier, _) => Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: gameNotifier.canUndo ? gameNotifier.undo : null,
+              icon: const Icon(Icons.undo),
+              label: const Text('실행 취소'),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: FilledButton.tonalIcon(
+              onPressed: gameNotifier.hintsRemaining == 0 ? null : _showHint,
+              icon: const Icon(Icons.lightbulb_outline),
+              label: Text('힌트 ${gameNotifier.hintsRemaining}/3'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHint() {
+    final boardState = _boardKey.currentState;
+    final row = boardState?.getSelectedRow();
+    final col = boardState?.getSelectedCol();
+    if (row == null || col == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('힌트를 볼 셀을 먼저 선택하세요')),
+      );
+      return;
+    }
+
+    final gameNotifier = context.read<GameNotifier>();
+    if (!gameNotifier.showHint(row, col)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이 셀에는 힌트를 사용할 수 없습니다')),
+      );
+      return;
+    }
+    HapticFeedback.selectionClick();
+    boardState?.clearSelection();
   }
 
   Widget _buildMemoToggle() {

@@ -16,6 +16,7 @@ void main() {
       difficulty: SudokuDifficulty.normal,
       elapsedSeconds: 92,
       isPaused: true,
+      hintsUsed: 2,
     );
 
     final restored = ActiveGameSnapshot.fromJson(original.toJson());
@@ -26,5 +27,6 @@ void main() {
     expect(restored.difficulty, SudokuDifficulty.normal);
     expect(restored.elapsedSeconds, 92);
     expect(restored.isPaused, isTrue);
+    expect(restored.hintsUsed, 2);
   });
 }

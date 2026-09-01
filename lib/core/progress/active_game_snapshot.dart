@@ -8,12 +8,14 @@ class ActiveGameSnapshot {
     required this.difficulty,
     required this.elapsedSeconds,
     required this.isPaused,
+    required this.hintsUsed,
   });
 
   final SudokuBoard board;
   final SudokuDifficulty difficulty;
   final int elapsedSeconds;
   final bool isPaused;
+  final int hintsUsed;
 
   Map<String, Object> toJson() => {
         'solution': board.solution,
@@ -25,6 +27,7 @@ class ActiveGameSnapshot {
         'difficulty': difficulty.name,
         'elapsedSeconds': elapsedSeconds,
         'isPaused': isPaused,
+        'hintsUsed': hintsUsed,
       };
 
   factory ActiveGameSnapshot.fromJson(Map<String, dynamic> json) {
@@ -49,6 +52,7 @@ class ActiveGameSnapshot {
       difficulty: SudokuDifficulty.values.byName(json['difficulty'] as String),
       elapsedSeconds: json['elapsedSeconds'] as int,
       isPaused: json['isPaused'] as bool,
+      hintsUsed: json['hintsUsed'] as int? ?? 0,
     );
   }
 }

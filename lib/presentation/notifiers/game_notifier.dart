@@ -13,6 +13,9 @@ import 'package:sudoku_game/data/local/game_progress_store.dart';
 /// 게임 상태를 관리하는 ChangeNotifier
 /// Core 엔진과 UI를 연결하는 브릿지 역할
 class GameNotifier extends ChangeNotifier {
+  static const maxHints = 3;
+  static const hintRewardPenalty = 10;
+
   GameNotifier({GameProgressStore? progressStore})
       : _progressStore = progressStore ?? GameProgressStore();
 
@@ -25,6 +28,8 @@ class GameNotifier extends ChangeNotifier {
   bool _hasAwardedCurrentGame = false;
   PlayerStatistics _statistics = const PlayerStatistics();
   ActiveGameSnapshot? _activeGame;
+  final List<SudokuBoard> _undoHistory = [];
+  int _hintsUsed = 0;
 
   // Getters
   SudokuBoard get board => _board;
@@ -34,6 +39,14 @@ class GameNotifier extends ChangeNotifier {
   int get starLightBalance => _starLightBalance;
   PlayerStatistics get statistics => _statistics;
   bool get hasActiveGame => _activeGame != null;
+  bool get canUndo => _undoHistory.isNotEmpty;
+  int get hintsUsed => _hintsUsed;
+  int get hintsRemaining => maxHints - _hintsUsed;
+
+  int get potentialStarLightReward {
+    final reward = DifficultyConfig.getConfig(_difficulty).starLightReward;
+    return (reward - (_hintsUsed * hintRewardPenalty)).clamp(0, reward);
+  }
 
   /// Restores account-wide rewards and statistics when the app starts.
   Future<void> loadProgress() async {
@@ -88,6 +101,8 @@ class GameNotifier extends ChangeNotifier {
     _totalStarLight = 0;
     _hasAwardedCurrentGame = false;
     _isPaused = false;
+    _hintsUsed = 0;
+    _undoHistory.clear();
     _saveActiveGame();
 
     notifyListeners();
@@ -104,12 +119,15 @@ class GameNotifier extends ChangeNotifier {
     _isPaused = snapshot.isPaused;
     _totalStarLight = 0;
     _hasAwardedCurrentGame = false;
+    _hintsUsed = snapshot.hintsUsed;
+    _undoHistory.clear();
     notifyListeners();
     return true;
   }
 
   /// 셀에 값 설정
   void setCellValue(int row, int col, int value) {
+    _recordUndoState();
     if (value == 0) {
       _board.setValue(row, col, 0);
     } else if (value >= 1 && value <= 9) {
@@ -133,6 +151,7 @@ class GameNotifier extends ChangeNotifier {
 
   /// 메모 추가
   void addMemo(int row, int col, int number) {
+    _recordUndoState();
     _board.addMemo(row, col, number);
     _saveActiveGame();
     notifyListeners();
@@ -140,6 +159,7 @@ class GameNotifier extends ChangeNotifier {
 
   /// 메모 제거
   void removeMemo(int row, int col, int number) {
+    _recordUndoState();
     _board.removeMemo(row, col, number);
     _saveActiveGame();
     notifyListeners();
@@ -147,6 +167,7 @@ class GameNotifier extends ChangeNotifier {
 
   /// 메모 모두 제거
   void clearMemo(int row, int col) {
+    _recordUndoState();
     _board.clearMemo(row, col);
     _saveActiveGame();
     notifyListeners();
@@ -154,17 +175,25 @@ class GameNotifier extends ChangeNotifier {
 
   /// 실행 취소 (한 단계 뒤로)
   void undo() {
-    // TODO: 나중에 히스토리 구현
+    if (_undoHistory.isEmpty) return;
+
+    _board = _undoHistory.removeLast();
+    _saveActiveGame();
     notifyListeners();
   }
 
   /// 힌트 표시
-  void showHint(int row, int col) {
-    if (_board.playerBoard[row][col] == 0) {
-      _board.setValue(row, col, _board.solution[row][col]);
-      _saveActiveGame();
-      notifyListeners();
+  bool showHint(int row, int col) {
+    if (_hintsUsed >= maxHints || _board.playerBoard[row][col] != 0) {
+      return false;
     }
+
+    _recordUndoState();
+    _board.setValue(row, col, _board.solution[row][col]);
+    _hintsUsed++;
+    _saveActiveGame();
+    notifyListeners();
+    return true;
   }
 
   /// 게임 일시 중지 (타이머 멈춤)
@@ -195,6 +224,8 @@ class GameNotifier extends ChangeNotifier {
     _elapsedSeconds = 0;
     _totalStarLight = 0;
     _isPaused = false;
+    _hintsUsed = 0;
+    _undoHistory.clear();
     _saveActiveGame();
     notifyListeners();
   }
@@ -205,7 +236,7 @@ class GameNotifier extends ChangeNotifier {
 
     // 난이도별 StarLight 보상 (기본값)
     final config = DifficultyConfig.getConfig(_difficulty);
-    _totalStarLight = config.starLightReward;
+    _totalStarLight = potentialStarLightReward;
     _starLightBalance += _totalStarLight;
     _hasAwardedCurrentGame = true;
     _statistics = _statistics.recordCompletion(_difficulty, _elapsedSeconds);
@@ -237,7 +268,15 @@ class GameNotifier extends ChangeNotifier {
       difficulty: _difficulty,
       elapsedSeconds: _elapsedSeconds,
       isPaused: _isPaused,
+      hintsUsed: _hintsUsed,
     );
     unawaited(_progressStore.saveActiveGame(_activeGame!));
+  }
+
+  void _recordUndoState() {
+    if (_undoHistory.length == 100) {
+      _undoHistory.removeAt(0);
+    }
+    _undoHistory.add(_board.copy());
   }
 }
