@@ -49,6 +49,20 @@ void main() {
       expect(solutionCount, equals(1));
     });
 
+    test('generated puzzle clues match its paired solution', () {
+      final game = SudokuGenerator.generatePuzzleWithSolution(
+        SudokuDifficulty.normal,
+      );
+
+      for (int row = 0; row < 9; row++) {
+        for (int col = 0; col < 9; col++) {
+          if (game.puzzle[row][col] != 0) {
+            expect(game.puzzle[row][col], equals(game.solution[row][col]));
+          }
+        }
+      }
+    });
+
     test('generatePuzzle Easy has correct clue range', () {
       List<List<int>> puzzle = SudokuGenerator.generatePuzzle(SudokuDifficulty.easy);
 

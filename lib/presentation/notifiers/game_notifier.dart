@@ -3,6 +3,7 @@ import 'package:sudoku_game/core/sudoku/sudoku_board.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_generator.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_validator.dart';
+import 'package:sudoku_game/core/village/building_progress.dart';
 
 /// 게임 상태를 관리하는 ChangeNotifier
 /// Core 엔진과 UI를 연결하는 브릿지 역할
@@ -11,12 +12,36 @@ class GameNotifier extends ChangeNotifier {
   late SudokuDifficulty _difficulty;
   late int _elapsedSeconds = 0;
   late int _totalStarLight = 0;
+  int _starLightBalance = 0;
+  bool _hasAwardedCurrentGame = false;
 
   // Getters
   SudokuBoard get board => _board;
   SudokuDifficulty get difficulty => _difficulty;
   int get elapsedSeconds => _elapsedSeconds;
   int get totalStarLight => _totalStarLight;
+  int get starLightBalance => _starLightBalance;
+
+  List<BuildingProgress> get buildings {
+    const definitions = [
+      (id: 'bakery', name: '빵집', iconName: 'bakery', cost: 160),
+      (id: 'library', name: '도서관', iconName: 'library', cost: 300),
+      (id: 'fountain', name: '분수 광장', iconName: 'fountain', cost: 540),
+    ];
+    var available = _starLightBalance;
+
+    return definitions.map((definition) {
+      final restored = available.clamp(0, definition.cost);
+      available = (available - definition.cost).clamp(0, available);
+      return BuildingProgress(
+        id: definition.id,
+        name: definition.name,
+        iconName: definition.iconName,
+        requiredStarLight: definition.cost,
+        restoredStarLight: restored,
+      );
+    }).toList();
+  }
 
   bool get isPuzzleComplete {
     if (!_board.isFilled()) return false;
@@ -30,16 +55,16 @@ class GameNotifier extends ChangeNotifier {
   /// 새로운 게임 시작
   void startNewGame(SudokuDifficulty difficulty) {
     _difficulty = difficulty;
-    final puzzle = SudokuGenerator.generatePuzzle(difficulty);
-    final solution = SudokuGenerator.generateSolution();
+    final generatedGame = SudokuGenerator.generatePuzzleWithSolution(difficulty);
 
     _board = SudokuBoard(
-      solution: solution,
-      puzzle: puzzle,
+      solution: generatedGame.solution,
+      puzzle: generatedGame.puzzle,
     );
 
     _elapsedSeconds = 0;
     _totalStarLight = 0;
+    _hasAwardedCurrentGame = false;
 
     notifyListeners();
   }
@@ -116,9 +141,13 @@ class GameNotifier extends ChangeNotifier {
 
   /// 게임 완료시 점수 계산
   void completeGame() {
+    if (_hasAwardedCurrentGame || !isPuzzleComplete) return;
+
     // 난이도별 StarLight 보상 (기본값)
     final config = DifficultyConfig.getConfig(_difficulty);
     _totalStarLight = config.starLightReward;
+    _starLightBalance += _totalStarLight;
+    _hasAwardedCurrentGame = true;
 
     // 시간 보너스 (선택사항)
     // 빠를수록 더 많은 보너스
