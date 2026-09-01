@@ -1,19 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/core/progress/player_statistics.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_board.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_generator.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_validator.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
+import 'package:sudoku_game/data/local/game_progress_store.dart';
 
 /// 게임 상태를 관리하는 ChangeNotifier
 /// Core 엔진과 UI를 연결하는 브릿지 역할
 class GameNotifier extends ChangeNotifier {
+  GameNotifier({GameProgressStore? progressStore})
+      : _progressStore = progressStore ?? GameProgressStore();
+
+  final GameProgressStore _progressStore;
   late SudokuBoard _board;
   late SudokuDifficulty _difficulty;
   late int _elapsedSeconds = 0;
   late int _totalStarLight = 0;
   int _starLightBalance = 0;
   bool _hasAwardedCurrentGame = false;
+  PlayerStatistics _statistics = const PlayerStatistics();
 
   // Getters
   SudokuBoard get board => _board;
@@ -21,6 +30,15 @@ class GameNotifier extends ChangeNotifier {
   int get elapsedSeconds => _elapsedSeconds;
   int get totalStarLight => _totalStarLight;
   int get starLightBalance => _starLightBalance;
+  PlayerStatistics get statistics => _statistics;
+
+  /// Restores account-wide rewards and statistics when the app starts.
+  Future<void> loadProgress() async {
+    final progress = await _progressStore.load();
+    _starLightBalance = progress.starLightBalance;
+    _statistics = progress.statistics;
+    notifyListeners();
+  }
 
   List<BuildingProgress> get buildings {
     const definitions = [
@@ -148,6 +166,13 @@ class GameNotifier extends ChangeNotifier {
     _totalStarLight = config.starLightReward;
     _starLightBalance += _totalStarLight;
     _hasAwardedCurrentGame = true;
+    _statistics = _statistics.recordCompletion(_difficulty, _elapsedSeconds);
+    unawaited(
+      _progressStore.save(
+        starLightBalance: _starLightBalance,
+        statistics: _statistics,
+      ),
+    );
 
     // 시간 보너스 (선택사항)
     // 빠를수록 더 많은 보너스

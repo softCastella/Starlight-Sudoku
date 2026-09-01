@@ -38,6 +38,9 @@ dependencies:
   # State Management
   provider: ^6.1.5+1
 
+  # Local progress persistence
+  shared_preferences: ^2.5.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
