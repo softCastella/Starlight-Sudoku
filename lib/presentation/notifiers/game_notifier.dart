@@ -42,6 +42,8 @@ class GameNotifier extends ChangeNotifier {
   bool get canUndo => _undoHistory.isNotEmpty;
   int get hintsUsed => _hintsUsed;
   int get hintsRemaining => maxHints - _hintsUsed;
+  bool get isFirstVillageComplete =>
+      buildings.every((building) => building.isComplete);
 
   int get potentialStarLightReward {
     final reward = DifficultyConfig.getConfig(_difficulty).starLightReward;
@@ -235,7 +237,6 @@ class GameNotifier extends ChangeNotifier {
     if (_hasAwardedCurrentGame || !isPuzzleComplete) return;
 
     // 난이도별 StarLight 보상 (기본값)
-    final config = DifficultyConfig.getConfig(_difficulty);
     _totalStarLight = potentialStarLightReward;
     _starLightBalance += _totalStarLight;
     _hasAwardedCurrentGame = true;
