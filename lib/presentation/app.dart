@@ -11,7 +11,13 @@ class SudokuApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => GameNotifier()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final notifier = GameNotifier();
+            notifier.loadProgress();
+            return notifier;
+          },
+        ),
       ],
       child: MaterialApp(
         title: '별빛 스도쿠',

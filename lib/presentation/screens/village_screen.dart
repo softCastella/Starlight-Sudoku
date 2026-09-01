@@ -13,106 +13,167 @@ class VillageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('우리 마을')),
-      body: Consumer<GameNotifier>(
-        builder: (context, gameNotifier, _) {
-          final buildings = gameNotifier.buildings;
-          final completedCount = buildings.where((building) => building.isComplete).length;
+    return Consumer<GameNotifier>(
+      builder: (context, gameNotifier, _) {
+        final dawn = gameNotifier.villageDawn;
+        final ink = Color.lerp(const Color(0xFFFBF7EC), const Color(0xFF24452D), dawn)!;
+        final buildings = gameNotifier.buildings;
+        final completedCount = buildings.where((building) => building.isComplete).length;
 
-          return Container(
-            color: const Color(0xFFF4F8EE),
-            child: SafeArea(
-              top: false,
-              child: PlayViewport(
-                child: ListView(
-                padding: const EdgeInsets.all(20),
-                children: [
-                  Text(
-                    '별빛으로 되살아나는 마을',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF24452D),
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '$completedCount / ${buildings.length}개 건물이 복원되었습니다',
-                    style: TextStyle(color: Colors.green[800]),
-                  ),
-                  const SizedBox(height: 16),
-                  VillageMapWidget(
-                    buildings: buildings,
-                    onBuildingSelected: (building) => _showBuildingDetails(
-                      context,
-                      building,
+        return Scaffold(
+          backgroundColor: Color.lerp(
+            const Color(0xFF1C3340),
+            const Color(0xFFF4F8EE),
+            dawn,
+          ),
+          appBar: AppBar(
+            title: const Text('별빛 마을'),
+            backgroundColor: Colors.transparent,
+            foregroundColor: ink,
+            elevation: 0,
+            actions: [
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VillageMissionsScreen(),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      '보유 StarLight  ${gameNotifier.starLightBalance}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFC78A00),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Center(
-                    child: FilledButton.tonalIcon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const VillageMissionsScreen(),
+                  );
+                },
+                icon: const Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D)),
+                label: Text(
+                  '미션',
+                  style: TextStyle(color: ink, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          body: SafeArea(
+            top: false,
+            child: PlayViewport(
+              child: SizedBox.expand(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '$completedCount / ${buildings.length}개 복원',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Color.lerp(
+                                  const Color(0xFFB7D4C0),
+                                  const Color(0xFF2E7D32),
+                                  dawn,
+                                ),
+                              ),
+                            ),
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.assignment),
-                      label: const Text('복원 미션 보기'),
-                    ),
+                          Text(
+                            '보유 스타라이트  ${gameNotifier.starLightBalance}',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFF5CC3D),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            TweenAnimationBuilder<double>(
+                              duration: const Duration(milliseconds: 900),
+                              curve: Curves.easeOutCubic,
+                              tween: Tween<double>(begin: 0, end: gameNotifier.villageDawn),
+                              builder: (context, mapDawn, _) => VillageMapWidget(
+                                buildings: buildings,
+                                dawn: mapDawn,
+                                expand: true,
+                                onBuildingSelected: (building) => _showBuildingDetails(
+                                  context,
+                                  building,
+                                ),
+                              ),
+                            ),
+                            if (gameNotifier.isFirstVillageComplete)
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: _NextVillageUnlockCard(
+                                    onOpen: () => _showNextVillageDialog(context),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  if (gameNotifier.isFirstVillageComplete) ...[
-                    const SizedBox(height: 18),
-                    _NextVillageUnlockCard(
-                      onOpen: () => _showNextVillageDialog(context),
-                    ),
-                  ],
-                ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
   void _showBuildingDetails(BuildContext context, BuildingProgress building) {
     final story = VillageStory.forBuilding(building.id);
     final status = building.isComplete
-      ? story.completedDescription
+        ? story.completedDescription
         : '${building.remainingStarLight} StarLight가 더 필요합니다.';
     showModalBottomSheet<void>(
       context: context,
+      backgroundColor: const Color(0xFFFBF7EC),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
       builder: (context) => Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(building.name, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text('복원 단계 ${building.level} / 5'),
+            Text(
+              building.name,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF24452D),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '복원 단계 ${building.level} / 5',
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Color(0xFFF5CC3D),
+              ),
+            ),
             const SizedBox(height: 12),
-            Text(story.headline, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              story.headline,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF24452D),
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(building.isComplete ? status : story.description),
+            Text(
+              building.isComplete ? status : story.description,
+              style: const TextStyle(height: 1.45, color: Color(0xFF4D6554)),
+            ),
             if (!building.isComplete) ...[
               const SizedBox(height: 8),
-              Text(status),
+              Text(status, style: const TextStyle(color: Color(0xFF4D6554))),
             ],
           ],
         ),
@@ -150,9 +211,12 @@ class _NextVillageUnlockCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFE0F2F4),
-        border: Border.all(color: const Color(0xFF79BFC6)),
-        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xF2FFF8E8),
+        border: Border.all(color: const Color(0xFFF5CC3D), width: 1.6),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: const [
+          BoxShadow(color: Color(0x55F5CC3D), blurRadius: 16, offset: Offset(0, 6)),
+        ],
       ),
       child: Row(
         children: [

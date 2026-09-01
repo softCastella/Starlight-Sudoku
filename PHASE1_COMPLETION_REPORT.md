@@ -242,7 +242,7 @@ flutter doctor      # 환경 검증
 
 ## 📦 배포 준비
 
-- ✅ Git 저장소 준비 (softcastella/Sudoku)
+- ✅ Git 저장소 준비 (softCastella/Starlight-Sudoku)
 - ✅ .gitignore 설정 완료
 - ✅ 코드 품질 검증 (100% 테스트 통과)
 - ⏳ GitHub 푸시 (사용자 실행)

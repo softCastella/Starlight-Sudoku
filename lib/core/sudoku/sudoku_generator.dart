@@ -3,7 +3,7 @@ import 'sudoku_solver.dart';
 import 'sudoku_difficulty.dart';
 
 /// Generates valid Sudoku puzzles with guaranteed unique solutions.
-/// 
+///
 /// Process:
 /// 1. Generate a complete valid 9x9 solution
 /// 2. Remove numbers to create a puzzle
@@ -11,51 +11,76 @@ import 'sudoku_difficulty.dart';
 class SudokuGenerator {
   static final Random _random = Random();
 
+  /// Stable seed so the same difficulty and stage always produce the same puzzle.
+  static int seedFor(SudokuDifficulty difficulty, int level) {
+    final difficultyFactor = switch (difficulty) {
+      SudokuDifficulty.easy => 1,
+      SudokuDifficulty.normal => 2,
+      SudokuDifficulty.hard => 3,
+    };
+    return 20260901 + difficultyFactor * 1000 + level;
+  }
+
   /// Generate a complete, valid Sudoku solution
-  static List<List<int>> generateSolution() {
+  static List<List<int>> generateSolution({Random? random}) {
+    final rng = random ?? _random;
     List<List<int>> board = List.generate(9, (_) => List.filled(9, 0));
 
     // Fill the first block (top-left 3x3)
-    _fillBlock(board, 0, 0);
+    _fillBlock(board, 0, 0, rng);
 
     // Fill the rest using backtracking
-    if (!_fillBoard(board)) {
-      // If failed, retry
-      return generateSolution();
+    if (!_fillBoard(board, rng)) {
+      // If failed, retry with the same RNG so seeded generation stays deterministic
+      return generateSolution(random: rng);
     }
 
     return board;
   }
 
   /// Generate a puzzle with unique solution based on difficulty
-  static List<List<int>> generatePuzzle(SudokuDifficulty difficulty) {
-    return generatePuzzleWithSolution(difficulty).puzzle;
+  static List<List<int>> generatePuzzle(
+    SudokuDifficulty difficulty, {
+    Random? random,
+    int? seed,
+  }) {
+    return generatePuzzleWithSolution(
+      difficulty,
+      random: random,
+      seed: seed,
+    ).puzzle;
   }
 
   /// Generate a puzzle together with the exact solution it was derived from.
   static ({List<List<int>> puzzle, List<List<int>> solution})
-      generatePuzzleWithSolution(SudokuDifficulty difficulty) {
+      generatePuzzleWithSolution(
+    SudokuDifficulty difficulty, {
+    Random? random,
+    int? seed,
+  }) {
+    final rng = random ?? (seed != null ? Random(seed) : _random);
     DifficultyConfig config = DifficultyConfig.getConfig(difficulty);
 
     int attempts = 0;
     const int maxAttempts = 5; // Try up to 5 times to find good puzzle
 
     while (attempts < maxAttempts) {
-      List<List<int>> solution = generateSolution();
+      List<List<int>> solution = generateSolution(random: rng);
       List<List<int>> puzzle = solution.map((row) => [...row]).toList();
 
       // Remove clues while maintaining unique solution
       int removed = 0;
       int removalAttempts = 0;
-      int targetRemoval = 81 - _random.nextInt(
-        config.maxClues - config.minClues + 1,
-      ) -
+      int targetRemoval = 81 -
+          rng.nextInt(
+            config.maxClues - config.minClues + 1,
+          ) -
           config.minClues;
 
       while (removed < targetRemoval &&
           removalAttempts < config.maxRemovalAttempts) {
-        int row = _random.nextInt(9);
-        int col = _random.nextInt(9);
+        int row = rng.nextInt(9);
+        int col = rng.nextInt(9);
 
         if (puzzle[row][col] != 0) {
           int backup = puzzle[row][col];
@@ -84,17 +109,22 @@ class SudokuGenerator {
 
     // If we couldn't generate a good puzzle after retries, return the last one
     // (This shouldn't happen in practice)
-    List<List<int>> solution = generateSolution();
+    List<List<int>> solution = generateSolution(random: rng);
     return (
-      puzzle: _removeCluesForDifficulty(solution, config),
+      puzzle: _removeCluesForDifficulty(solution, config, rng),
       solution: solution,
     );
   }
 
   /// Fill the first 3x3 block randomly (for faster generation)
-  static void _fillBlock(List<List<int>> board, int blockRow, int blockCol) {
+  static void _fillBlock(
+    List<List<int>> board,
+    int blockRow,
+    int blockCol,
+    Random rng,
+  ) {
     List<int> numbers = List.generate(9, (i) => i + 1);
-    numbers.shuffle(_random);
+    numbers.shuffle(rng);
 
     int index = 0;
     for (int i = blockRow; i < blockRow + 3; i++) {
@@ -105,18 +135,18 @@ class SudokuGenerator {
   }
 
   /// Fill the board using backtracking with randomization
-  static bool _fillBoard(List<List<int>> board) {
+  static bool _fillBoard(List<List<int>> board, Random rng) {
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
         if (board[i][j] == 0) {
           // Create a shuffled list of numbers 1-9
           List<int> numbers = List.generate(9, (n) => n + 1);
-          numbers.shuffle(_random);
+          numbers.shuffle(rng);
 
           for (int num in numbers) {
             if (_isValidPlacement(board, i, j, num)) {
               board[i][j] = num;
-              if (_fillBoard(board)) {
+              if (_fillBoard(board, rng)) {
                 return true;
               }
               board[i][j] = 0; // Backtrack
@@ -160,6 +190,7 @@ class SudokuGenerator {
   static List<List<int>> _removeCluesForDifficulty(
     List<List<int>> solution,
     DifficultyConfig config,
+    Random rng,
   ) {
     List<List<int>> puzzle = solution.map((row) => [...row]).toList();
 
@@ -171,13 +202,14 @@ class SudokuGenerator {
       }
     }
 
-    cells.shuffle(_random);
+    cells.shuffle(rng);
 
     int removed = 0;
-    int targetRemoval = 81 - (_random.nextInt(
-          config.maxClues - config.minClues + 1,
-        ) +
-        config.minClues);
+    int targetRemoval = 81 -
+        (rng.nextInt(
+              config.maxClues - config.minClues + 1,
+            ) +
+            config.minClues);
 
     for (var (row, col) in cells) {
       if (removed >= targetRemoval) break;

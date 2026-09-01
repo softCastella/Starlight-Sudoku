@@ -6,6 +6,11 @@ class GameBalance {
   static const int normalStarLightReward = 120;
   static const int hardStarLightReward = 180;
 
+  // Stage counts per difficulty
+  static const int easyStageCount = 20;
+  static const int normalStageCount = 40;
+  static const int hardStageCount = 50;
+
   // Building restoration time reduction (in seconds)
   static const int easyTimeReduction = 300; // 5 minutes
   static const int normalTimeReduction = 600; // 10 minutes

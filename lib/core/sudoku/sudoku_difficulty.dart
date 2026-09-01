@@ -1,3 +1,5 @@
+import 'package:sudoku_game/core/config/game_balance.dart';
+
 /// Sudoku difficulty levels and their properties
 enum SudokuDifficulty {
   easy,
@@ -26,6 +28,9 @@ class DifficultyConfig {
   // Time reduction for building restoration (in seconds)
   final int restorationTimeReduction;
 
+  // Number of playable stages in this difficulty
+  final int stageCount;
+
   DifficultyConfig({
     required this.difficulty,
     required this.minClues,
@@ -35,6 +40,7 @@ class DifficultyConfig {
     required this.maxRemovalAttempts,
     required this.starLightReward,
     required this.restorationTimeReduction,
+    required this.stageCount,
   });
 
   static DifficultyConfig getConfig(SudokuDifficulty difficulty) {
@@ -47,8 +53,9 @@ class DifficultyConfig {
           minEmptyCells: 26,
           maxEmptyCells: 36,
           maxRemovalAttempts: 100,
-          starLightReward: 80,
-          restorationTimeReduction: 300, // 5 minutes
+          starLightReward: GameBalance.easyStarLightReward,
+          restorationTimeReduction: GameBalance.easyTimeReduction,
+          stageCount: GameBalance.easyStageCount,
         );
       case SudokuDifficulty.normal:
         return DifficultyConfig(
@@ -58,8 +65,9 @@ class DifficultyConfig {
           minEmptyCells: 36,
           maxEmptyCells: 46,
           maxRemovalAttempts: 200,
-          starLightReward: 120,
-          restorationTimeReduction: 600, // 10 minutes
+          starLightReward: GameBalance.normalStarLightReward,
+          restorationTimeReduction: GameBalance.normalTimeReduction,
+          stageCount: GameBalance.normalStageCount,
         );
       case SudokuDifficulty.hard:
         return DifficultyConfig(
@@ -69,8 +77,9 @@ class DifficultyConfig {
           minEmptyCells: 46,
           maxEmptyCells: 56,
           maxRemovalAttempts: 300,
-          starLightReward: 180,
-          restorationTimeReduction: 1200, // 20 minutes
+          starLightReward: GameBalance.hardStarLightReward,
+          restorationTimeReduction: GameBalance.hardTimeReduction,
+          stageCount: GameBalance.hardStageCount,
         );
     }
   }
@@ -83,6 +92,17 @@ class DifficultyConfig {
         return 'Normal';
       case SudokuDifficulty.hard:
         return 'Hard';
+    }
+  }
+
+  String getKoreanName() {
+    switch (difficulty) {
+      case SudokuDifficulty.easy:
+        return '이지';
+      case SudokuDifficulty.normal:
+        return '보통';
+      case SudokuDifficulty.hard:
+        return '하드';
     }
   }
 }

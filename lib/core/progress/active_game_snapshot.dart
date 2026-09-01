@@ -9,6 +9,7 @@ class ActiveGameSnapshot {
     required this.elapsedSeconds,
     required this.isPaused,
     required this.hintsUsed,
+    this.levelNumber = 1,
   });
 
   final SudokuBoard board;
@@ -16,6 +17,7 @@ class ActiveGameSnapshot {
   final int elapsedSeconds;
   final bool isPaused;
   final int hintsUsed;
+  final int levelNumber;
 
   Map<String, Object> toJson() => {
         'solution': board.solution,
@@ -28,6 +30,7 @@ class ActiveGameSnapshot {
         'elapsedSeconds': elapsedSeconds,
         'isPaused': isPaused,
         'hintsUsed': hintsUsed,
+        'levelNumber': levelNumber,
       };
 
   factory ActiveGameSnapshot.fromJson(Map<String, dynamic> json) {
@@ -53,6 +56,7 @@ class ActiveGameSnapshot {
       elapsedSeconds: json['elapsedSeconds'] as int,
       isPaused: json['isPaused'] as bool,
       hintsUsed: json['hintsUsed'] as int? ?? 0,
+      levelNumber: json['levelNumber'] as int? ?? 1,
     );
   }
 }

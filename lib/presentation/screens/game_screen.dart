@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
@@ -41,7 +42,12 @@ class _GameScreenState extends State<GameScreen> {
             icon: const Icon(Icons.arrow_back),
             onPressed: _confirmGiveUp,
           ),
-          title: const Text('오늘의 퍼즐'),
+          title: Consumer<GameNotifier>(
+            builder: (context, gameNotifier, _) {
+              final config = DifficultyConfig.getConfig(gameNotifier.difficulty);
+              return Text('${config.getKoreanName()} ${gameNotifier.currentLevel}');
+            },
+          ),
           elevation: 0,
           actions: [
             IconButton(
@@ -340,6 +346,13 @@ class _GameScreenState extends State<GameScreen> {
         return CompletionRewardDialog(
           starLight: gameNotifier.totalStarLight,
           elapsedTimeLabel: _formatTime(gameNotifier.elapsedSeconds),
+          isReplay: gameNotifier.totalStarLight == 0,
+          onNextLevel: gameNotifier.hasNextLevel
+              ? () {
+                  Navigator.pop(context);
+                  gameNotifier.startNextLevel();
+                }
+              : null,
           onViewVillage: () {
             Navigator.pop(context);
             Navigator.pop(context);

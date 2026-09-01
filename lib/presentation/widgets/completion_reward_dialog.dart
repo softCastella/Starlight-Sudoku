@@ -6,14 +6,20 @@ class CompletionRewardDialog extends StatelessWidget {
     super.key,
     required this.starLight,
     required this.elapsedTimeLabel,
+    this.isReplay = false,
+    this.onNextLevel,
     required this.onViewVillage,
     required this.onClose,
   });
 
   final int starLight;
   final String elapsedTimeLabel;
+  final bool isReplay;
+  final VoidCallback? onNextLevel;
   final VoidCallback onViewVillage;
   final VoidCallback onClose;
+
+  static const _gold = Color(0xFFF5CC3D);
 
   @override
   Widget build(BuildContext context) {
@@ -32,26 +38,30 @@ class CompletionRewardDialog extends StatelessWidget {
             ),
             child: const Icon(
               Icons.auto_awesome,
-              color: Color(0xFFC78A00),
+              color: _gold,
               size: 68,
             ),
           ),
           const SizedBox(height: 12),
-          const Text('마을에 별빛이 도착했어요.'),
-          const SizedBox(height: 18),
-          TweenAnimationBuilder<int>(
-            duration: const Duration(milliseconds: 900),
-            curve: Curves.easeOutCubic,
-            tween: IntTween(begin: 0, end: starLight),
-            builder: (context, value, _) => Text(
-              '+$value StarLight',
-              style: const TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFC78A00),
+          Text(
+            isReplay ? '이미 클리어한 스테이지예요.' : '마을에 별빛이 도착했어요.',
+          ),
+          if (!isReplay) ...[
+            const SizedBox(height: 18),
+            TweenAnimationBuilder<int>(
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeOutCubic,
+              tween: IntTween(begin: 0, end: starLight),
+              builder: (context, value, _) => Text(
+                '+$value StarLight',
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: _gold,
+                ),
               ),
             ),
-          ),
+          ],
           const SizedBox(height: 12),
           Text('소요 시간  $elapsedTimeLabel'),
         ],
@@ -63,7 +73,17 @@ class CompletionRewardDialog extends StatelessWidget {
           icon: const Icon(Icons.location_city),
           label: const Text('마을 보기'),
         ),
-        FilledButton(onPressed: onClose, child: const Text('완료')),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onNextLevel != null)
+              TextButton(
+                onPressed: onNextLevel,
+                child: const Text('다음 스테이지'),
+              ),
+            FilledButton(onPressed: onClose, child: const Text('완료')),
+          ],
+        ),
       ],
     );
   }

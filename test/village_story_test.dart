@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sudoku_game/core/village/opening_story.dart';
 import 'package:sudoku_game/core/village/village_story.dart';
 
 void main() {
@@ -11,5 +12,12 @@ void main() {
       expect(story.description, isNotEmpty);
       expect(story.completedDescription, isNotEmpty);
     }
+  });
+
+  test('opening story explains night, windows, and morning', () {
+    expect(OpeningStoryPage.pages, hasLength(3));
+    expect(OpeningStoryPage.pages.first.headline, '잠든 마을');
+    expect(OpeningStoryPage.pages[1].body, contains('창문'));
+    expect(OpeningStoryPage.pages.last.dawn, greaterThan(0.5));
   });
 }

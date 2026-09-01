@@ -4,7 +4,7 @@
 
 배포가 완료되면 아래 주소에서 별빛 스도쿠를 실행할 수 있습니다.
 
-- https://softcastella.github.io/Sudoku/
+- https://softcastella.github.io/Starlight-Sudoku/
 
 ## 사용 방법
 
@@ -15,7 +15,7 @@
 
 ## 배포 방식
 
-- 저장소: `softCastella/Sudoku`
+- 저장소: `softCastella/Starlight-Sudoku`
 - 호스팅: GitHub Pages
 - 배포 대상: `main` 브랜치
 - 자동화: `.github/workflows/deploy-pages.yml`

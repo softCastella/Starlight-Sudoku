@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
 import 'package:sudoku_game/core/progress/player_statistics.dart';
+import 'package:sudoku_game/core/progress/stage_progress.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_board.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_generator.dart';
@@ -27,9 +28,12 @@ class GameNotifier extends ChangeNotifier {
   int _starLightBalance = 0;
   bool _hasAwardedCurrentGame = false;
   PlayerStatistics _statistics = const PlayerStatistics();
+  StageProgress _stageProgress = const StageProgress();
   ActiveGameSnapshot? _activeGame;
   final List<SudokuBoard> _undoHistory = [];
   int _hintsUsed = 0;
+  int _levelNumber = 1;
+  bool _hasSeenOpeningStory = false;
 
   // Getters
   SudokuBoard get board => _board;
@@ -38,7 +42,10 @@ class GameNotifier extends ChangeNotifier {
   int get totalStarLight => _totalStarLight;
   int get starLightBalance => _starLightBalance;
   PlayerStatistics get statistics => _statistics;
+  StageProgress get stageProgress => _stageProgress;
+  int get currentLevel => _levelNumber;
   bool get hasActiveGame => _activeGame != null;
+  bool get hasSeenOpeningStory => _hasSeenOpeningStory;
   bool get canUndo => _undoHistory.isNotEmpty;
   int get hintsUsed => _hintsUsed;
   int get hintsRemaining => maxHints - _hintsUsed;
@@ -46,17 +53,45 @@ class GameNotifier extends ChangeNotifier {
       buildings.every((building) => building.isComplete);
 
   int get potentialStarLightReward {
+    if (isCurrentLevelCleared) return 0;
     final reward = DifficultyConfig.getConfig(_difficulty).starLightReward;
     return (reward - (_hintsUsed * hintRewardPenalty)).clamp(0, reward);
   }
+
+  bool get isCurrentLevelCleared =>
+      _stageProgress.isCompleted(_difficulty, _levelNumber);
+
+  bool get hasNextLevel {
+    final stageCount = DifficultyConfig.getConfig(_difficulty).stageCount;
+    return _levelNumber < stageCount &&
+        _stageProgress.isUnlocked(_difficulty, _levelNumber + 1);
+  }
+
+  int completedStageCount(SudokuDifficulty difficulty) =>
+      _stageProgress.completedCount(difficulty);
+
+  bool isStageUnlocked(SudokuDifficulty difficulty, int level) =>
+      _stageProgress.isUnlocked(difficulty, level);
+
+  bool isStageCompleted(SudokuDifficulty difficulty, int level) =>
+      _stageProgress.isCompleted(difficulty, level);
 
   /// Restores account-wide rewards and statistics when the app starts.
   Future<void> loadProgress() async {
     final progress = await _progressStore.load();
     _starLightBalance = progress.starLightBalance;
     _statistics = progress.statistics;
+    _stageProgress = progress.stageProgress;
+    _hasSeenOpeningStory = progress.hasSeenOpeningStory;
     _activeGame = await _progressStore.loadActiveGame();
     notifyListeners();
+  }
+
+  Future<void> completeOpeningStory() async {
+    if (_hasSeenOpeningStory) return;
+    _hasSeenOpeningStory = true;
+    notifyListeners();
+    await _progressStore.saveHasSeenOpeningStory();
   }
 
   List<BuildingProgress> get buildings {
@@ -80,6 +115,15 @@ class GameNotifier extends ChangeNotifier {
     }).toList();
   }
 
+  /// 0 at night, 1 when every landmark in the first village is restored.
+  double get villageDawn {
+    final landmarks = buildings;
+    final required = landmarks.fold<int>(0, (sum, b) => sum + b.requiredStarLight);
+    final restored = landmarks.fold<int>(0, (sum, b) => sum + b.restoredStarLight);
+    if (required == 0) return 0;
+    return (restored / required).clamp(0.0, 1.0);
+  }
+
   bool get isPuzzleComplete {
     if (!_board.isFilled()) return false;
     return SudokuValidator.isPuzzleComplete(_board.playerBoard, _board.solution);
@@ -90,9 +134,13 @@ class GameNotifier extends ChangeNotifier {
   }
 
   /// 새로운 게임 시작
-  void startNewGame(SudokuDifficulty difficulty) {
+  void startNewGame(SudokuDifficulty difficulty, {int level = 1}) {
     _difficulty = difficulty;
-    final generatedGame = SudokuGenerator.generatePuzzleWithSolution(difficulty);
+    _levelNumber = level;
+    final generatedGame = SudokuGenerator.generatePuzzleWithSolution(
+      difficulty,
+      seed: SudokuGenerator.seedFor(difficulty, level),
+    );
 
     _board = SudokuBoard(
       solution: generatedGame.solution,
@@ -110,6 +158,11 @@ class GameNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void startNextLevel() {
+    if (!hasNextLevel) return;
+    startNewGame(_difficulty, level: _levelNumber + 1);
+  }
+
   /// Loads the unfinished puzzle saved on this device.
   bool continueGame() {
     final snapshot = _activeGame;
@@ -117,6 +170,7 @@ class GameNotifier extends ChangeNotifier {
 
     _board = snapshot.board;
     _difficulty = snapshot.difficulty;
+    _levelNumber = snapshot.levelNumber;
     _elapsedSeconds = snapshot.elapsedSeconds;
     _isPaused = snapshot.isPaused;
     _totalStarLight = 0;
@@ -236,9 +290,17 @@ class GameNotifier extends ChangeNotifier {
   void completeGame() {
     if (_hasAwardedCurrentGame || !isPuzzleComplete) return;
 
-    // 난이도별 StarLight 보상 (기본값)
-    _totalStarLight = potentialStarLightReward;
-    _starLightBalance += _totalStarLight;
+    final isFirstClear = !_stageProgress.isCompleted(_difficulty, _levelNumber);
+    if (isFirstClear) {
+      final reward = DifficultyConfig.getConfig(_difficulty).starLightReward;
+      _totalStarLight =
+          (reward - (_hintsUsed * hintRewardPenalty)).clamp(0, reward);
+      _starLightBalance += _totalStarLight;
+      _stageProgress = _stageProgress.markCompleted(_difficulty, _levelNumber);
+    } else {
+      _totalStarLight = 0;
+    }
+
     _hasAwardedCurrentGame = true;
     _statistics = _statistics.recordCompletion(_difficulty, _elapsedSeconds);
     _activeGame = null;
@@ -247,11 +309,9 @@ class GameNotifier extends ChangeNotifier {
       _progressStore.save(
         starLightBalance: _starLightBalance,
         statistics: _statistics,
+        stageProgress: _stageProgress,
       ),
     );
-
-    // 시간 보너스 (선택사항)
-    // 빠를수록 더 많은 보너스
 
     notifyListeners();
   }
@@ -270,6 +330,7 @@ class GameNotifier extends ChangeNotifier {
       elapsedSeconds: _elapsedSeconds,
       isPaused: _isPaused,
       hintsUsed: _hintsUsed,
+      levelNumber: _levelNumber,
     );
     unawaited(_progressStore.saveActiveGame(_activeGame!));
   }

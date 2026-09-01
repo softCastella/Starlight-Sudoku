@@ -31,7 +31,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web release
-        run: flutter build web --release --base-href "/Sudoku/"
+        run: flutter build web --release --base-href "/Starlight-Sudoku/"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

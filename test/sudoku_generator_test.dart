@@ -40,6 +40,21 @@ void main() {
       expect(identical, equals(false)); // Should be different
     });
 
+    test('same stage seed produces the same puzzle and solution pair', () {
+      final seed = SudokuGenerator.seedFor(SudokuDifficulty.easy, 1);
+      final first = SudokuGenerator.generatePuzzleWithSolution(
+        SudokuDifficulty.easy,
+        seed: seed,
+      );
+      final second = SudokuGenerator.generatePuzzleWithSolution(
+        SudokuDifficulty.easy,
+        seed: seed,
+      );
+
+      expect(first.puzzle, equals(second.puzzle));
+      expect(first.solution, equals(second.solution));
+    });
+
     test('generatePuzzle creates puzzle with unique solution', () {
       List<List<int>> puzzle = SudokuGenerator.generatePuzzle(SudokuDifficulty.easy);
 

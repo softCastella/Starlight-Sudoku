@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
 import 'package:sudoku_game/core/progress/player_statistics.dart';
+import 'package:sudoku_game/core/progress/stage_progress.dart';
 
 /// Persists account-wide progress independently from the active puzzle.
 class GameProgressStore {
@@ -13,8 +14,16 @@ class GameProgressStore {
   static const _normalCompletionsKey = 'normal_completions';
   static const _hardCompletionsKey = 'hard_completions';
   static const _activeGameKey = 'active_game';
+  static const _stageProgressKey = 'stage_progress';
+  static const _seenIntroKey = 'has_seen_opening_story';
 
-  Future<({int starLightBalance, PlayerStatistics statistics})> load() async {
+  Future<
+      ({
+        int starLightBalance,
+        PlayerStatistics statistics,
+        StageProgress stageProgress,
+        bool hasSeenOpeningStory,
+      })> load() async {
     final preferences = await SharedPreferences.getInstance();
     return (
       starLightBalance: preferences.getInt(_starLightKey) ?? 0,
@@ -25,12 +34,17 @@ class GameProgressStore {
         normalCompletions: preferences.getInt(_normalCompletionsKey) ?? 0,
         hardCompletions: preferences.getInt(_hardCompletionsKey) ?? 0,
       ),
+      stageProgress: StageProgress.fromJson(
+        _decodeJsonMap(preferences.getString(_stageProgressKey)),
+      ),
+      hasSeenOpeningStory: preferences.getBool(_seenIntroKey) ?? false,
     );
   }
 
   Future<void> save({
     required int starLightBalance,
     required PlayerStatistics statistics,
+    required StageProgress stageProgress,
   }) async {
     final preferences = await SharedPreferences.getInstance();
     await Future.wait([
@@ -40,7 +54,27 @@ class GameProgressStore {
       preferences.setInt(_easyCompletionsKey, statistics.easyCompletions),
       preferences.setInt(_normalCompletionsKey, statistics.normalCompletions),
       preferences.setInt(_hardCompletionsKey, statistics.hardCompletions),
+      preferences.setString(
+        _stageProgressKey,
+        jsonEncode(stageProgress.toJson()),
+      ),
     ]);
+  }
+
+  Future<void> saveHasSeenOpeningStory() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setBool(_seenIntroKey, true);
+  }
+
+  Map<String, dynamic>? _decodeJsonMap(String? encoded) {
+    if (encoded == null) return null;
+    try {
+      final decoded = jsonDecode(encoded);
+      if (decoded is Map<String, dynamic>) return decoded;
+      return null;
+    } on FormatException {
+      return null;
+    }
   }
 
   Future<ActiveGameSnapshot?> loadActiveGame() async {

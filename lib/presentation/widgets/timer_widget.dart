@@ -58,18 +58,18 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Row(
             children: [
               const SizedBox(width: 8),
-              const Icon(Icons.auto_awesome, color: Color(0xFFC78A00), size: 18),
+              const Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D), size: 18),
               const SizedBox(width: 3),
               const Text(
                 'StarLight',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF806200),
+                  color: Color(0xFFF5CC3D),
                 ),
               ),
               const SizedBox(width: 4),
-              Text('$reward', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFC78A00))),
+              Text('$reward', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFF5CC3D))),
               if (gameNotifier.hintsUsed > 0) ...[
                 const SizedBox(width: 6),
                 Text(
