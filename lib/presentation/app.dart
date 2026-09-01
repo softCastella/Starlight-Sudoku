@@ -11,7 +11,7 @@ class SudokuApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => GameNotifier()..loadProgress()),
+        ChangeNotifierProvider(create: (_) => GameNotifier()),
       ],
       child: MaterialApp(
         title: 'Sudoku Cozy Puzzle',

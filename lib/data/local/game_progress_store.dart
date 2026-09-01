@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
 import 'package:sudoku_game/core/progress/player_statistics.dart';
 
 /// Persists account-wide progress independently from the active puzzle.
@@ -9,6 +12,7 @@ class GameProgressStore {
   static const _easyCompletionsKey = 'easy_completions';
   static const _normalCompletionsKey = 'normal_completions';
   static const _hardCompletionsKey = 'hard_completions';
+  static const _activeGameKey = 'active_game';
 
   Future<({int starLightBalance, PlayerStatistics statistics})> load() async {
     final preferences = await SharedPreferences.getInstance();
@@ -37,5 +41,30 @@ class GameProgressStore {
       preferences.setInt(_normalCompletionsKey, statistics.normalCompletions),
       preferences.setInt(_hardCompletionsKey, statistics.hardCompletions),
     ]);
+  }
+
+  Future<ActiveGameSnapshot?> loadActiveGame() async {
+    final preferences = await SharedPreferences.getInstance();
+    final encodedSnapshot = preferences.getString(_activeGameKey);
+    if (encodedSnapshot == null) return null;
+
+    try {
+      return ActiveGameSnapshot.fromJson(
+        jsonDecode(encodedSnapshot) as Map<String, dynamic>,
+      );
+    } on FormatException {
+      await preferences.remove(_activeGameKey);
+      return null;
+    }
+  }
+
+  Future<void> saveActiveGame(ActiveGameSnapshot snapshot) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString(_activeGameKey, jsonEncode(snapshot.toJson()));
+  }
+
+  Future<void> clearActiveGame() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.remove(_activeGameKey);
   }
 }

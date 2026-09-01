@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
-import 'package:sudoku_game/presentation/screens/statistics_screen.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
 import 'package:sudoku_game/presentation/widgets/village_map_widget.dart';
 
@@ -13,21 +12,7 @@ class VillageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('우리 마을'),
-        actions: [
-          IconButton(
-            tooltip: '플레이 통계',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const StatisticsScreen()),
-              );
-            },
-            icon: const Icon(Icons.bar_chart),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('우리 마을')),
       body: Consumer<GameNotifier>(
         builder: (context, gameNotifier, _) {
           final buildings = gameNotifier.buildings;

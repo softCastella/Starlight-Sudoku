@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/difficulty_selection_screen.dart';
+import 'package:sudoku_game/presentation/screens/game_screen.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 
 /// 게임 홈 화면
@@ -113,6 +116,26 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 12),
+              Consumer<GameNotifier>(
+                builder: (context, gameNotifier, _) {
+                  if (!gameNotifier.hasActiveGame) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: TextButton.icon(
+                      onPressed: () {
+                        if (gameNotifier.continueGame()) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const GameScreen()),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.play_circle_outline, color: Colors.white),
+                      label: const Text('이어서 하기', style: TextStyle(color: Colors.white)),
+                    ),
+                  );
+                },
+              ),
               TextButton.icon(
                 onPressed: () {
                   Navigator.push(
