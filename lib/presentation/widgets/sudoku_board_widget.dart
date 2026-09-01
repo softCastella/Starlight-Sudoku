@@ -27,12 +27,25 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
         final board = gameNotifier.board;
         final invalidCells = gameNotifier.invalidCells.toList().toSet();
 
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: AspectRatio(
-              aspectRatio: 1.0,
-              child: GridView.count(
+        return Padding(
+          padding: const EdgeInsets.all(4),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: const Color(0xFFFBF7EC),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x260E3225),
+                  blurRadius: 18,
+                  offset: Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: AspectRatio(
+                aspectRatio: 1.0,
+                child: GridView.count(
                 crossAxisCount: 9,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
@@ -69,6 +82,7 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                     },
                   );
                 }),
+                ),
               ),
             ),
           ),
