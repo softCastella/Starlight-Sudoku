@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
 
 /// Illustrated village map with tappable restoration landmarks.
@@ -39,7 +40,11 @@ class VillageMapWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            const CustomPaint(painter: _VillageGroundPainter()),
+            SvgPicture.asset(
+              'assets/images/village_scene.svg',
+              fit: BoxFit.cover,
+              semanticsLabel: '별빛 마을 전경',
+            ),
             ...buildings.map((building) {
               final style = _styles[building.id]!;
               return Align(
@@ -163,37 +168,4 @@ class _MapBuildingStyle {
   final IconData icon;
   final Alignment alignment;
   final Color color;
-}
-
-class _VillageGroundPainter extends CustomPainter {
-  const _VillageGroundPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0xFFD8EFC8));
-
-    final pathPaint = Paint()
-      ..color = const Color(0xFFF3E6BF)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.13
-      ..strokeCap = StrokeCap.round;
-    final path = Path()
-      ..moveTo(size.width * 0.5, size.height * 1.03)
-      ..quadraticBezierTo(size.width * 0.47, size.height * 0.73, size.width * 0.52, size.height * 0.53)
-      ..quadraticBezierTo(size.width * 0.72, size.height * 0.32, size.width * 0.83, size.height * 0.11);
-    canvas.drawPath(path, pathPaint);
-
-    final treePaint = Paint()..color = const Color(0xFF77A862);
-    for (final point in [
-      Offset(size.width * 0.12, size.height * 0.18),
-      Offset(size.width * 0.85, size.height * 0.63),
-      Offset(size.width * 0.17, size.height * 0.75),
-      Offset(size.width * 0.83, size.height * 0.86),
-    ]) {
-      canvas.drawCircle(point, size.width * 0.055, treePaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _VillageGroundPainter oldDelegate) => false;
 }
