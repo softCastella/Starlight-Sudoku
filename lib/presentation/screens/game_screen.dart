@@ -31,17 +31,19 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sudoku Puzzle'),
+        title: const Text('오늘의 퍼즐'),
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.pause),
+            tooltip: '일시 정지',
+            icon: const Icon(Icons.pause),
             onPressed: () {
               context.read<GameNotifier>().togglePause();
             },
           ),
           IconButton(
-            icon: Icon(Icons.refresh),
+            tooltip: '다시 풀기',
+            icon: const Icon(Icons.refresh),
             onPressed: () {
               context.read<GameNotifier>().giveUp();
             },
@@ -56,16 +58,16 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
           child: Column(
             children: [
               // 타이머
               TimerWidget(),
-              SizedBox(height: 16),
+              const SizedBox(height: 12),
 
               // 점수
               ScoreWidget(),
-              SizedBox(height: 16),
+              const SizedBox(height: 12),
 
               // Sudoku 보드
               SudokuBoardWidget(
@@ -74,7 +76,7 @@ class _GameScreenState extends State<GameScreen> {
                   setState(() {});
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 18),
 
               // 숫자 입력 패널
               _buildNumberPanel(),

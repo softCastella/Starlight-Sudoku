@@ -35,19 +35,19 @@ class SudokuCellWidget extends StatelessWidget {
           border: Border(
             top: BorderSide(
               width: row % 3 == 0 ? 2.0 : 0.5,
-              color: Colors.black87,
+              color: const Color(0xFF315042),
             ),
             left: BorderSide(
               width: col % 3 == 0 ? 2.0 : 0.5,
-              color: Colors.black87,
+              color: const Color(0xFF315042),
             ),
             right: BorderSide(
               width: col == 8 ? 2.0 : 0.5,
-              color: Colors.black87,
+              color: const Color(0xFF315042),
             ),
             bottom: BorderSide(
               width: row == 8 ? 2.0 : 0.5,
-              color: Colors.black87,
+              color: const Color(0xFF315042),
             ),
           ),
           color: _getCellColor(),
@@ -60,10 +60,10 @@ class SudokuCellWidget extends StatelessWidget {
   }
 
   Color _getCellColor() {
-    if (isInvalid) return Colors.red.withValues(alpha: 0.3);
-    if (isSelected) return Colors.blue.withValues(alpha: 0.3);
-    if (isFixed) return Colors.grey.withValues(alpha: 0.1);
-    return Colors.white;
+    if (isInvalid) return const Color(0xFFFFD9D2);
+    if (isSelected) return const Color(0xFFFFF0BB);
+    if (isFixed) return const Color(0xFFEAF0E6);
+    return const Color(0xFFFFFDF8);
   }
 
   Widget _buildValueDisplay() {
@@ -71,9 +71,9 @@ class SudokuCellWidget extends StatelessWidget {
       child: Text(
         '$value',
         style: TextStyle(
-          fontSize: 24,
+          fontSize: 23,
           fontWeight: isFixed ? FontWeight.bold : FontWeight.w500,
-          color: isFixed ? Colors.black87 : Colors.blue[700],
+          color: isFixed ? const Color(0xFF24452D) : const Color(0xFFB85C38),
         ),
       ),
     );
@@ -93,7 +93,7 @@ class SudokuCellWidget extends StatelessWidget {
             hasMemo ? '$number' : '',
             style: TextStyle(
               fontSize: 10,
-              color: Colors.grey[600],
+              color: const Color(0xFF69766D),
               fontWeight: FontWeight.w500,
             ),
           ),
