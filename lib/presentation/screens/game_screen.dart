@@ -6,7 +6,6 @@ import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
-import 'package:sudoku_game/presentation/widgets/score_widget.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 
 /// Sudoku 게임 메인 화면
@@ -29,44 +28,50 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('오늘의 퍼즐'),
-        elevation: 0,
-        actions: [
-          IconButton(
-            tooltip: '일시 정지',
-            icon: const Icon(Icons.pause),
-            onPressed: () {
-              context.read<GameNotifier>().togglePause();
-            },
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _confirmGiveUp();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            tooltip: '포기하고 나가기',
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _confirmGiveUp,
           ),
-          IconButton(
-            tooltip: '다시 풀기',
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<GameNotifier>().giveUp();
-            },
-          ),
-          if (kDebugMode)
+          title: const Text('오늘의 퍼즐'),
+          elevation: 0,
+          actions: [
             IconButton(
-              tooltip: '자동 완성 테스트',
-              icon: const Icon(Icons.bug_report),
-              onPressed: _simulateCompletion,
+              tooltip: '일시 정지',
+              icon: const Icon(Icons.pause),
+              onPressed: () {
+                context.read<GameNotifier>().togglePause();
+              },
             ),
-        ],
-      ),
-      body: SingleChildScrollView(
+            IconButton(
+              tooltip: '다시 풀기',
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                context.read<GameNotifier>().giveUp();
+              },
+            ),
+            if (kDebugMode)
+              IconButton(
+                tooltip: '자동 완성 테스트',
+                icon: const Icon(Icons.bug_report),
+                onPressed: _simulateCompletion,
+              ),
+          ],
+        ),
+        body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
           child: Column(
             children: [
-              // 타이머
-              TimerWidget(),
-              const SizedBox(height: 12),
-
-              // 점수
-              ScoreWidget(),
+              // 시간, 난이도, 보상을 한 줄 상태 바로 표시
+              const TimerWidget(),
               const SizedBox(height: 12),
 
               // Sudoku 보드
@@ -93,24 +98,28 @@ class _GameScreenState extends State<GameScreen> {
             ],
           ),
         ),
+        ),
       ),
     );
   }
 
   Widget _buildNumberPanel() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          Text(
-            _isMemoMode ? '메모 모드' : '숫자 입력',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              _isMemoMode ? '메모 입력' : '숫자 입력',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 7),
           GridView.count(
             crossAxisCount: 5,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
+            mainAxisSpacing: 6,
+            crossAxisSpacing: 6,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: [
@@ -128,23 +137,26 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildNumberButton(int number, String label) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: number == 0 ? Colors.red[400] : Colors.blue[400],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    return SizedBox(
+      height: 42,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: number == 0 ? Colors.red[400] : Colors.blue[400],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(7),
+          ),
+          padding: EdgeInsets.zero,
         ),
-        padding: EdgeInsets.all(8),
-      ),
-      onPressed: () {
-        _handleNumberInput(number);
-      },
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+        onPressed: () {
+          _handleNumberInput(number);
+        },
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -293,28 +305,37 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildActionButtons() {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () {
-              context.read<GameNotifier>().giveUp();
-              Navigator.pop(context);
-            },
-            child: Text('포기'),
-          ),
-        ),
-        SizedBox(width: 12),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () {
-              context.read<GameNotifier>().giveUp();
-            },
-            child: Text('다시 풀기'),
-          ),
-        ),
-      ],
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => context.read<GameNotifier>().giveUp(),
+        icon: const Icon(Icons.refresh),
+        label: const Text('다시 풀기'),
+      ),
     );
+  }
+
+  Future<void> _confirmGiveUp() async {
+    final shouldGiveUp = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('퍼즐을 나갈까요?'),
+        content: const Text('현재 진행 상황은 이어하기에 저장됩니다.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('계속 풀기'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('나가기'),
+          ),
+        ],
+      ),
+    );
+    if (shouldGiveUp == true && mounted) {
+      Navigator.pop(context);
+    }
   }
 
   void _showCompletionDialog() {

@@ -24,178 +24,166 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // 제목
-              Text(
-                'Sudoku',
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Cozy Puzzle Game',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white70,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              SizedBox(height: 40),
-
-              // 게임 설명
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 32),
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(16),
-                ),
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(28, 20, 28, 16),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 36),
                 child: Column(
                   children: [
-                    Text(
-                      '퍼즐을 풀면서\n마을을 복원하세요!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        height: 1.5,
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    Text(
-                      '각 난이도의 퍼즐을 풀고 StarLight를 모아\n아름다운 마을을 천천히 복원해 나가세요.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                        height: 1.6,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 64),
-
-              // 시작 버튼
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 48),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 8,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DifficultySelectionScreen(),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'TYCHE SPARK',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFFDE7B),
+                          letterSpacing: 2,
                         ),
-                      );
-                    },
-                    child: Text(
-                      '게임 시작',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue[600],
-                        letterSpacing: 1.5,
                       ),
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 12),
-              Consumer<GameNotifier>(
-                builder: (context, gameNotifier, _) {
-                  if (!gameNotifier.hasActiveGame) return const SizedBox.shrink();
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: TextButton.icon(
-                      onPressed: () {
-                        if (gameNotifier.continueGame()) {
+                    const SizedBox(height: 18),
+                    const Text(
+                      '별빛 스도쿠',
+                      style: TextStyle(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      '한 칸씩 채우고, 한 줄씩 마을을 밝혀요',
+                      style: TextStyle(fontSize: 15, color: Colors.white70),
+                    ),
+                    const SizedBox(height: 30),
+                    const _SudokuHeroBoard(),
+                    const SizedBox(height: 28),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFDE7B),
+                          foregroundColor: const Color(0xFF16422D),
+                          elevation: 3,
+                        ),
+                        onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const GameScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => DifficultySelectionScreen(),
+                            ),
                           );
-                        }
-                      },
-                      icon: const Icon(Icons.play_circle_outline, color: Colors.white),
-                      label: const Text('이어서 하기', style: TextStyle(color: Colors.white)),
+                        },
+                        icon: const Icon(Icons.play_arrow),
+                        label: const Text(
+                          '새 퍼즐 시작',
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
-                  );
-                },
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const VillageScreen()),
-                  );
-                },
-                icon: const Icon(Icons.location_city, color: Colors.white),
-                label: const Text('마을 보기', style: TextStyle(color: Colors.white)),
-              ),
-              SizedBox(height: 20),
-
-              // 하단 정보
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  children: [
-                    _buildInfoItem(Icons.info_outline, '각 행, 열, 3×3 박스에 1-9를 배치합니다'),
-                    SizedBox(height: 8),
-                    _buildInfoItem(Icons.star, 'StarLight를 모아 마을을 복원하세요'),
-                    SizedBox(height: 8),
-                    _buildInfoItem(Icons.timer, '시간이 지날수록 도움이 됩니다'),
+                    Consumer<GameNotifier>(
+                      builder: (context, gameNotifier, _) {
+                        if (!gameNotifier.hasActiveGame) return const SizedBox.shrink();
+                        return TextButton.icon(
+                          onPressed: () {
+                            if (gameNotifier.continueGame()) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const GameScreen()),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.play_circle_outline, color: Colors.white),
+                          label: const Text('이어서 하기', style: TextStyle(color: Colors.white)),
+                        );
+                      },
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const VillageScreen()),
+                        );
+                      },
+                      icon: const Icon(Icons.location_city, color: Colors.white),
+                      label: const Text('마을 보기', style: TextStyle(color: Colors.white)),
+                    ),
+                    const SizedBox(height: 28),
+                    const Text(
+                      '© 2026 Tyche works',
+                      style: TextStyle(fontSize: 12, color: Colors.white60),
+                    ),
                   ],
                 ),
               ),
-              Spacer(),
-
-              // 저작권
-              Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: Text(
-                  '© 2026 Cozy Puzzle Game. All rights reserved.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white54,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildInfoItem(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.white70, size: 20),
-        SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.white70,
-            ),
-          ),
+class _SudokuHeroBoard extends StatelessWidget {
+  const _SudokuHeroBoard();
+
+  static const _numbers = [
+    5, 3, 0, 0, 7, 0, 0, 0, 0,
+    6, 0, 0, 1, 9, 5, 0, 0, 0,
+    0, 9, 8, 0, 0, 0, 0, 6, 0,
+    8, 0, 0, 0, 6, 0, 0, 0, 3,
+    4, 0, 0, 8, 0, 3, 0, 0, 1,
+    7, 0, 0, 0, 2, 0, 0, 0, 6,
+    0, 6, 0, 0, 0, 0, 2, 8, 0,
+    0, 0, 0, 4, 1, 9, 0, 0, 5,
+    0, 0, 0, 0, 8, 0, 0, 7, 9,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: const Color(0xFF173F2B),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [BoxShadow(color: Color(0x550E2B1D), blurRadius: 22, offset: Offset(0, 12))],
         ),
-      ],
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 9),
+          itemCount: 81,
+          itemBuilder: (context, index) {
+            final row = index ~/ 9;
+            final col = index % 9;
+            final number = _numbers[index];
+            final isGlowCell = index == 40 || index == 59;
+            return Container(
+              decoration: BoxDecoration(
+                color: isGlowCell ? const Color(0xFFFFDE7B) : const Color(0xFFF7F2E6),
+                border: Border(
+                  right: BorderSide(color: const Color(0xFF173F2B), width: col % 3 == 2 ? 2 : 0.5),
+                  bottom: BorderSide(color: const Color(0xFF173F2B), width: row % 3 == 2 ? 2 : 0.5),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  number == 0 ? '' : '$number',
+                  style: TextStyle(
+                    color: isGlowCell ? const Color(0xFF16422D) : const Color(0xFF24513A),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
