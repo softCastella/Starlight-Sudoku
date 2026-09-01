@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
+import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
 import 'package:sudoku_game/presentation/widgets/score_widget.dart';
@@ -43,6 +46,12 @@ class _GameScreenState extends State<GameScreen> {
               context.read<GameNotifier>().giveUp();
             },
           ),
+          if (kDebugMode)
+            IconButton(
+              tooltip: '자동 완성 테스트',
+              icon: const Icon(Icons.bug_report),
+              onPressed: _simulateCompletion,
+            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -176,15 +185,27 @@ class _GameScreenState extends State<GameScreen> {
     } else {
       // 숫자 입력 모드
       gameNotifier.setCellValue(row, col, number);
+      SystemSound.play(SystemSoundType.click);
 
       // 퍼즐 완성 확인
       if (gameNotifier.isPuzzleComplete) {
         gameNotifier.completeGame();
+        HapticFeedback.mediumImpact();
+        SystemSound.play(SystemSoundType.alert);
         _showCompletionDialog();
       }
     }
 
     boardState.clearSelection();
+  }
+
+  void _simulateCompletion() {
+    final gameNotifier = context.read<GameNotifier>();
+    gameNotifier.completePuzzleForDebug();
+    gameNotifier.completeGame();
+    HapticFeedback.mediumImpact();
+    SystemSound.play(SystemSoundType.alert);
+    _showCompletionDialog();
   }
 
   Widget _buildMemoToggle() {
@@ -204,10 +225,7 @@ class _GameScreenState extends State<GameScreen> {
           Expanded(
             child: Text(
               _isMemoMode ? '메모 모드 활성화' : '숫자 입력 모드',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
           Switch(
@@ -240,7 +258,6 @@ class _GameScreenState extends State<GameScreen> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              // 다시 풀기
               context.read<GameNotifier>().giveUp();
             },
             child: Text('다시 풀기'),
@@ -256,48 +273,21 @@ class _GameScreenState extends State<GameScreen> {
       barrierDismissible: false,
       builder: (context) {
         final gameNotifier = context.read<GameNotifier>();
-        return AlertDialog(
-          title: Text('🎉 완성!'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('퍼즐을 완성했습니다!'),
-              SizedBox(height: 12),
-              Text(
-                'StarLight: ${gameNotifier.totalStarLight}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.amber[700],
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '소요 시간: ${_formatTime(gameNotifier.elapsedSeconds)}',
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const VillageScreen()),
-                );
-              },
-              child: Text('마을 보기'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // 다이얼로그 닫기
-                Navigator.pop(context); // 게임 화면 나가기
-              },
-              child: Text('완료'),
-            ),
-          ],
+        return CompletionRewardDialog(
+          starLight: gameNotifier.totalStarLight,
+          elapsedTimeLabel: _formatTime(gameNotifier.elapsedSeconds),
+          onViewVillage: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const VillageScreen()),
+            );
+          },
+          onClose: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
         );
       },
     );

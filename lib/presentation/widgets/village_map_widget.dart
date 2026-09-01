@@ -85,49 +85,67 @@ class _MapBuilding extends StatelessWidget {
     final restored = building.level > 0;
     final color = restored ? style.color : const Color(0xFF8F958C);
 
-    return Semantics(
-      button: true,
-      label: '${building.name}, 복원 단계 ${building.level}',
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(32),
-        child: SizedBox(
-          width: 116,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.20),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: color, width: 3),
+    return TweenAnimationBuilder<double>(
+      key: ValueKey('${building.id}-${building.level}'),
+      duration: const Duration(milliseconds: 650),
+      curve: Curves.easeOutBack,
+      tween: Tween(begin: 0.72, end: 1),
+      builder: (context, scale, child) => Transform.scale(scale: scale, child: child),
+      child: Semantics(
+        button: true,
+        label: '${building.name}, 복원 단계 ${building.level}',
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(32),
+          child: SizedBox(
+            width: 116,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 76,
+                      height: 76,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFDF9ED).withValues(
+                          alpha: restored ? 0.94 : 0.75,
+                        ),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: color, width: 2.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withValues(
+                              alpha: restored ? 0.30 : 0.12,
+                            ),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Icon(style.icon, color: color, size: 41),
-                  if (building.isComplete)
-                    const Positioned(
-                      top: 0,
-                      right: 4,
-                      child: Icon(Icons.auto_awesome, color: Color(0xFFC78A00), size: 21),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Text(
-                building.name,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: restored ? const Color(0xFF24452D) : const Color(0xFF667066),
+                    Icon(style.icon, color: color, size: 41),
+                    if (building.isComplete)
+                      const Positioned(
+                        top: 0,
+                        right: 4,
+                        child: Icon(Icons.auto_awesome, color: Color(0xFFC78A00), size: 21),
+                      ),
+                  ],
                 ),
-              ),
-              Text('Lv. ${building.level}/5', style: const TextStyle(fontSize: 12)),
-            ],
+                const SizedBox(height: 5),
+                Text(
+                  building.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: restored ? const Color(0xFF24452D) : const Color(0xFF667066),
+                  ),
+                ),
+                Text('Lv. ${building.level}/5', style: const TextStyle(fontSize: 12)),
+              ],
+            ),
           ),
         ),
       ),

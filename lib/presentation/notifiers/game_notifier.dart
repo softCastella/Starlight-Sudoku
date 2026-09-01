@@ -119,6 +119,18 @@ class GameNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Fills the current puzzle with its solution for debug UI verification.
+  void completePuzzleForDebug() {
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 9; col++) {
+        if (!_board.isFixedCell(row, col)) {
+          _board.setValue(row, col, _board.solution[row][col]);
+        }
+      }
+    }
+    notifyListeners();
+  }
+
   /// 메모 추가
   void addMemo(int row, int col, int number) {
     _board.addMemo(row, col, number);
