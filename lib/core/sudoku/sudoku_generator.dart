@@ -29,6 +29,12 @@ class SudokuGenerator {
 
   /// Generate a puzzle with unique solution based on difficulty
   static List<List<int>> generatePuzzle(SudokuDifficulty difficulty) {
+    return generatePuzzleWithSolution(difficulty).puzzle;
+  }
+
+  /// Generate a puzzle together with the exact solution it was derived from.
+  static ({List<List<int>> puzzle, List<List<int>> solution})
+      generatePuzzleWithSolution(SudokuDifficulty difficulty) {
     DifficultyConfig config = DifficultyConfig.getConfig(difficulty);
 
     int attempts = 0;
@@ -70,7 +76,7 @@ class SudokuGenerator {
 
       // Verify puzzle has unique solution
       if (SudokuSolver.countSolutions(puzzle) == 1) {
-        return puzzle;
+        return (puzzle: puzzle, solution: solution);
       }
 
       attempts++;
@@ -79,7 +85,10 @@ class SudokuGenerator {
     // If we couldn't generate a good puzzle after retries, return the last one
     // (This shouldn't happen in practice)
     List<List<int>> solution = generateSolution();
-    return _removeCluesForDifficulty(solution, config);
+    return (
+      puzzle: _removeCluesForDifficulty(solution, config),
+      solution: solution,
+    );
   }
 
   /// Fill the first 3x3 block randomly (for faster generation)

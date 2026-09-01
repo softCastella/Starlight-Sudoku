@@ -4,6 +4,7 @@ import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
 import 'package:sudoku_game/presentation/widgets/score_widget.dart';
+import 'package:sudoku_game/presentation/screens/village_screen.dart';
 
 /// Sudoku 게임 메인 화면
 class GameScreen extends StatefulWidget {
@@ -278,6 +279,17 @@ class _GameScreenState extends State<GameScreen> {
             ],
           ),
           actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const VillageScreen()),
+                );
+              },
+              child: Text('마을 보기'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // 다이얼로그 닫기

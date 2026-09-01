@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/presentation/screens/difficulty_selection_screen.dart';
+import 'package:sudoku_game/presentation/screens/village_screen.dart';
 
 /// 게임 홈 화면
 class HomeScreen extends StatelessWidget {
@@ -40,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                   letterSpacing: 1.5,
                 ),
               ),
-              SizedBox(height: 48),
+              SizedBox(height: 40),
 
               // 게임 설명
               Container(
@@ -111,7 +112,18 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 12),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VillageScreen()),
+                  );
+                },
+                icon: const Icon(Icons.location_city, color: Colors.white),
+                label: const Text('마을 보기', style: TextStyle(color: Colors.white)),
+              ),
+              SizedBox(height: 20),
 
               // 하단 정보
               Padding(
