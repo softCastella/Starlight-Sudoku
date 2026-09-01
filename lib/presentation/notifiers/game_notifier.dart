@@ -1,19 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
+import 'package:sudoku_game/core/progress/player_statistics.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_board.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_generator.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_validator.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
+import 'package:sudoku_game/data/local/game_progress_store.dart';
 
 /// 게임 상태를 관리하는 ChangeNotifier
 /// Core 엔진과 UI를 연결하는 브릿지 역할
 class GameNotifier extends ChangeNotifier {
+  GameNotifier({GameProgressStore? progressStore})
+      : _progressStore = progressStore ?? GameProgressStore();
+
+  final GameProgressStore _progressStore;
   late SudokuBoard _board;
   late SudokuDifficulty _difficulty;
   late int _elapsedSeconds = 0;
   late int _totalStarLight = 0;
   int _starLightBalance = 0;
   bool _hasAwardedCurrentGame = false;
+  PlayerStatistics _statistics = const PlayerStatistics();
+  ActiveGameSnapshot? _activeGame;
 
   // Getters
   SudokuBoard get board => _board;
@@ -21,6 +32,17 @@ class GameNotifier extends ChangeNotifier {
   int get elapsedSeconds => _elapsedSeconds;
   int get totalStarLight => _totalStarLight;
   int get starLightBalance => _starLightBalance;
+  PlayerStatistics get statistics => _statistics;
+  bool get hasActiveGame => _activeGame != null;
+
+  /// Restores account-wide rewards and statistics when the app starts.
+  Future<void> loadProgress() async {
+    final progress = await _progressStore.load();
+    _starLightBalance = progress.starLightBalance;
+    _statistics = progress.statistics;
+    _activeGame = await _progressStore.loadActiveGame();
+    notifyListeners();
+  }
 
   List<BuildingProgress> get buildings {
     const definitions = [
@@ -65,8 +87,25 @@ class GameNotifier extends ChangeNotifier {
     _elapsedSeconds = 0;
     _totalStarLight = 0;
     _hasAwardedCurrentGame = false;
+    _isPaused = false;
+    _saveActiveGame();
 
     notifyListeners();
+  }
+
+  /// Loads the unfinished puzzle saved on this device.
+  bool continueGame() {
+    final snapshot = _activeGame;
+    if (snapshot == null) return false;
+
+    _board = snapshot.board;
+    _difficulty = snapshot.difficulty;
+    _elapsedSeconds = snapshot.elapsedSeconds;
+    _isPaused = snapshot.isPaused;
+    _totalStarLight = 0;
+    _hasAwardedCurrentGame = false;
+    notifyListeners();
+    return true;
   }
 
   /// 셀에 값 설정
@@ -76,24 +115,28 @@ class GameNotifier extends ChangeNotifier {
     } else if (value >= 1 && value <= 9) {
       _board.setValue(row, col, value);
     }
+    _saveActiveGame();
     notifyListeners();
   }
 
   /// 메모 추가
   void addMemo(int row, int col, int number) {
     _board.addMemo(row, col, number);
+    _saveActiveGame();
     notifyListeners();
   }
 
   /// 메모 제거
   void removeMemo(int row, int col, int number) {
     _board.removeMemo(row, col, number);
+    _saveActiveGame();
     notifyListeners();
   }
 
   /// 메모 모두 제거
   void clearMemo(int row, int col) {
     _board.clearMemo(row, col);
+    _saveActiveGame();
     notifyListeners();
   }
 
@@ -107,6 +150,7 @@ class GameNotifier extends ChangeNotifier {
   void showHint(int row, int col) {
     if (_board.playerBoard[row][col] == 0) {
       _board.setValue(row, col, _board.solution[row][col]);
+      _saveActiveGame();
       notifyListeners();
     }
   }
@@ -117,6 +161,7 @@ class GameNotifier extends ChangeNotifier {
 
   void togglePause() {
     _isPaused = !_isPaused;
+    _saveActiveGame();
     notifyListeners();
   }
 
@@ -124,6 +169,7 @@ class GameNotifier extends ChangeNotifier {
   void incrementTimer() {
     if (!_isPaused && !isPuzzleComplete) {
       _elapsedSeconds++;
+      _saveActiveGame();
       notifyListeners();
     }
   }
@@ -136,6 +182,8 @@ class GameNotifier extends ChangeNotifier {
     );
     _elapsedSeconds = 0;
     _totalStarLight = 0;
+    _isPaused = false;
+    _saveActiveGame();
     notifyListeners();
   }
 
@@ -148,6 +196,15 @@ class GameNotifier extends ChangeNotifier {
     _totalStarLight = config.starLightReward;
     _starLightBalance += _totalStarLight;
     _hasAwardedCurrentGame = true;
+    _statistics = _statistics.recordCompletion(_difficulty, _elapsedSeconds);
+    _activeGame = null;
+    unawaited(_progressStore.clearActiveGame());
+    unawaited(
+      _progressStore.save(
+        starLightBalance: _starLightBalance,
+        statistics: _statistics,
+      ),
+    );
 
     // 시간 보너스 (선택사항)
     // 빠를수록 더 많은 보너스
@@ -160,5 +217,15 @@ class GameNotifier extends ChangeNotifier {
     _elapsedSeconds = 0;
     _totalStarLight = 0;
     _isPaused = false;
+  }
+
+  void _saveActiveGame() {
+    _activeGame = ActiveGameSnapshot(
+      board: _board.copy(),
+      difficulty: _difficulty,
+      elapsedSeconds: _elapsedSeconds,
+      isPaused: _isPaused,
+    );
+    unawaited(_progressStore.saveActiveGame(_activeGame!));
   }
 }
