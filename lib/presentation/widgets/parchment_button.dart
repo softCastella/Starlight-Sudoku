@@ -41,44 +41,38 @@ class _ParchmentButtonState extends State<ParchmentButton> {
         child: AnimatedScale(
           duration: const Duration(milliseconds: 90),
           scale: _pressed ? 0.97 : 1,
-          child: ClipRect(
-            child: Align(
+          child: AspectRatio(
+            aspectRatio: ParchmentButton.imageAspectRatio,
+            child: Stack(
               alignment: Alignment.center,
-              heightFactor: 0.56,
-              child: AspectRatio(
-                aspectRatio: ParchmentButton.imageAspectRatio,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned.fill(
-                      child: Opacity(
-                        opacity: enabled ? 1 : 0.55,
-                        child: Image.asset(
-                          ParchmentButton.asset,
-                          fit: BoxFit.contain,
-                          alignment: Alignment.center,
-                          filterQuality: FilterQuality.medium,
-                        ),
-                      ),
+              children: [
+                Positioned.fill(
+                  child: Opacity(
+                    opacity: enabled ? 1 : 0.55,
+                    child: Image.asset(
+                      ParchmentButton.asset,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                      filterQuality: FilterQuality.medium,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 28),
-                      child: Text(
-                        widget.label,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: widget.fontSize,
-                          fontWeight: FontWeight.w800,
-                          color: _ink,
-                          height: 1,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    widget.label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: widget.fontSize,
+                      fontWeight: FontWeight.w800,
+                      color: _ink,
+                      height: 1,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

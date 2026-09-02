@@ -284,9 +284,14 @@ class _StageTileState extends State<_StageTile> {
         color: Colors.transparent,
         clipBehavior: Clip.none,
         child: GestureDetector(
-          onTap: isUnlocked ? widget.onTap : null,
+          onTap: isUnlocked
+              ? () async {
+                  setState(() => _pressed = true);
+                  await Future<void>.delayed(const Duration(milliseconds: 140));
+                  if (mounted) widget.onTap();
+                }
+              : null,
           onTapDown: isUnlocked ? (_) => setState(() => _pressed = true) : null,
-          onTapUp: isUnlocked ? (_) => setState(() => _pressed = false) : null,
           onTapCancel: isUnlocked ? () => setState(() => _pressed = false) : null,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 140),

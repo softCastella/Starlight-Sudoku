@@ -125,36 +125,38 @@ class _SplashScreenState extends State<SplashScreen>
         fit: StackFit.expand,
         children: [
           const HomeScreen(),
-          if (_showOverlay) ...[
-            IgnorePointer(
-              child: FadeTransition(
-                opacity: _overlayOpacity,
-                child: const ColoredBox(
-                  color: Colors.white,
-                  child: SizedBox.expand(),
-                ),
-              ),
-            ),
-            IgnorePointer(
-              child: FadeTransition(
-                opacity: _logoOpacity,
-                child: ScaleTransition(
-                  alignment: Alignment.center,
-                  scale: _logoScale,
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 48),
-                      child: Image(
-                        image: AssetImage(SplashScreen.logoAsset),
-                        width: 232,
-                        fit: BoxFit.contain,
+          if (_showOverlay)
+            AbsorbPointer(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  FadeTransition(
+                    opacity: _overlayOpacity,
+                    child: const ColoredBox(
+                      color: Colors.white,
+                      child: SizedBox.expand(),
+                    ),
+                  ),
+                  FadeTransition(
+                    opacity: _logoOpacity,
+                    child: ScaleTransition(
+                      alignment: Alignment.center,
+                      scale: _logoScale,
+                      child: const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 48),
+                          child: Image(
+                            image: AssetImage(SplashScreen.logoAsset),
+                            width: 232,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
         ],
       ),
     );

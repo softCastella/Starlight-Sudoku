@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -75,12 +74,11 @@ class _GameScreenState extends State<GameScreen> {
                 context.read<GameNotifier>().giveUp();
               },
             ),
-            if (kDebugMode)
-              IconButton(
-                tooltip: '자동 완성 테스트',
-                icon: const Icon(Icons.bug_report),
-                onPressed: _simulateCompletion,
-              ),
+            IconButton(
+              tooltip: '자동 완성',
+              icon: const Icon(Icons.bug_report),
+              onPressed: _simulateCompletion,
+            ),
           ],
         ),
         body: PlayViewport(
@@ -300,6 +298,7 @@ class _GameScreenState extends State<GameScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
+      barrierColor: const Color(0xCC152433),
       builder: (context) {
         final gameNotifier = context.read<GameNotifier>();
         return CompletionRewardDialog(
