@@ -44,7 +44,7 @@ class _ParchmentButtonState extends State<ParchmentButton> {
           child: ClipRect(
             child: Align(
               alignment: Alignment.center,
-              heightFactor: 0.68,
+              heightFactor: 0.56,
               child: AspectRatio(
                 aspectRatio: ParchmentButton.imageAspectRatio,
                 child: Stack(

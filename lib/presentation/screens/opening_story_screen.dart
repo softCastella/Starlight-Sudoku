@@ -127,9 +127,9 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                             alignment: Alignment.centerRight,
                             child: OvalImageButton(
                               label: isLast ? '첫 창문을 밝히기' : '다음',
-                              width: isLast ? 176 : 128,
-                              height: 38,
-                              fontSize: isLast ? 13 : 14,
+                              width: isLast ? 112 : 80,
+                              height: 28,
+                              fontSize: 12,
                               onPressed: _next,
                             ),
                           ),

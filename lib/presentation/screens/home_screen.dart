@@ -75,11 +75,11 @@ class HomeScreen extends StatelessWidget {
           const Positioned.fill(child: TwinklingStarField()),
           SafeArea(
             child: Align(
-              alignment: const Alignment(0, 0.64),
+              alignment: const Alignment(0, 0.58),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 248),
+                  constraints: const BoxConstraints(maxWidth: 360),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -88,22 +88,26 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 16,
                         onPressed: () => _startNewPuzzle(context),
                       ),
+                      const SizedBox(height: 10),
                       Consumer<GameNotifier>(
                         builder: (context, gameNotifier, _) {
                           if (!gameNotifier.hasActiveGame) {
                             return const SizedBox.shrink();
                           }
-                          return ParchmentButton(
-                            label: '이어서 하기',
-                            fontSize: 15,
-                            onPressed: () {
-                              if (gameNotifier.continueGame()) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const GameScreen()),
-                                );
-                              }
-                            },
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: ParchmentButton(
+                              label: '이어서 하기',
+                              fontSize: 15,
+                              onPressed: () {
+                                if (gameNotifier.continueGame()) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const GameScreen()),
+                                  );
+                                }
+                              },
+                            ),
                           );
                         },
                       ),
@@ -126,7 +130,7 @@ class HomeScreen extends StatelessWidget {
           const Positioned(
             left: 0,
             right: 0,
-            bottom: 0,
+            bottom: 10,
             child: IgnorePointer(
               child: Text(
                 'ⓒ Tyche Spark. All rights reserved',

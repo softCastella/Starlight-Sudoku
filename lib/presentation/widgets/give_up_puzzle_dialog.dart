@@ -60,23 +60,20 @@ class GiveUpPuzzleDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: _ModalImageButton(
-                          asset: continueAsset,
-                          label: '계속 풀기',
-                          color: _ink,
-                          onPressed: () => Navigator.pop(context, false),
-                        ),
+                      _ModalImageButton(
+                        asset: continueAsset,
+                        label: '계속 풀기',
+                        color: _ink,
+                        onPressed: () => Navigator.pop(context, false),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _ModalImageButton(
-                          asset: exitAsset,
-                          label: '나가기',
-                          color: _cream,
-                          onPressed: () => Navigator.pop(context, true),
-                        ),
+                      const SizedBox(width: 12),
+                      _ModalImageButton(
+                        asset: exitAsset,
+                        label: '나가기',
+                        color: _cream,
+                        onPressed: () => Navigator.pop(context, true),
                       ),
                     ],
                   ),
@@ -125,8 +122,8 @@ class _ModalImageButtonState extends State<_ModalImageButton> {
           duration: const Duration(milliseconds: 90),
           scale: _pressed ? 0.97 : 1,
           child: SizedBox(
-            height: 36,
-            width: double.infinity,
+            height: 30,
+            width: 88,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -140,8 +137,10 @@ class _ModalImageButtonState extends State<_ModalImageButton> {
                 ),
                 Text(
                   widget.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
                     color: widget.color,
                   ),

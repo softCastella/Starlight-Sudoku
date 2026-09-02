@@ -19,58 +19,176 @@ class CompletionRewardDialog extends StatelessWidget {
   final VoidCallback onViewVillage;
   final VoidCallback onClose;
 
+  static const windowAsset =
+      'assets/images/SystemUI/modal_window_starlight_sudoku.png';
+  static const continueAsset =
+      'assets/images/SystemUI/button_modal_default_starlight_sudoku.png';
+  static const exitAsset =
+      'assets/images/SystemUI/button_modal_exit_starlight_sudoku.png';
+
+  static const _ink = Color(0xFF24452D);
+  static const _muted = Color(0xFF4D6554);
+  static const _cream = Color(0xFFFBF7EC);
   static const _gold = Color(0xFFF5CC3D);
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Center(child: Text('퍼즐 완성!')),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.auto_awesome,
-            color: _gold,
-            size: 32,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            isReplay ? '이미 클리어한 스테이지예요.' : '마을에 별빛이 도착했어요.',
-          ),
-          if (!isReplay) ...[
-            const SizedBox(height: 8),
-            Text(
-              '+$starLight StarLight',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _gold,
+    final width = (MediaQuery.sizeOf(context).width - 40).clamp(280.0, 420.0);
+    final primaryLabel = onNextLevel != null ? '다음' : '완료';
+    final primaryAction = onNextLevel ?? onClose;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: width,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(
+                windowAsset,
+                fit: BoxFit.fitWidth,
+                filterQuality: FilterQuality.medium,
               ),
-            ),
-          ],
-          const SizedBox(height: 8),
-          Text('소요 시간  $elapsedTimeLabel'),
-        ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 40, 36, 36),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      '퍼즐 완성!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: _ink,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      isReplay ? '이미 클리어한 스테이지예요.' : '마을에 별빛이 도착했어요.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: _muted,
+                      ),
+                    ),
+                    if (!isReplay) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        '+$starLight StarLight',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: _gold,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 4),
+                    Text(
+                      '소요 시간  $elapsedTimeLabel',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: _muted,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _ModalImageButton(
+                          asset: continueAsset,
+                          label: '마을 보기',
+                          color: _ink,
+                          onPressed: onViewVillage,
+                        ),
+                        const SizedBox(width: 12),
+                        _ModalImageButton(
+                          asset: exitAsset,
+                          label: primaryLabel,
+                          color: _cream,
+                          onPressed: primaryAction,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: [
-        TextButton.icon(
-          onPressed: onViewVillage,
-          icon: const Icon(Icons.location_city),
-          label: const Text('마을 보기'),
+    );
+  }
+}
+
+class _ModalImageButton extends StatefulWidget {
+  const _ModalImageButton({
+    required this.asset,
+    required this.label,
+    required this.color,
+    required this.onPressed,
+  });
+
+  final String asset;
+  final String label;
+  final Color color;
+  final VoidCallback onPressed;
+
+  @override
+  State<_ModalImageButton> createState() => _ModalImageButtonState();
+}
+
+class _ModalImageButtonState extends State<_ModalImageButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: widget.label,
+      child: GestureDetector(
+        onTap: widget.onPressed,
+        onTapDown: (_) => setState(() => _pressed = true),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTapCancel: () => setState(() => _pressed = false),
+        child: AnimatedScale(
+          duration: const Duration(milliseconds: 90),
+          scale: _pressed ? 0.97 : 1,
+          child: SizedBox(
+            height: 30,
+            width: 88,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    widget.asset,
+                    fit: BoxFit.fill,
+                    alignment: Alignment.center,
+                    filterQuality: FilterQuality.medium,
+                  ),
+                ),
+                Text(
+                  widget.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: widget.color,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (onNextLevel != null)
-              TextButton(
-                onPressed: onNextLevel,
-                child: const Text('다음 스테이지'),
-              ),
-            FilledButton(onPressed: onClose, child: const Text('완료')),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }
