@@ -13,6 +13,24 @@ extension StarlightL10n on AppLocalizations {
     };
   }
 
+  /// Localized name, plus English when they differ (e.g. `쉬움 · Easy`).
+  String difficultyPathTitle(SudokuDifficulty difficulty) {
+    final localized = difficultyName(difficulty);
+    final english = DifficultyConfig.getConfig(difficulty).getDisplayName();
+    if (localized == english) return localized;
+    return '$localized · $english';
+  }
+
+  String formatElapsed(int seconds) {
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final secs = seconds % 60;
+    if (hours > 0) {
+      return elapsedHoursMinutesSeconds(hours, minutes, secs);
+    }
+    return elapsedMinutesSeconds(minutes, secs);
+  }
+
   String difficultyBlurb(SudokuDifficulty difficulty) {
     return switch (difficulty) {
       SudokuDifficulty.easy => difficultyBlurbEasy,

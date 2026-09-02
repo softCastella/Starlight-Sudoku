@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
-import 'package:sudoku_game/core/village/village_story.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
@@ -33,6 +33,7 @@ class VillageMissionsScreen extends StatelessWidget {
         final dawn = gameNotifier.villageDawn;
         final titleColor = Color.lerp(_cream, _ink, dawn)!;
 
+        final l10n = l10nOf(context);
         return Scaffold(
           backgroundColor: VillageSceneBackdrop.skyColor(dawn),
           extendBodyBehindAppBar: true,
@@ -41,7 +42,7 @@ class VillageMissionsScreen extends StatelessWidget {
             foregroundColor: titleColor,
             elevation: 0,
             title: Text(
-              '복원 미션',
+              l10n.missionsTitle,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: titleColor,
@@ -77,7 +78,7 @@ class VillageMissionsScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
                     children: [
                       Text(
-                        '퍼즐을 풀면 별빛이 모이고, 창문이 다시 켜집니다.',
+                        l10n.missionsLead,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -93,7 +94,7 @@ class VillageMissionsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '지금 별빛  ${gameNotifier.starLightBalance}',
+                        l10n.currentStarlight(gameNotifier.starLightBalance),
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
@@ -141,11 +142,13 @@ class _MissionCardState extends State<_MissionCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     final building = widget.building;
-    final story = VillageStory.forBuilding(building.id);
     final complete = building.isComplete;
     final lit = _hovered || complete;
-    final status = complete ? '복원 완료' : '별빛 ${building.remainingStarLight} 남음';
+    final status = complete
+        ? l10n.restorationComplete
+        : l10n.starlightRemaining(building.remainingStarLight);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
@@ -225,7 +228,7 @@ class _MissionCardState extends State<_MissionCard> {
                           children: [
                             Expanded(
                               child: Text(
-                                building.name,
+                                l10n.buildingName(building.id),
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
@@ -239,7 +242,7 @@ class _MissionCardState extends State<_MissionCard> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          story.headline,
+                          l10n.villageHeadline(building.id),
                           style: const TextStyle(
                             fontSize: 13,
                             color: Color(0xFF4D6554),
@@ -252,7 +255,9 @@ class _MissionCardState extends State<_MissionCard> {
               ),
               const SizedBox(height: 10),
               Text(
-                complete ? story.completedDescription : story.description,
+                complete
+                    ? l10n.villageCompleted(building.id)
+                    : l10n.villageDescription(building.id),
                 style: const TextStyle(
                   fontSize: 13,
                   height: 1.45,
@@ -263,7 +268,7 @@ class _MissionCardState extends State<_MissionCard> {
               Row(
                 children: [
                   Text(
-                    '복원 ${building.level} / 5',
+                    l10n.restorationLevel(building.level),
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,

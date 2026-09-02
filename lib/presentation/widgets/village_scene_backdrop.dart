@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/l10n/app_localizations.dart';
 
 /// Village paintings that ease from night, through lit windows, into day.
 class VillageSceneBackdrop extends StatelessWidget {
@@ -108,7 +109,7 @@ class _VillagePainting extends StatelessWidget {
       asset,
       fit: BoxFit.cover,
       alignment: Alignment.center,
-      semanticLabel: '별빛 마을 전경',
+      semanticLabel: AppLocalizations.of(context)?.villageVista ?? '별빛 마을 전경',
       filterQuality: FilterQuality.medium,
       cacheWidth: cacheWidth,
     );

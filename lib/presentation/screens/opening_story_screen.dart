@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/opening_story.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -44,6 +45,7 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
     final pages = OpeningStoryPage.pages;
     final current = pages[_page];
     final isLast = _page == pages.length - 1;
+    final l10n = l10nOf(context);
 
     return Scaffold(
       backgroundColor: VillageSceneBackdrop.skyColor(current.dawn),
@@ -66,7 +68,7 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                     child: TextButton(
                       onPressed: _finish,
                       child: Text(
-                        '건너뛰기',
+                        l10n.skip,
                         style: TextStyle(
                           color: Color.lerp(
                             const Color(0xE6FFF8E8),
@@ -92,7 +94,7 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            current.headline,
+                            l10n.openingHeadline(_page),
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
@@ -101,7 +103,7 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            current.body,
+                            l10n.openingBody(_page),
                             style: const TextStyle(
                               fontSize: 15,
                               height: 1.55,
@@ -126,8 +128,8 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: OvalImageButton(
-                              label: isLast ? '첫 창문을 밝히기' : '다음',
-                              width: isLast ? 112 : 80,
+                              label: isLast ? l10n.lightFirstWindow : l10n.next,
+                              width: isLast ? 148 : 80,
                               height: 28,
                               fontSize: 12,
                               onPressed: _next,

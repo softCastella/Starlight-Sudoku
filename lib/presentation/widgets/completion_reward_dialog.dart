@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 
 /// Celebrates a completed puzzle and reveals the earned StarLight.
 class CompletionRewardDialog extends StatelessWidget {
@@ -33,8 +34,9 @@ class CompletionRewardDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     final width = (MediaQuery.sizeOf(context).width - 40).clamp(280.0, 420.0);
-    final primaryLabel = onNextLevel != null ? '다음' : '완료';
+    final primaryLabel = onNextLevel != null ? l10n.next : l10n.done;
     final primaryAction = onNextLevel ?? onClose;
 
     return Dialog(
@@ -59,10 +61,10 @@ class CompletionRewardDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      '퍼즐 완성!',
+                    Text(
+                      l10n.puzzleComplete,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                         color: _ink,
@@ -70,7 +72,7 @@ class CompletionRewardDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      isReplay ? '이미 클리어한 스테이지예요.' : '마을에 별빛이 도착했어요.',
+                      isReplay ? l10n.alreadyCleared : l10n.starlightArrived,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 13,
@@ -103,7 +105,7 @@ class CompletionRewardDialog extends StatelessWidget {
                     ],
                     const SizedBox(height: 4),
                     Text(
-                      '소요 시간  $elapsedTimeLabel',
+                      l10n.elapsedTime(elapsedTimeLabel),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 12,
@@ -116,7 +118,7 @@ class CompletionRewardDialog extends StatelessWidget {
                       children: [
                         _ModalImageButton(
                           asset: continueAsset,
-                          label: '마을 보기',
+                          label: l10n.viewVillage,
                           color: _ink,
                           onPressed: onViewVillage,
                         ),

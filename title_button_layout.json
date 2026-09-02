@@ -1,7 +1,7 @@
 {
-  "alignY": 0.7,
-  "maxWidth": 194,
-  "gap": 12,
-  "fontSize": 14,
+  "alignY": 0.79,
+  "maxWidth": 236,
+  "gap": 10,
+  "fontSize": 18,
   "scale": 1.0
 }

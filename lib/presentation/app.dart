@@ -3,11 +3,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
+import 'package:sudoku_game/presentation/notifiers/locale_override.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
 
 /// 메인 앱 위젯
 class SudokuApp extends StatelessWidget {
-  const SudokuApp({super.key});
+  const SudokuApp({super.key, this.locale});
+
+  /// When set, skips device-language detection. Used by widget tests.
+  final Locale? locale;
 
   static const _fallbackLocale = Locale('ko');
 
@@ -38,17 +42,22 @@ class SudokuApp extends StatelessWidget {
             return notifier;
           },
         ),
+        ChangeNotifierProvider(create: (_) => LocaleOverride()),
       ],
-      child: MaterialApp(
-        onGenerateTitle: (context) => AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠',
-        localeResolutionCallback: _resolveLocale,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
+      child: Consumer<LocaleOverride>(
+        builder: (context, locales, _) {
+          return MaterialApp(
+            locale: locales.override ?? locale,
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠',
+            localeResolutionCallback: _resolveLocale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
@@ -88,6 +97,8 @@ class SudokuApp extends StatelessWidget {
           ),
         ),
         home: const SplashScreen(),
+          );
+        },
       ),
     );
   }

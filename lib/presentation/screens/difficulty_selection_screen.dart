@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/level_select_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -16,6 +17,7 @@ class DifficultySelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     return Scaffold(
       backgroundColor: VillageSceneBackdrop.nightSky,
       extendBodyBehindAppBar: true,
@@ -23,8 +25,8 @@ class DifficultySelectionScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: _cream,
         elevation: 0,
-        title: const Text(
-          '난이도 선택',
+        title: Text(
+          l10n.difficultySelect,
           style: TextStyle(
             fontWeight: FontWeight.w700,
             color: _cream,
@@ -54,8 +56,8 @@ class DifficultySelectionScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
                 children: [
-                  const Text(
-                    '어느 골목의 창문을 먼저 밝혀 볼까요',
+                  Text(
+                    l10n.difficultyLead,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -65,8 +67,8 @@ class DifficultySelectionScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    '길을 고르면 그 마을의 스테이지가 열립니다.',
+                  Text(
+                    l10n.difficultySub,
                     style: TextStyle(
                       fontSize: 14,
                       color: Color(0xD6FFF8E8),
@@ -120,6 +122,7 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     final config = DifficultyConfig.getConfig(difficulty);
     final accent = _accentFor(difficulty);
     final lit = _hovered || _selected;
@@ -197,7 +200,7 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${config.getKoreanName()} · ${config.getDisplayName()}',
+                                l10n.difficultyPathTitle(difficulty),
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800,
@@ -207,7 +210,7 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              _blurbFor(difficulty),
+                              l10n.difficultyBlurb(difficulty),
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: DifficultySelectionScreen._muted,
@@ -224,13 +227,13 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
                     builder: (context, gameNotifier, _) {
                       final completed = gameNotifier.completedStageCount(difficulty);
                       return _MetaRow(
-                        label: '스테이지',
-                        value: '$completed/${config.stageCount} 클리어',
+                        label: l10n.stages,
+                        value: l10n.stagesCleared(completed, config.stageCount),
                       );
                     },
                   ),
                   _MetaRow(
-                    label: '별빛',
+                    label: l10n.starlight,
                     value: '+${config.starLightReward}',
                   ),
                 ],
@@ -255,14 +258,6 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
       SudokuDifficulty.easy => Icons.wb_twilight_outlined,
       SudokuDifficulty.normal => Icons.auto_awesome,
       SudokuDifficulty.hard => Icons.nights_stay_outlined,
-    };
-  }
-
-  static String _blurbFor(SudokuDifficulty difficulty) {
-    return switch (difficulty) {
-      SudokuDifficulty.easy => '골목에 첫 창문이 켜지는 길',
-      SudokuDifficulty.normal => '언덕 너머 불이 이어지는 길',
-      SudokuDifficulty.hard => '아직 깊이 잠든 마을의 길',
     };
   }
 }

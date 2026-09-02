@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
@@ -34,6 +34,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -46,36 +47,38 @@ class _GameScreenState extends State<GameScreen> {
           foregroundColor: _cream,
           elevation: 0,
           leading: IconButton(
-            tooltip: '포기하고 나가기',
+            tooltip: l10n.giveUpTooltip,
             icon: const Icon(Icons.arrow_back),
             onPressed: _confirmGiveUp,
           ),
           title: Consumer<GameNotifier>(
             builder: (context, gameNotifier, _) {
-              final config = DifficultyConfig.getConfig(gameNotifier.difficulty);
               return Text(
-                '${config.getKoreanName()} ${gameNotifier.currentLevel}',
+                l10n.gameLevelTitle(
+                  l10n.difficultyName(gameNotifier.difficulty),
+                  gameNotifier.currentLevel,
+                ),
                 style: const TextStyle(fontWeight: FontWeight.w700),
               );
             },
           ),
           actions: [
             IconButton(
-              tooltip: '일시 정지',
+              tooltip: l10n.pauseTooltip,
               icon: const Icon(Icons.pause),
               onPressed: () {
                 context.read<GameNotifier>().togglePause();
               },
             ),
             IconButton(
-              tooltip: '다시 풀기',
+              tooltip: l10n.retryTooltip,
               icon: const Icon(Icons.refresh),
               onPressed: () {
                 context.read<GameNotifier>().giveUp();
               },
             ),
             IconButton(
-              tooltip: '자동 완성',
+              tooltip: l10n.autoCompleteTooltip,
               icon: const Icon(Icons.bug_report),
               onPressed: _simulateCompletion,
             ),
@@ -124,12 +127,13 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildNumberRow() {
+    final l10n = l10nOf(context);
     return Column(
       children: [
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            _isMemoMode ? '메모 입력' : '숫자 입력',
+            _isMemoMode ? l10n.memoInput : l10n.numberInput,
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -161,12 +165,13 @@ class _GameScreenState extends State<GameScreen> {
   Widget _buildToolRow() {
     return Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
+        final l10n = l10nOf(context);
         return Row(
           children: [
             Expanded(
               flex: 3,
               child: _ToolKey(
-                label: '삭제',
+                label: l10n.delete,
                 emphasized: true,
                 onPressed: () => _handleNumberInput(0),
               ),
@@ -175,7 +180,7 @@ class _GameScreenState extends State<GameScreen> {
             Expanded(
               flex: 3,
               child: _ToolKey(
-                label: _isMemoMode ? '메모 ON' : '메모',
+                label: _isMemoMode ? l10n.memoOn : l10n.memo,
                 selected: _isMemoMode,
                 onPressed: () => setState(() => _isMemoMode = !_isMemoMode),
               ),
@@ -184,7 +189,7 @@ class _GameScreenState extends State<GameScreen> {
             Expanded(
               flex: 3,
               child: _ToolKey(
-                label: '힌트 ${gameNotifier.hintsRemaining}',
+                label: l10n.hintCount(gameNotifier.hintsRemaining),
                 onPressed: gameNotifier.hintsRemaining == 0 ? null : _showHint,
               ),
             ),
@@ -192,7 +197,7 @@ class _GameScreenState extends State<GameScreen> {
             Expanded(
               flex: 3,
               child: _ToolKey(
-                label: '실행취소',
+                label: l10n.undo,
                 onPressed: gameNotifier.canUndo ? gameNotifier.undo : null,
               ),
             ),
@@ -213,7 +218,7 @@ class _GameScreenState extends State<GameScreen> {
 
     if (row == null || col == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('셀을 먼저 선택하세요')),
+        SnackBar(content: Text(l10nOf(context).selectCellFirst)),
       );
       return;
     }
@@ -221,7 +226,7 @@ class _GameScreenState extends State<GameScreen> {
     final board = gameNotifier.board;
     if (board.isFixedCell(row, col)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('고정된 셀입니다')),
+        SnackBar(content: Text(l10nOf(context).fixedCell)),
       );
       return;
     }
@@ -267,7 +272,7 @@ class _GameScreenState extends State<GameScreen> {
     final col = boardState?.getSelectedCol();
     if (row == null || col == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('힌트를 볼 셀을 먼저 선택하세요')),
+        SnackBar(content: Text(l10nOf(context).selectHintCell)),
       );
       return;
     }
@@ -275,7 +280,7 @@ class _GameScreenState extends State<GameScreen> {
     final gameNotifier = context.read<GameNotifier>();
     if (!gameNotifier.showHint(row, col)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('이 셀에는 힌트를 사용할 수 없습니다')),
+        SnackBar(content: Text(l10nOf(context).hintUnavailable)),
       );
       return;
     }
@@ -303,7 +308,7 @@ class _GameScreenState extends State<GameScreen> {
         final gameNotifier = context.read<GameNotifier>();
         return CompletionRewardDialog(
           starLight: gameNotifier.totalStarLight,
-          elapsedTimeLabel: _formatTime(gameNotifier.elapsedSeconds),
+          elapsedTimeLabel: l10nOf(context).formatElapsed(gameNotifier.elapsedSeconds),
           isReplay: gameNotifier.totalStarLight == 0,
           onNextLevel: gameNotifier.hasNextLevel
               ? () {
@@ -326,17 +331,6 @@ class _GameScreenState extends State<GameScreen> {
         );
       },
     );
-  }
-
-  String _formatTime(int seconds) {
-    final hours = seconds ~/ 3600;
-    final minutes = (seconds % 3600) ~/ 60;
-    final secs = seconds % 60;
-
-    if (hours > 0) {
-      return '$hours시간 $minutes분 $secs초';
-    }
-    return '$minutes분 $secs초';
   }
 }
 

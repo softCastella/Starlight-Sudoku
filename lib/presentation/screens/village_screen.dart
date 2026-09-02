@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
-import 'package:sudoku_game/core/village/village_story.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
@@ -21,6 +21,7 @@ class VillageScreen extends StatelessWidget {
         final buildings = gameNotifier.buildings;
         final completedCount = buildings.where((building) => building.isComplete).length;
 
+        final l10n = l10nOf(context);
         return Scaffold(
           backgroundColor: Color.lerp(
             const Color(0xFF1C3340),
@@ -28,7 +29,7 @@ class VillageScreen extends StatelessWidget {
             dawn,
           ),
           appBar: AppBar(
-            title: const Text('별빛 마을'),
+            title: Text(l10n.villageTitle),
             backgroundColor: Colors.transparent,
             foregroundColor: ink,
             elevation: 0,
@@ -51,18 +52,18 @@ class VillageScreen extends StatelessWidget {
                               filterQuality: FilterQuality.medium,
                             ),
                           ),
-                          const Row(
+                          Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.auto_awesome,
                                 color: Color(0xFFF5CC3D),
                                 size: 16,
                               ),
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               Text(
-                                '미션',
-                                style: TextStyle(
+                                l10n.mission,
+                                style: const TextStyle(
                                   color: Color(0xFF24452D),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14,
@@ -90,7 +91,7 @@ class VillageScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              '$completedCount / ${buildings.length}개 복원',
+                              l10n.restoredCount(completedCount, buildings.length),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Color.lerp(
@@ -102,7 +103,7 @@ class VillageScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '보유 스타라이트  ${gameNotifier.starLightBalance}',
+                            l10n.ownedStarlight(gameNotifier.starLightBalance),
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w800,
@@ -164,10 +165,10 @@ class VillageScreen extends StatelessWidget {
   }
 
   void _showBuildingDetails(BuildContext context, BuildingProgress building) {
-    final story = VillageStory.forBuilding(building.id);
+    final l10n = l10nOf(context);
     final status = building.isComplete
-        ? story.completedDescription
-        : '${building.remainingStarLight} StarLight가 더 필요합니다.';
+        ? l10n.villageCompleted(building.id)
+        : l10n.needsMoreStarlight(building.remainingStarLight);
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: const Color(0xFFFBF7EC),
@@ -181,7 +182,7 @@ class VillageScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              building.name,
+              l10n.buildingName(building.id),
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -190,7 +191,7 @@ class VillageScreen extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              '복원 단계 ${building.level} / 5',
+              l10n.restorationLevel(building.level),
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: Color(0xFFF5CC3D),
@@ -198,7 +199,7 @@ class VillageScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              story.headline,
+              l10n.villageHeadline(building.id),
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF24452D),
@@ -206,7 +207,7 @@ class VillageScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              building.isComplete ? status : story.description,
+              building.isComplete ? status : l10n.villageDescription(building.id),
               style: const TextStyle(height: 1.45, color: Color(0xFF4D6554)),
             ),
             if (!building.isComplete) ...[
@@ -220,18 +221,17 @@ class VillageScreen extends StatelessWidget {
   }
 
   void _showNextVillageDialog(BuildContext context) {
+    final l10n = l10nOf(context);
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         icon: const Icon(Icons.sailing, size: 42, color: Color(0xFF2C7890)),
-        title: const Text('달빛 항구 해금'),
-        content: const Text(
-          '별빛 마을이 다시 빛나기 시작했습니다. 다음 이야기는 바닷바람이 부는 달빛 항구에서 이어집니다.',
-        ),
+        title: Text(l10n.harborUnlockTitle),
+        content: Text(l10n.harborUnlockBody),
         actions: [
           FilledButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('항구를 향해'),
+            child: Text(l10n.towardHarbor),
           ),
         ],
       ),
@@ -246,6 +246,7 @@ class _NextVillageUnlockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -260,18 +261,18 @@ class _NextVillageUnlockCard extends StatelessWidget {
         children: [
           const Icon(Icons.sailing, color: Color(0xFF2C7890), size: 34),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('다음 마을: 달빛 항구', style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 3),
-                Text('새로운 이야기가 열렸습니다.'),
+                Text(l10n.nextVillage, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 3),
+                Text(l10n.newStoryOpened),
               ],
             ),
           ),
           IconButton(
-            tooltip: '달빛 항구 이야기 보기',
+            tooltip: l10n.harborStoryTooltip,
             onPressed: onOpen,
             icon: const Icon(Icons.arrow_forward),
           ),

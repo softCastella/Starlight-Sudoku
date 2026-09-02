@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/game_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -26,6 +27,7 @@ class LevelSelectScreen extends StatelessWidget {
         final completed = gameNotifier.completedStageCount(difficulty);
         final progress = config.stageCount == 0 ? 0.0 : completed / config.stageCount;
         final currentLevel = _currentLevel(gameNotifier, config.stageCount);
+        final l10n = l10nOf(context);
 
         return TweenAnimationBuilder<double>(
           duration: const Duration(milliseconds: 900),
@@ -41,7 +43,7 @@ class LevelSelectScreen extends StatelessWidget {
                 foregroundColor: titleColor,
                 elevation: 0,
                 title: Text(
-                  '${config.getKoreanName()} 스테이지',
+                  l10n.stageTitle(l10n.difficultyName(difficulty)),
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: titleColor,
@@ -129,7 +131,7 @@ class LevelSelectScreen extends StatelessWidget {
   ) async {
     if (!gameNotifier.isStageUnlocked(difficulty, level)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('이전 스테이지를 먼저 완료하세요')),
+        SnackBar(content: Text(l10nOf(context).previousStageFirst)),
       );
       return;
     }
@@ -137,17 +139,20 @@ class LevelSelectScreen extends StatelessWidget {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const Center(
+      builder: (context) => Center(
         child: Card(
           color: _cream,
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: _gold),
-                SizedBox(height: 16),
-                Text('퍼즐을 준비하고 있어요', style: TextStyle(color: _ink)),
+                const CircularProgressIndicator(color: _gold),
+                const SizedBox(height: 16),
+                Text(
+                  l10nOf(context).preparingPuzzle,
+                  style: const TextStyle(color: _ink),
+                ),
               ],
             ),
           ),
@@ -187,6 +192,7 @@ class _ProgressBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     final progress = total == 0 ? 0.0 : completed / total;
     return Container(
       width: double.infinity,
@@ -200,7 +206,7 @@ class _ProgressBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '$completed/$total 클리어',
+            l10n.stagesCleared(completed, total),
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
@@ -208,8 +214,8 @@ class _ProgressBanner extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
-            '스테이지를 클리어할수록 마을에 아침이 와요.',
+          Text(
+            l10n.morningComes,
             style: TextStyle(fontSize: 13, color: Color(0xFF4D6554), height: 1.35),
           ),
           const SizedBox(height: 10),

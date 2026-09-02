@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 
 /// Exit confirmation used only on the puzzle screen.
 class GiveUpPuzzleDialog extends StatelessWidget {
@@ -17,6 +18,7 @@ class GiveUpPuzzleDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = l10nOf(context);
     final width = (MediaQuery.sizeOf(context).width - 40).clamp(280.0, 420.0);
 
     return Dialog(
@@ -39,20 +41,20 @@ class GiveUpPuzzleDialog extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    '퍼즐을 나갈까요?',
+                  Text(
+                    l10n.giveUpTitle,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
                       color: _ink,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    '현재 진행 상황은 이어하기에 저장됩니다.',
+                  Text(
+                    l10n.giveUpMessage,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 13,
                       height: 1.4,
                       color: _muted,
@@ -64,14 +66,14 @@ class GiveUpPuzzleDialog extends StatelessWidget {
                     children: [
                       _ModalImageButton(
                         asset: continueAsset,
-                        label: '계속 풀기',
+                        label: l10n.keepPlaying,
                         color: _ink,
                         onPressed: () => Navigator.pop(context, false),
                       ),
                       const SizedBox(width: 12),
                       _ModalImageButton(
                         asset: exitAsset,
-                        label: '나가기',
+                        label: l10n.exitPuzzle,
                         color: _cream,
                         onPressed: () => Navigator.pop(context, true),
                       ),

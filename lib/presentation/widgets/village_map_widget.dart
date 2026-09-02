@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// Illustrated village map with tappable restoration landmarks.
@@ -87,6 +88,8 @@ class _MapHotspot extends StatelessWidget {
   Widget build(BuildContext context) {
     final restored = building.level > 0;
     final glow = restored ? landmark.glow : const Color(0xFFF5CC3D);
+    final l10n = l10nOf(context);
+    final name = l10n.buildingName(building.id);
 
     return TweenAnimationBuilder<double>(
       key: ValueKey('${building.id}-${building.level}'),
@@ -96,7 +99,7 @@ class _MapHotspot extends StatelessWidget {
       builder: (context, scale, child) => Transform.scale(scale: scale, child: child),
       child: Semantics(
         button: true,
-        label: '${building.name}, 복원 단계 ${building.level}',
+        label: l10n.buildingSemantics(name, building.level),
         child: InkWell(
           onTap: onTap,
           splashColor: glow.withValues(alpha: 0.18),
@@ -134,7 +137,7 @@ class _MapHotspot extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Text(
-                      '${building.name}  ${building.level}/5',
+                      l10n.buildingLevelLabel(name, building.level),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11,

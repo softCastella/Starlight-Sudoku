@@ -2,8 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudoku_game/presentation/app.dart';
+import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
+
+Finder _assetImage(String assetName) {
+  bool matches(ImageProvider image) {
+    if (image is AssetImage) return image.assetName == assetName;
+    if (image is ResizeImage) return matches(image.imageProvider);
+    return false;
+  }
+
+  return find.byWidgetPredicate((widget) {
+    return widget is Image && matches(widget.image);
+  });
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +26,7 @@ void main() {
   });
 
   testWidgets('App launches splash then title screen', (WidgetTester tester) async {
-    await tester.pumpWidget(const SudokuApp());
+    await tester.pumpWidget(const SudokuApp(locale: Locale('ko')));
     await tester.pump();
     await tester.pump();
 
@@ -24,6 +37,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(HomeScreen), findsWidgets);
+    expect(_assetImage(TitleArt.korean), findsWidgets);
     expect(find.text('새 퍼즐 시작'), findsOneWidget);
 
     await tester.ensureVisible(find.text('새 퍼즐 시작'));
@@ -43,5 +57,55 @@ void main() {
 
     expect(find.text('쉬움 스테이지'), findsOneWidget);
     expect(find.text('0/20 클리어'), findsOneWidget);
+  });
+
+  testWidgets('English locale shows English title art and home buttons', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const SudokuApp(locale: Locale('en')));
+    await tester.pump();
+    await tester.pump();
+
+    await tester.pump(SplashScreen.displayDuration);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomeScreen), findsWidgets);
+    expect(_assetImage(TitleArt.english), findsWidgets);
+    expect(find.text('New puzzle'), findsOneWidget);
+    expect(find.text('Village'), findsOneWidget);
+  });
+
+  testWidgets('Traditional Chinese uses the TW title painting', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const SudokuApp(locale: Locale('zh', 'TW')));
+    await tester.pump();
+    await tester.pump();
+
+    await tester.pump(SplashScreen.displayDuration);
+    await tester.pumpAndSettle();
+
+    expect(_assetImage(TitleArt.chineseTraditional), findsWidgets);
+    expect(find.text('新的謎題'), findsOneWidget);
+  });
+
+  testWidgets('title locale dropdown switches title art and buttons', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const SudokuApp(locale: Locale('ko')));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(SplashScreen.displayDuration);
+    await tester.pumpAndSettle();
+
+    expect(find.text('새 퍼즐 시작'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('locale-debug-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('English').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('New puzzle'), findsOneWidget);
+    expect(_assetImage(TitleArt.english), findsWidgets);
   });
 }

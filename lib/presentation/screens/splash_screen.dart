@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
@@ -100,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _precacheGameArt() async {
     try {
       await Future.wait([
-        precacheImage(const AssetImage(HomeScreen.titleAsset), context),
+        precacheImage(AssetImage(TitleArt.assetOf(context)), context),
         precacheImage(
           const AssetImage(VillageSceneBackdrop.nightAsset),
           context,
