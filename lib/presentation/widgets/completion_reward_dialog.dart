@@ -47,13 +47,15 @@ class CompletionRewardDialog extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Image.asset(
-                windowAsset,
-                fit: BoxFit.fitWidth,
-                filterQuality: FilterQuality.medium,
+              Positioned.fill(
+                child: Image.asset(
+                  windowAsset,
+                  fit: BoxFit.fill,
+                  filterQuality: FilterQuality.medium,
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(40, 40, 36, 36),
+                padding: const EdgeInsets.fromLTRB(44, 52, 44, 44),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -72,7 +74,7 @@ class CompletionRewardDialog extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 13,
-                        height: 1.4,
+                        height: 1.35,
                         color: _muted,
                       ),
                     ),
@@ -97,7 +99,7 @@ class CompletionRewardDialog extends StatelessWidget {
                         color: _muted,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

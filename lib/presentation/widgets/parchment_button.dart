@@ -41,38 +41,46 @@ class _ParchmentButtonState extends State<ParchmentButton> {
         child: AnimatedScale(
           duration: const Duration(milliseconds: 90),
           scale: _pressed ? 0.97 : 1,
-          child: AspectRatio(
-            aspectRatio: ParchmentButton.imageAspectRatio,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned.fill(
-                  child: Opacity(
-                    opacity: enabled ? 1 : 0.55,
-                    child: Image.asset(
-                      ParchmentButton.asset,
-                      fit: BoxFit.contain,
-                      alignment: Alignment.center,
-                      filterQuality: FilterQuality.medium,
+          // Button.png has empty padding above/below the scroll. Crop that
+          // only (content rows 87–583 of 724), aligned so the rolls stay in view.
+          child: ClipRect(
+            child: Align(
+              alignment: const Alignment(0, -0.23),
+              heightFactor: 0.686,
+              child: AspectRatio(
+                aspectRatio: ParchmentButton.imageAspectRatio,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: enabled ? 1 : 0.55,
+                        child: Image.asset(
+                          ParchmentButton.asset,
+                          fit: BoxFit.contain,
+                          alignment: Alignment.center,
+                          filterQuality: FilterQuality.medium,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    widget.label,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: widget.fontSize,
-                      fontWeight: FontWeight.w800,
-                      color: _ink,
-                      height: 1,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        widget.label,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: widget.fontSize,
+                          fontWeight: FontWeight.w800,
+                          color: _ink,
+                          height: 1,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

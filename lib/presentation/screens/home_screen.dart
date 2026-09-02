@@ -47,9 +47,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _showLayoutPanel = false;
-  double _alignY = 0.82;
-  double _maxWidth = 220;
-  double _gap = 4;
+  double _alignY = 0.7;
+  double _maxWidth = 194;
+  double _gap = 0;
   double _fontSize = 14;
   double _scale = 1;
 
