@@ -8,7 +8,6 @@ import 'package:sudoku_game/presentation/screens/game_screen.dart';
 import 'package:sudoku_game/presentation/screens/opening_story_screen.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_button.dart';
-import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/twinkling_star_field.dart';
 
 /// 게임 홈 화면
@@ -76,30 +75,30 @@ class HomeScreen extends StatelessWidget {
           const Positioned.fill(child: TwinklingStarField()),
           SafeArea(
             child: Align(
-              alignment: const Alignment(0, 0.64),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: PlayViewport.maxWidth),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+              alignment: const Alignment(-1, 0.58),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 6, right: 132),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 248),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ParchmentButton(
                         label: '새 퍼즐 시작',
-                        fontSize: 19,
+                        fontSize: 16,
                         onPressed: () => _startNewPuzzle(context),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 6),
                       Consumer<GameNotifier>(
                         builder: (context, gameNotifier, _) {
                           if (!gameNotifier.hasActiveGame) {
                             return const SizedBox.shrink();
                           }
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(bottom: 6),
                             child: ParchmentButton(
                               label: '이어서 하기',
-                              fontSize: 18,
+                              fontSize: 15,
                               onPressed: () {
                                 if (gameNotifier.continueGame()) {
                                   Navigator.push(
@@ -114,51 +113,13 @@ class HomeScreen extends StatelessWidget {
                       ),
                       ParchmentButton(
                         label: '마을 보기',
-                        fontSize: 18,
+                        fontSize: 15,
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const VillageScreen()),
                           );
                         },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SafeArea(
-              top: false,
-              child: IgnorePointer(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Tyche works',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xE6FFF8E8),
-                          height: 1.2,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        '© Tyche Spark. All rights reserved.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Color(0xD9FFF8E8),
-                          height: 1.2,
-                        ),
                       ),
                     ],
                   ),

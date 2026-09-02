@@ -59,7 +59,7 @@ class _ParchmentButtonState extends State<ParchmentButton> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 52),
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: Text(
                     widget.label,
                     textAlign: TextAlign.center,

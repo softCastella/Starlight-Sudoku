@@ -28,41 +28,27 @@ class CompletionRewardDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TweenAnimationBuilder<double>(
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.elasticOut,
-            tween: Tween(begin: 0.55, end: 1),
-            builder: (context, scale, child) => Transform.scale(
-              scale: scale,
-              child: child,
-            ),
-            child: const Icon(
-              Icons.auto_awesome,
-              color: _gold,
-              size: 68,
-            ),
+          const Icon(
+            Icons.auto_awesome,
+            color: _gold,
+            size: 32,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text(
             isReplay ? '이미 클리어한 스테이지예요.' : '마을에 별빛이 도착했어요.',
           ),
           if (!isReplay) ...[
-            const SizedBox(height: 18),
-            TweenAnimationBuilder<int>(
-              duration: const Duration(milliseconds: 900),
-              curve: Curves.easeOutCubic,
-              tween: IntTween(begin: 0, end: starLight),
-              builder: (context, value, _) => Text(
-                '+$value StarLight',
-                style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: _gold,
-                ),
+            const SizedBox(height: 8),
+            Text(
+              '+$starLight StarLight',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: _gold,
               ),
             ),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text('소요 시간  $elapsedTimeLabel'),
         ],
       ),
