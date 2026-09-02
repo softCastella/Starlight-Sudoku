@@ -4,6 +4,7 @@ import 'package:sudoku_game/core/village/building_progress.dart';
 import 'package:sudoku_game/core/village/village_story.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
+import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_map_widget.dart';
 
@@ -31,6 +32,32 @@ class VillageScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             foregroundColor: ink,
             elevation: 0,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10, top: 6, bottom: 6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () => _openMissions(context),
+                      icon: const Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D)),
+                      label: Text(
+                        '미션',
+                        style: TextStyle(color: ink, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    OvalImageButton(
+                      label: '보기',
+                      width: 72,
+                      height: 26,
+                      fontSize: 11,
+                      onPressed: () => _openMissions(context),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           body: SafeArea(
             top: false,
@@ -64,21 +91,6 @@ class VillageScreen extends StatelessWidget {
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const VillageMissionsScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text('복원 미션 보기'),
-                        ),
                       ),
                       const SizedBox(height: 12),
                       Expanded(
@@ -120,6 +132,15 @@ class VillageScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _openMissions(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const VillageMissionsScreen(),
+      ),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/opening_story.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
+import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
@@ -122,11 +123,14 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                             }),
                           ),
                           const SizedBox(height: 8),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: OvalImageButton(
+                              label: isLast ? '첫 창문을 밝히기' : '다음',
+                              width: isLast ? 176 : 128,
+                              height: 38,
+                              fontSize: isLast ? 13 : 14,
                               onPressed: _next,
-                              child: Text(isLast ? '첫 창문을 밝히기' : '다음'),
                             ),
                           ),
                         ],

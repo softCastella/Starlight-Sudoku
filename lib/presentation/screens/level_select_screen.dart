@@ -72,6 +72,7 @@ class LevelSelectScreen extends StatelessWidget {
                           ),
                           Expanded(
                             child: GridView.builder(
+                              clipBehavior: Clip.none,
                               padding: const EdgeInsets.fromLTRB(18, 10, 18, 28),
                               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 5,
@@ -257,7 +258,7 @@ class _StageTileState extends State<_StageTile> {
     final isUnlocked = widget.isUnlocked;
     final isCompleted = widget.isCompleted;
     final isCurrent = widget.isCurrent;
-    final lit = _pressed && isUnlocked;
+    final lit = isUnlocked && (_pressed || isCurrent);
 
     final fill = !isUnlocked
         ? const Color(0x66141C1A)
@@ -279,35 +280,37 @@ class _StageTileState extends State<_StageTile> {
             ? const Color(0xFF8A6A10)
             : const Color(0xFF24452D);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isUnlocked ? widget.onTap : null,
-        onHighlightChanged: (pressed) {
-          if (isUnlocked) setState(() => _pressed = pressed);
-        },
-        borderRadius: BorderRadius.circular(14),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: border, width: lit ? 2.4 : 1.6),
-            boxShadow: [
-              if (lit) ...[
-                const BoxShadow(
-                  color: _goldGlow,
-                  blurRadius: 16,
-                  spreadRadius: 1,
-                ),
-                const BoxShadow(
-                  color: Color(0x88F5CC3D),
-                  blurRadius: 18,
-                  offset: Offset(0, 3),
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(2),
+      child: Material(
+        color: Colors.transparent,
+        clipBehavior: Clip.none,
+        child: GestureDetector(
+          onTap: isUnlocked ? widget.onTap : null,
+          onTapDown: isUnlocked ? (_) => setState(() => _pressed = true) : null,
+          onTapUp: isUnlocked ? (_) => setState(() => _pressed = false) : null,
+          onTapCancel: isUnlocked ? () => setState(() => _pressed = false) : null,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 140),
+            decoration: BoxDecoration(
+              color: fill,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: border, width: lit ? 2.4 : 1.6),
+              boxShadow: [
+                if (lit) ...[
+                  const BoxShadow(
+                    color: _goldGlow,
+                    blurRadius: 16,
+                    spreadRadius: 1,
+                  ),
+                  const BoxShadow(
+                    color: Color(0x88F5CC3D),
+                    blurRadius: 18,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ],
-            ],
-          ),
+            ),
           child: Stack(
             children: [
               if (isUnlocked)
@@ -367,6 +370,7 @@ class _StageTileState extends State<_StageTile> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

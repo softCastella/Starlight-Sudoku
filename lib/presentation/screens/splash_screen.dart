@@ -51,14 +51,14 @@ class _SplashScreenState extends State<SplashScreen>
 
     _logoScale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.78, end: 1.06).chain(CurveTween(curve: fade)),
+        tween: Tween<double>(begin: 0.78, end: 0.98).chain(CurveTween(curve: fade)),
         weight: 38,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.06, end: 1.08).chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(begin: 0.98, end: 1.0).chain(CurveTween(curve: Curves.easeOut)),
         weight: 18,
       ),
-      TweenSequenceItem(tween: ConstantTween<double>(1.08), weight: 44),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 44),
     ]).animate(_controller);
 
     _overlayOpacity = TweenSequence<double>([
@@ -146,7 +146,7 @@ class _SplashScreenState extends State<SplashScreen>
                       padding: EdgeInsets.symmetric(horizontal: 48),
                       child: Image(
                         image: AssetImage(SplashScreen.logoAsset),
-                        width: 280,
+                        width: 232,
                         fit: BoxFit.contain,
                       ),
                     ),

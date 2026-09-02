@@ -86,40 +86,79 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       ParchmentButton(
                         label: '새 퍼즐 시작',
-                        height: 62,
-                        fontSize: 17,
+                        fontSize: 19,
                         onPressed: () => _startNewPuzzle(context),
                       ),
+                      const SizedBox(height: 10),
                       Consumer<GameNotifier>(
                         builder: (context, gameNotifier, _) {
                           if (!gameNotifier.hasActiveGame) {
                             return const SizedBox.shrink();
                           }
-                          return ParchmentButton(
-                            label: '이어서 하기',
-                            height: 58,
-                            fontSize: 16,
-                            onPressed: () {
-                              if (gameNotifier.continueGame()) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const GameScreen()),
-                                );
-                              }
-                            },
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: ParchmentButton(
+                              label: '이어서 하기',
+                              fontSize: 18,
+                              onPressed: () {
+                                if (gameNotifier.continueGame()) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const GameScreen()),
+                                  );
+                                }
+                              },
+                            ),
                           );
                         },
                       ),
                       ParchmentButton(
                         label: '마을 보기',
-                        height: 58,
-                        fontSize: 16,
+                        fontSize: 18,
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const VillageScreen()),
                           );
                         },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: SafeArea(
+              top: false,
+              child: IgnorePointer(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Tyche works',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xE6FFF8E8),
+                          height: 1.2,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        '© Tyche Spark. All rights reserved.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Color(0xD9FFF8E8),
+                          height: 1.2,
+                        ),
                       ),
                     ],
                   ),

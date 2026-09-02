@@ -35,7 +35,7 @@ class GiveUpPuzzleDialog extends StatelessWidget {
               filterQuality: FilterQuality.medium,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(36, 44, 36, 40),
+              padding: const EdgeInsets.fromLTRB(40, 40, 36, 36),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -43,34 +43,42 @@ class GiveUpPuzzleDialog extends StatelessWidget {
                     '퍼즐을 나갈까요?',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w800,
                       color: _ink,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   const Text(
                     '현재 진행 상황은 이어하기에 저장됩니다.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 14,
-                      height: 1.45,
+                      fontSize: 13,
+                      height: 1.4,
                       color: _muted,
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  _ModalImageButton(
-                    asset: continueAsset,
-                    label: '계속 풀기',
-                    color: _ink,
-                    onPressed: () => Navigator.pop(context, false),
-                  ),
-                  const SizedBox(height: 8),
-                  _ModalImageButton(
-                    asset: exitAsset,
-                    label: '나가기',
-                    color: _cream,
-                    onPressed: () => Navigator.pop(context, true),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ModalImageButton(
+                          asset: continueAsset,
+                          label: '계속 풀기',
+                          color: _ink,
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _ModalImageButton(
+                          asset: exitAsset,
+                          label: '나가기',
+                          color: _cream,
+                          onPressed: () => Navigator.pop(context, true),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -117,7 +125,7 @@ class _ModalImageButtonState extends State<_ModalImageButton> {
           duration: const Duration(milliseconds: 90),
           scale: _pressed ? 0.97 : 1,
           child: SizedBox(
-            height: 48,
+            height: 36,
             width: double.infinity,
             child: Stack(
               alignment: Alignment.center,
@@ -125,7 +133,7 @@ class _ModalImageButtonState extends State<_ModalImageButton> {
                 Positioned.fill(
                   child: Image.asset(
                     widget.asset,
-                    fit: BoxFit.fitWidth,
+                    fit: BoxFit.fill,
                     alignment: Alignment.center,
                     filterQuality: FilterQuality.medium,
                   ),
@@ -133,7 +141,7 @@ class _ModalImageButtonState extends State<_ModalImageButton> {
                 Text(
                   widget.label,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: FontWeight.w800,
                     color: widget.color,
                   ),

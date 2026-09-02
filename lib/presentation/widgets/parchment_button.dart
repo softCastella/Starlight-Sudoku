@@ -6,15 +6,14 @@ class ParchmentButton extends StatefulWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.height = 64,
-    this.fontSize = 17,
+    this.fontSize = 19,
   });
 
   static const asset = 'assets/images/SystemUI/Button.png';
+  static const imageAspectRatio = 2172 / 724;
 
   final String label;
   final VoidCallback? onPressed;
-  final double height;
   final double fontSize;
 
   @override
@@ -42,25 +41,25 @@ class _ParchmentButtonState extends State<ParchmentButton> {
         child: AnimatedScale(
           duration: const Duration(milliseconds: 90),
           scale: _pressed ? 0.97 : 1,
-          child: SizedBox(
-            height: widget.height,
-            width: double.infinity,
+          child: AspectRatio(
+            aspectRatio: ParchmentButton.imageAspectRatio,
             child: Stack(
               alignment: Alignment.center,
+              clipBehavior: Clip.none,
               children: [
                 Positioned.fill(
                   child: Opacity(
                     opacity: enabled ? 1 : 0.55,
                     child: Image.asset(
                       ParchmentButton.asset,
-                      fit: BoxFit.fitWidth,
+                      fit: BoxFit.contain,
                       alignment: Alignment.center,
                       filterQuality: FilterQuality.medium,
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  padding: const EdgeInsets.symmetric(horizontal: 52),
                   child: Text(
                     widget.label,
                     textAlign: TextAlign.center,

@@ -206,7 +206,9 @@ class _MissionCardState extends State<_MissionCard> {
                     child: widget.iconAsset == null
                         ? Icon(Icons.home, color: widget.accent, size: 26)
                         : Padding(
-                            padding: const EdgeInsets.all(6),
+                            padding: EdgeInsets.all(
+                              building.id == 'fountain' ? 2 : 6,
+                            ),
                             child: Image.asset(
                               widget.iconAsset!,
                               fit: BoxFit.contain,
