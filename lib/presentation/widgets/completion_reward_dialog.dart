@@ -55,7 +55,7 @@ class CompletionRewardDialog extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(44, 52, 44, 44),
+                padding: const EdgeInsets.fromLTRB(44, 76, 44, 52),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -79,15 +79,26 @@ class CompletionRewardDialog extends StatelessWidget {
                       ),
                     ),
                     if (!isReplay) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        '+$starLight StarLight',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: _gold,
-                        ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            color: _gold,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '+ $starLight StarLight',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: _gold,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                     const SizedBox(height: 4),

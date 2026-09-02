@@ -75,7 +75,11 @@ class SudokuCellWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: 34,
             fontWeight: isFixed ? FontWeight.bold : FontWeight.w700,
-            color: isFixed ? const Color(0xFF24452D) : const Color(0xFFB85C38),
+            color: isFixed
+                ? const Color(0xFF24452D)
+                : isInvalid
+                    ? const Color(0xFFB85C38)
+                    : const Color(0xFF2A8A4A),
           ),
         ),
       ),
