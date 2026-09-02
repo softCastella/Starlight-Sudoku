@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
           const Positioned.fill(child: TwinklingStarField()),
           SafeArea(
             child: Align(
-              alignment: Alignment.center,
+              alignment: const Alignment(0, 0.64),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: ConstrainedBox(
@@ -88,26 +88,22 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 16,
                         onPressed: () => _startNewPuzzle(context),
                       ),
-                      const SizedBox(height: 3),
                       Consumer<GameNotifier>(
                         builder: (context, gameNotifier, _) {
                           if (!gameNotifier.hasActiveGame) {
                             return const SizedBox.shrink();
                           }
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: ParchmentButton(
-                              label: '이어서 하기',
-                              fontSize: 15,
-                              onPressed: () {
-                                if (gameNotifier.continueGame()) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const GameScreen()),
-                                  );
-                                }
-                              },
-                            ),
+                          return ParchmentButton(
+                            label: '이어서 하기',
+                            fontSize: 15,
+                            onPressed: () {
+                              if (gameNotifier.continueGame()) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const GameScreen()),
+                                );
+                              }
+                            },
                           );
                         },
                       ),
@@ -131,20 +127,14 @@ class HomeScreen extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: SafeArea(
-              top: false,
-              child: IgnorePointer(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    'ⓒ Tyche Spark. All rights reserved',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      height: 1.2,
-                    ),
-                  ),
+            child: IgnorePointer(
+              child: Text(
+                'ⓒ Tyche Spark. All rights reserved',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  height: 1,
                 ),
               ),
             ),
