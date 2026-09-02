@@ -258,7 +258,7 @@ class _StageTileState extends State<_StageTile> {
     final isUnlocked = widget.isUnlocked;
     final isCompleted = widget.isCompleted;
     final isCurrent = widget.isCurrent;
-    final lit = isUnlocked && (_pressed || isCurrent);
+    final lit = isUnlocked && _pressed;
 
     final fill = !isUnlocked
         ? const Color(0x66141C1A)
@@ -271,9 +271,7 @@ class _StageTileState extends State<_StageTile> {
         ? const Color(0x33FFFFFF)
         : lit
             ? _gold
-            : isCompleted
-                ? const Color(0xFFF5CC3D)
-                : const Color(0xFFD8CBB0);
+            : const Color(0xFFD8CBB0);
     final foreground = !isUnlocked
         ? const Color(0x99E8E0D0)
         : isCompleted

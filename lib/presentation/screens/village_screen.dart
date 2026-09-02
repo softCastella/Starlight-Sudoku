@@ -32,51 +32,48 @@ class VillageScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             foregroundColor: ink,
             elevation: 0,
-            toolbarHeight: 76,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => _openMissions(context),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () => _openMissions(context),
+                    child: SizedBox(
+                      width: 96,
+                      height: 32,
+                      child: Stack(
+                        alignment: Alignment.center,
                         children: [
-                          const Icon(
-                            Icons.auto_awesome,
-                            color: Color(0xFFF5CC3D),
-                            size: 18,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '미션',
-                            style: TextStyle(
-                              color: ink,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
+                          Positioned.fill(
+                            child: Image.asset(
+                              OvalImageButton.asset,
+                              fit: BoxFit.fill,
+                              filterQuality: FilterQuality.medium,
                             ),
+                          ),
+                          const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.auto_awesome,
+                                color: Color(0xFFF5CC3D),
+                                size: 16,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                '미션',
+                                style: TextStyle(
+                                  color: Color(0xFF24452D),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: const Color(0x99FFF8E8),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: const Color(0xAAE8C56A)),
-                      ),
-                      child: OvalImageButton(
-                        label: '보기',
-                        width: 72,
-                        height: 26,
-                        fontSize: 11,
-                        onPressed: () => _openMissions(context),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
