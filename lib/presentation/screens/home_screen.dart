@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -15,101 +16,109 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   static const titleAsset = 'assets/images/starlight_sudoku_title.png';
+  static const _navy = Color(0xFF0E2040);
 
-  static const nightOverlayStyle = SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    statusBarBrightness: Brightness.dark,
-    systemStatusBarContrastEnforced: false,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.light,
-    systemNavigationBarContrastEnforced: false,
-  );
+  /// Opaque colors on web: Chrome paints a yellow bar if theme-color is transparent.
+  static SystemUiOverlayStyle get nightOverlayStyle => SystemUiOverlayStyle(
+        statusBarColor: kIsWeb ? _navy : Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarColor: kIsWeb ? _navy : Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarContrastEnforced: false,
+      );
+
+  static SystemUiOverlayStyle get splashOverlayStyle => SystemUiOverlayStyle(
+        statusBarColor: kIsWeb ? Colors.white : Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarColor: kIsWeb ? Colors.white : Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      );
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: nightOverlayStyle,
-      child: Scaffold(
-        backgroundColor: TwinklingStarField.nightSky,
-        extendBodyBehindAppBar: true,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              titleAsset,
-              fit: BoxFit.cover,
-              alignment: const Alignment(0, -0.12),
-              semanticLabel: '별빛 스도쿠',
-              filterQuality: FilterQuality.medium,
-            ),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x00000000),
-                    Color(0x00000000),
-                    Color(0x99121C1A),
-                    Color(0xE6121C1A),
-                  ],
-                  stops: [0, 0.48, 0.72, 1],
-                ),
+    return Scaffold(
+      backgroundColor: TwinklingStarField.nightSky,
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            titleAsset,
+            fit: BoxFit.cover,
+            alignment: const Alignment(0, -0.12),
+            semanticLabel: '별빛 스도쿠',
+            filterQuality: FilterQuality.medium,
+          ),
+          const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0x00000000),
+                  Color(0x00000000),
+                  Color(0x99121C1A),
+                  Color(0xE6121C1A),
+                ],
+                stops: [0, 0.48, 0.72, 1],
               ),
             ),
-            const IgnorePointer(child: TwinklingStarField()),
-            SafeArea(
-              child: Align(
-                alignment: const Alignment(0, 0.64),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: PlayViewport.maxWidth),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ParchmentButton(
-                          label: '새 퍼즐 시작',
-                          onPressed: () => _startNewPuzzle(context),
-                        ),
-                        Consumer<GameNotifier>(
-                          builder: (context, gameNotifier, _) {
-                            if (!gameNotifier.hasActiveGame) {
-                              return const SizedBox.shrink();
-                            }
-                            return ParchmentButton(
-                              label: '이어서 하기',
-                              fontSize: 18,
-                              onPressed: () {
-                                if (gameNotifier.continueGame()) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const GameScreen()),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        ),
-                        ParchmentButton(
-                          label: '마을 보기',
-                          fontSize: 18,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const VillageScreen()),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+          ),
+          const Positioned.fill(child: TwinklingStarField()),
+          SafeArea(
+            child: Align(
+              alignment: const Alignment(0, 0.64),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: PlayViewport.maxWidth),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ParchmentButton(
+                        label: '새 퍼즐 시작',
+                        onPressed: () => _startNewPuzzle(context),
+                      ),
+                      Consumer<GameNotifier>(
+                        builder: (context, gameNotifier, _) {
+                          if (!gameNotifier.hasActiveGame) {
+                            return const SizedBox.shrink();
+                          }
+                          return ParchmentButton(
+                            label: '이어서 하기',
+                            fontSize: 18,
+                            onPressed: () {
+                              if (gameNotifier.continueGame()) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const GameScreen()),
+                                );
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      ParchmentButton(
+                        label: '마을 보기',
+                        fontSize: 18,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const VillageScreen()),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

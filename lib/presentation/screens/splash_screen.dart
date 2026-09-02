@@ -103,12 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _showOverlay
-          ? const SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
-              systemStatusBarContrastEnforced: false,
-            )
+          ? HomeScreen.splashOverlayStyle
           : HomeScreen.nightOverlayStyle,
       child: Stack(
         fit: StackFit.expand,

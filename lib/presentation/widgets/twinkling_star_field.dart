@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Seeded night-sky stars that twinkle in place. Does not intercept pointer events.
@@ -24,7 +25,7 @@ class _TwinklingStarFieldState extends State<TwinklingStarField>
     _stars = StarParticle.seeded();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 12000),
+      duration: const Duration(milliseconds: 4800),
     );
 
     // Repeating tickers never settle; freeze a mid-twinkle frame in widget tests.
@@ -46,19 +47,22 @@ class _TwinklingStarFieldState extends State<TwinklingStarField>
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.paddingOf(context).top;
-    return RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          return CustomPaint(
-            painter: StarPainter(
-              stars: _stars,
-              t: _controller.value,
-              statusBarHeight: statusBarHeight,
-            ),
-            size: Size.infinite,
-          );
-        },
+    return IgnorePointer(
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            return SizedBox.expand(
+              child: CustomPaint(
+                painter: StarPainter(
+                  stars: _stars,
+                  t: _controller.value,
+                  statusBarHeight: statusBarHeight,
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -127,11 +131,11 @@ class StarParticle {
           ny: ny,
           size: size,
           phase: random.nextDouble() * pi * 2,
-          speed: twinkle ? (0.7 + random.nextDouble() * 1.6) : 0,
+          speed: twinkle ? (0.9 + random.nextDouble() * 1.4) : 0,
           baseOpacity: twinkle
-              ? 0.18 + random.nextDouble() * 0.12
-              : 0.38 + random.nextDouble() * 0.28,
-          twinkleStrength: twinkle ? 0.45 + random.nextDouble() * 0.40 : 0,
+              ? 0.28 + random.nextDouble() * 0.12
+              : 0.55 + random.nextDouble() * 0.25,
+          twinkleStrength: twinkle ? 0.50 + random.nextDouble() * 0.35 : 0,
           minScale: twinkle ? 0.65 : 1,
           maxScale: twinkle ? 1.10 + random.nextDouble() * 0.18 : 1,
           kind: kind,
@@ -145,14 +149,14 @@ class StarParticle {
 
     // Status bar: tiny dots/crosses, anchored to padding.top on every device.
     const status = <(double, double, double, StarKind, bool)>[
-      (0.10, 0.38, 2.0, StarKind.dot, false),
-      (0.22, 0.62, 2.4, StarKind.cross, true),
-      (0.34, 0.28, 1.8, StarKind.dot, false),
-      (0.47, 0.70, 2.2, StarKind.dot, false),
-      (0.58, 0.40, 3.0, StarKind.cross, true),
-      (0.71, 0.58, 1.7, StarKind.dot, false),
-      (0.83, 0.32, 2.6, StarKind.cross, false),
-      (0.92, 0.66, 2.0, StarKind.dot, false),
+      (0.10, 0.38, 3.2, StarKind.dot, false),
+      (0.22, 0.62, 4.0, StarKind.cross, true),
+      (0.34, 0.28, 2.8, StarKind.dot, false),
+      (0.47, 0.70, 3.4, StarKind.dot, false),
+      (0.58, 0.40, 4.6, StarKind.cross, true),
+      (0.71, 0.58, 2.8, StarKind.dot, false),
+      (0.83, 0.32, 4.2, StarKind.cross, false),
+      (0.92, 0.66, 3.2, StarKind.dot, false),
     ];
     for (final s in status) {
       add(
@@ -170,36 +174,36 @@ class StarParticle {
     // Night sky: denser around the logo, sparse toward the village.
     const sky = <(double, double, double, StarKind, Color, bool, bool)>[
       // Top edge / moon side — connects status bar to sky.
-      (0.08, 0.095, 2.2, StarKind.dot, _whiteFaint, false, false),
-      (0.18, 0.072, 2.8, StarKind.cross, _gold, true, false),
-      (0.38, 0.048, 2.0, StarKind.dot, _whiteSoft, false, false),
-      (0.63, 0.040, 2.4, StarKind.dot, _whiteFaint, true, false),
-      (0.78, 0.068, 3.2, StarKind.cross, _goldBright, true, true),
-      (0.91, 0.090, 1.8, StarKind.dot, _whiteSoft, false, false),
+      (0.08, 0.095, 3.4, StarKind.dot, _whiteFaint, false, false),
+      (0.18, 0.072, 4.8, StarKind.cross, _gold, true, false),
+      (0.38, 0.048, 3.2, StarKind.dot, _whiteSoft, false, false),
+      (0.63, 0.040, 3.6, StarKind.dot, _whiteFaint, true, false),
+      (0.78, 0.068, 5.2, StarKind.cross, _goldBright, true, true),
+      (0.91, 0.090, 3.0, StarKind.dot, _whiteSoft, false, false),
       // Logo halo (not on the letterforms).
-      (0.14, 0.155, 4.6, StarKind.cross, _gold, true, true),
-      (0.22, 0.235, 2.4, StarKind.dot, _goldBright, false, false),
-      (0.26, 0.125, 3.4, StarKind.cross, _goldBright, true, false),
-      (0.78, 0.150, 5.2, StarKind.cross, _gold, true, true),
-      (0.86, 0.185, 2.6, StarKind.dot, _gold, false, false),
-      (0.82, 0.250, 3.0, StarKind.cross, _goldBright, true, false),
-      (0.12, 0.205, 2.0, StarKind.dot, _whiteSoft, false, false),
-      (0.08, 0.255, 3.6, StarKind.cross, _gold, true, false),
-      (0.18, 0.290, 2.2, StarKind.dot, _whiteFaint, false, false),
+      (0.14, 0.155, 6.4, StarKind.cross, _gold, true, true),
+      (0.22, 0.235, 3.6, StarKind.dot, _goldBright, false, false),
+      (0.26, 0.125, 5.0, StarKind.cross, _goldBright, true, false),
+      (0.78, 0.150, 6.8, StarKind.cross, _gold, true, true),
+      (0.86, 0.185, 4.0, StarKind.dot, _gold, false, false),
+      (0.82, 0.250, 4.6, StarKind.cross, _goldBright, true, false),
+      (0.12, 0.205, 3.2, StarKind.dot, _whiteSoft, false, false),
+      (0.08, 0.255, 5.4, StarKind.cross, _gold, true, false),
+      (0.18, 0.290, 3.4, StarKind.dot, _whiteFaint, false, false),
       // Mid sky.
-      (0.10, 0.340, 2.8, StarKind.cross, _gold, true, false),
-      (0.24, 0.325, 1.8, StarKind.dot, _whiteSoft, false, false),
-      (0.33, 0.370, 3.2, StarKind.cross, _goldBright, true, false),
-      (0.16, 0.410, 2.4, StarKind.dot, _whiteFaint, false, false),
-      (0.28, 0.445, 2.0, StarKind.dot, _gold, false, false),
-      (0.08, 0.390, 1.7, StarKind.dot, _whiteSoft, true, false),
-      (0.40, 0.335, 2.2, StarKind.dot, _whiteFaint, false, false),
-      (0.42, 0.285, 4.2, StarKind.cross, _gold, true, true),
-      (0.68, 0.310, 2.0, StarKind.dot, _whiteSoft, false, false),
+      (0.10, 0.340, 4.6, StarKind.cross, _gold, true, false),
+      (0.24, 0.325, 3.0, StarKind.dot, _whiteSoft, false, false),
+      (0.33, 0.370, 5.0, StarKind.cross, _goldBright, true, false),
+      (0.16, 0.410, 3.6, StarKind.dot, _whiteFaint, false, false),
+      (0.28, 0.445, 3.2, StarKind.dot, _gold, false, false),
+      (0.08, 0.390, 2.8, StarKind.dot, _whiteSoft, true, false),
+      (0.40, 0.335, 3.4, StarKind.dot, _whiteFaint, false, false),
+      (0.42, 0.285, 6.0, StarKind.cross, _gold, true, true),
+      (0.68, 0.310, 3.2, StarKind.dot, _whiteSoft, false, false),
       // Village-top sky, left of the character.
-      (0.07, 0.470, 2.0, StarKind.dot, _whiteFaint, false, false),
-      (0.18, 0.490, 2.6, StarKind.cross, _gold, true, false),
-      (0.12, 0.520, 1.6, StarKind.dot, _whiteSoft, false, false),
+      (0.07, 0.470, 3.2, StarKind.dot, _whiteFaint, false, false),
+      (0.18, 0.490, 4.4, StarKind.cross, _gold, true, false),
+      (0.12, 0.520, 2.8, StarKind.dot, _whiteSoft, false, false),
     ];
     for (final s in sky) {
       add(
@@ -234,10 +238,11 @@ class StarPainter extends CustomPainter {
     if (size.isEmpty) return;
 
     final paint = Paint()..style = PaintingStyle.fill;
+    final barHeight = max(statusBarHeight, size.height * 0.05);
 
     for (final star in stars) {
       final pos = star.band == StarBand.statusBar
-          ? Offset(star.nx * size.width, star.ny * statusBarHeight)
+          ? Offset(star.nx * size.width, star.ny * barHeight)
           : Offset(star.nx * size.width, star.ny * size.height);
 
       var fade = 1.0;
@@ -260,10 +265,10 @@ class StarPainter extends CustomPainter {
       final radius = star.size * scale * 0.5;
 
       if (star.glow) {
-        paint
-          ..color = StarParticle._gold.withValues(alpha: 0.55 * opacity)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.5);
-        canvas.drawCircle(pos, radius * 1.35, paint);
+        paint.maskFilter =
+            kIsWeb ? null : const MaskFilter.blur(BlurStyle.normal, 3.5);
+        paint.color = StarParticle._gold.withValues(alpha: 0.45 * opacity);
+        canvas.drawCircle(pos, radius * (kIsWeb ? 1.8 : 1.35), paint);
         paint.maskFilter = null;
       }
 

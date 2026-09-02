@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudoku_game/presentation/app.dart';
@@ -9,7 +10,8 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(HomeScreen.nightOverlayStyle);
+  SystemChrome.setSystemUIOverlayStyle(
+    kIsWeb ? HomeScreen.splashOverlayStyle : HomeScreen.nightOverlayStyle,
+  );
   runApp(const SudokuApp());
 }
-
