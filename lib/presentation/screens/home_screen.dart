@@ -161,16 +161,20 @@ class _HomeScreenState extends State<HomeScreen> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 10,
+            bottom: 28,
             child: GestureDetector(
-              onLongPress: () => setState(() => _showLayoutPanel = !_showLayoutPanel),
-              child: const Text(
-                'ⓒ Tyche Spark. All rights reserved',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  height: 1,
+              behavior: HitTestBehavior.opaque,
+              onTap: () => setState(() => _showLayoutPanel = !_showLayoutPanel),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(24, 10, 24, 10),
+                child: Text(
+                  'ⓒ Tyche Spark. All rights reserved',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    height: 1,
+                  ),
                 ),
               ),
             ),
