@@ -64,13 +64,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/village_scene_day.png
-    - assets/images/village_scene_night.png
-    - assets/images/village_scene_windows.png
-    - assets/images/starlight_sudoku_title.png
-    - assets/images/Spark_Lineup_Logo.png
-    - assets/images/Spark_Lineup_Logo_nuki.png
-    - assets/images/Button.png
+    - assets/images/Icon/
+    - assets/images/Logo/
+    - assets/images/Scene/
+    - assets/images/SystemUI/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

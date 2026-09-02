@@ -98,11 +98,11 @@ class DifficultyConfig {
   String getKoreanName() {
     switch (difficulty) {
       case SudokuDifficulty.easy:
-        return '이지';
+        return '쉬움';
       case SudokuDifficulty.normal:
         return '보통';
       case SudokuDifficulty.hard:
-        return '하드';
+        return '어려움';
     }
   }
 }

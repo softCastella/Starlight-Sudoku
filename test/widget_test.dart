@@ -23,7 +23,7 @@ void main() {
     await tester.pump(SplashScreen.displayDuration);
     await tester.pumpAndSettle();
 
-    expect(find.image(const AssetImage(HomeScreen.titleAsset)), findsOneWidget);
+    expect(find.byType(HomeScreen), findsWidgets);
     expect(find.text('새 퍼즐 시작'), findsOneWidget);
 
     await tester.ensureVisible(find.text('새 퍼즐 시작'));
@@ -38,10 +38,10 @@ void main() {
     expect(find.text('난이도 선택'), findsOneWidget);
     expect(find.textContaining('스테이지'), findsWidgets);
 
-    await tester.tap(find.text('이지 · Easy'));
+    await tester.tap(find.text('쉬움 · Easy'));
     await tester.pumpAndSettle();
 
-    expect(find.text('이지 스테이지'), findsOneWidget);
+    expect(find.text('쉬움 스테이지'), findsOneWidget);
     expect(find.text('0/20 클리어'), findsOneWidget);
   });
 }

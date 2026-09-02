@@ -15,7 +15,8 @@ import 'package:sudoku_game/presentation/widgets/twinkling_star_field.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static const titleAsset = 'assets/images/starlight_sudoku_title.png';
+  static const titleAsset =
+      'assets/images/Scene/Title_Image_Starlight Sdoku.png';
   static const _navy = Color(0xFF0E2040);
 
   /// Opaque colors on web: Chrome paints a yellow bar if theme-color is transparent.
@@ -52,6 +53,10 @@ class HomeScreen extends StatelessWidget {
             alignment: const Alignment(0, -0.12),
             semanticLabel: '별빛 스도쿠',
             filterQuality: FilterQuality.medium,
+            cacheWidth: (MediaQuery.sizeOf(context).width *
+                    MediaQuery.devicePixelRatioOf(context))
+                .round()
+                .clamp(480, 1440),
           ),
           const DecoratedBox(
             decoration: BoxDecoration(
@@ -81,6 +86,8 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       ParchmentButton(
                         label: '새 퍼즐 시작',
+                        height: 62,
+                        fontSize: 17,
                         onPressed: () => _startNewPuzzle(context),
                       ),
                       Consumer<GameNotifier>(
@@ -90,7 +97,8 @@ class HomeScreen extends StatelessWidget {
                           }
                           return ParchmentButton(
                             label: '이어서 하기',
-                            fontSize: 18,
+                            height: 58,
+                            fontSize: 16,
                             onPressed: () {
                               if (gameNotifier.continueGame()) {
                                 Navigator.push(
@@ -104,7 +112,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                       ParchmentButton(
                         label: '마을 보기',
-                        fontSize: 18,
+                        height: 58,
+                        fontSize: 16,
                         onPressed: () {
                           Navigator.push(
                             context,

@@ -13,9 +13,9 @@ class VillageSceneBackdrop extends StatelessWidget {
   static const nightSky = Color(0xFF1C3340);
   static const daySky = Color(0xFFBCE5F4);
 
-  static const nightAsset = 'assets/images/village_scene_night.png';
-  static const windowsAsset = 'assets/images/village_scene_windows.png';
-  static const dayAsset = 'assets/images/village_scene_day.png';
+  static const nightAsset = 'assets/images/Scene/village_scene_night.png';
+  static const windowsAsset = 'assets/images/Scene/village_scene_windows.png';
+  static const dayAsset = 'assets/images/Scene/village_scene_day.png';
 
   /// Native ratio of the village paintings (941 x 1672).
   static const paintingAspectRatio = 941 / 1672;
@@ -33,10 +33,10 @@ class VillageSceneBackdrop extends StatelessWidget {
       paintings = Stack(
         fit: StackFit.expand,
         children: [
-          const _VillagePainting(asset: windowsAsset),
+          _VillagePainting(asset: windowsAsset),
           Opacity(
             opacity: 1 - intoWindows,
-            child: const _VillagePainting(asset: nightAsset),
+            child: _VillagePainting(asset: nightAsset),
           ),
         ],
       );
@@ -45,10 +45,10 @@ class VillageSceneBackdrop extends StatelessWidget {
       paintings = Stack(
         fit: StackFit.expand,
         children: [
-          const _VillagePainting(asset: dayAsset),
+          _VillagePainting(asset: dayAsset),
           Opacity(
             opacity: 1 - intoDay,
-            child: const _VillagePainting(asset: windowsAsset),
+            child: _VillagePainting(asset: windowsAsset),
           ),
         ],
       );
@@ -100,12 +100,17 @@ class _VillagePainting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cacheWidth = (MediaQuery.sizeOf(context).width *
+            MediaQuery.devicePixelRatioOf(context))
+        .round()
+        .clamp(480, 1440);
     return Image.asset(
       asset,
       fit: BoxFit.cover,
       alignment: Alignment.center,
       semanticLabel: '별빛 마을 전경',
       filterQuality: FilterQuality.medium,
+      cacheWidth: cacheWidth,
     );
   }
 }

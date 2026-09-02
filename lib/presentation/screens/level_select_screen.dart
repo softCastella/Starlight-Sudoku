@@ -193,37 +193,18 @@ class _ProgressBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xF2FFF8E8),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF5CC3D), width: 1.8),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xCCFFE56A),
-            blurRadius: 22,
-            spreadRadius: 1,
-          ),
-          BoxShadow(
-            color: Color(0x88F5CC3D),
-            blurRadius: 36,
-            spreadRadius: 2,
-            offset: Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: const Color(0xFFD8CBB0), width: 1.4),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D), size: 20),
-              const SizedBox(width: 8),
-              Text(
-                '$completed/$total 클리어',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF24452D),
-                ),
-              ),
-            ],
+          Text(
+            '$completed/$total 클리어',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF24452D),
+            ),
           ),
           const SizedBox(height: 6),
           const Text(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/opening_story.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
-import 'package:sudoku_game/presentation/widgets/parchment_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
@@ -123,11 +122,12 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                             }),
                           ),
                           const SizedBox(height: 8),
-                          ParchmentButton(
-                            label: isLast ? '첫 창문을 밝히기' : '다음',
-                            height: 78,
-                            fontSize: isLast ? 18 : 20,
-                            onPressed: _next,
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _next,
+                              child: Text(isLast ? '첫 창문을 밝히기' : '다음'),
+                            ),
                           ),
                         ],
                       ),

@@ -31,23 +31,6 @@ class VillageScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             foregroundColor: ink,
             elevation: 0,
-            actions: [
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const VillageMissionsScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D)),
-                label: Text(
-                  '미션',
-                  style: TextStyle(color: ink, fontWeight: FontWeight.w700),
-                ),
-              ),
-            ],
           ),
           body: SafeArea(
             top: false,
@@ -81,6 +64,21 @@ class VillageScreen extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const VillageMissionsScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text('복원 미션 보기'),
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Expanded(

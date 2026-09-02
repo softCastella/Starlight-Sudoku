@@ -14,10 +14,10 @@ class VillageMissionsScreen extends StatelessWidget {
   static const _gold = Color(0xFFF5CC3D);
   static const _ink = Color(0xFF24452D);
 
-  static const Map<String, IconData> _icons = {
-    'bakery': Icons.bakery_dining,
-    'library': Icons.local_library,
-    'fountain': Icons.water_drop,
+  static const Map<String, String> _iconAssets = {
+    'bakery': 'assets/images/Icon/icon_bakery.png',
+    'library': 'assets/images/Icon/icon_book.png',
+    'fountain': 'assets/images/Icon/icon_fontaine.png',
   };
 
   static const Map<String, Color> _accents = {
@@ -104,7 +104,7 @@ class VillageMissionsScreen extends StatelessWidget {
                       ...gameNotifier.buildings.map(
                         (building) => _MissionCard(
                           building: building,
-                          icon: _icons[building.id] ?? Icons.home,
+                          iconAsset: _iconAssets[building.id],
                           accent: _accents[building.id] ?? _gold,
                         ),
                       ),
@@ -123,12 +123,12 @@ class VillageMissionsScreen extends StatelessWidget {
 class _MissionCard extends StatefulWidget {
   const _MissionCard({
     required this.building,
-    required this.icon,
+    required this.iconAsset,
     required this.accent,
   });
 
   final BuildingProgress building;
-  final IconData icon;
+  final String? iconAsset;
   final Color accent;
 
   @override
@@ -203,7 +203,16 @@ class _MissionCardState extends State<_MissionCard> {
                         color: widget.accent.withValues(alpha: 0.4),
                       ),
                     ),
-                    child: Icon(widget.icon, color: widget.accent, size: 26),
+                    child: widget.iconAsset == null
+                        ? Icon(Icons.home, color: widget.accent, size: 26)
+                        : Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Image.asset(
+                              widget.iconAsset!,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.medium,
+                            ),
+                          ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(

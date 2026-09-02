@@ -28,7 +28,7 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
         final invalidCells = gameNotifier.invalidCells.toList().toSet();
 
         return Padding(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(2),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: const Color(0xFFFBF7EC),
@@ -42,7 +42,7 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
               child: AspectRatio(
                 aspectRatio: 1.0,
                 child: GridView.count(

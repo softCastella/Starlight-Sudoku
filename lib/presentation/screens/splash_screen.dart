@@ -1,13 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
+import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// 흰 화면에서 로고가 천천히 나타나며 살짝 커진 뒤, 같은 속도로 사라진다.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   static const Duration displayDuration = Duration(milliseconds: 3200);
-  static const String logoAsset = 'assets/images/Spark_Lineup_Logo_nuki.png';
+  static const String logoAsset = 'assets/images/Logo/Spark_Lineup_Logo_nuki.png';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -82,6 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _startSplash() async {
+    unawaited(_precacheGameArt());
     try {
       await precacheImage(
         const AssetImage(SplashScreen.logoAsset),
@@ -91,6 +95,18 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
     await Future<void>.delayed(Duration.zero);
     if (mounted) _controller.forward();
+  }
+
+  Future<void> _precacheGameArt() async {
+    try {
+      await Future.wait([
+        precacheImage(const AssetImage(HomeScreen.titleAsset), context),
+        precacheImage(
+          const AssetImage(VillageSceneBackdrop.nightAsset),
+          context,
+        ),
+      ]).timeout(const Duration(milliseconds: 4000));
+    } catch (_) {}
   }
 
   @override

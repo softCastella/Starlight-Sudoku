@@ -4,11 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
+import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
+import 'package:sudoku_game/presentation/widgets/give_up_puzzle_dialog.dart';
+import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
-import 'package:sudoku_game/presentation/screens/village_screen.dart';
-import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 
 /// Sudoku 게임 메인 화면
 class GameScreen extends StatefulWidget {
@@ -19,6 +20,10 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  static const _ink = Color(0xFF24452D);
+  static const _cream = Color(0xFFFBF7EC);
+  static const _night = Color(0xFF1C3340);
+
   late GlobalKey<SudokuBoardWidgetState> _boardKey;
   bool _isMemoMode = false;
 
@@ -36,7 +41,11 @@ class _GameScreenState extends State<GameScreen> {
         if (!didPop) _confirmGiveUp();
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFFF4F0E4),
         appBar: AppBar(
+          backgroundColor: _night,
+          foregroundColor: _cream,
+          elevation: 0,
           leading: IconButton(
             tooltip: '포기하고 나가기',
             icon: const Icon(Icons.arrow_back),
@@ -45,10 +54,12 @@ class _GameScreenState extends State<GameScreen> {
           title: Consumer<GameNotifier>(
             builder: (context, gameNotifier, _) {
               final config = DifficultyConfig.getConfig(gameNotifier.difficulty);
-              return Text('${config.getKoreanName()} ${gameNotifier.currentLevel}');
+              return Text(
+                '${config.getKoreanName()} ${gameNotifier.currentLevel}',
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              );
             },
           ),
-          elevation: 0,
           actions: [
             IconButton(
               tooltip: '일시 정지',
@@ -73,27 +84,38 @@ class _GameScreenState extends State<GameScreen> {
           ],
         ),
         body: PlayViewport(
-          child: SingleChildScrollView(
+          child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
               child: Column(
                 children: [
                   const TimerWidget(),
-                  const SizedBox(height: 12),
-                  SudokuBoardWidget(
-                    key: _boardKey,
-                    onCellSelected: () {
-                      setState(() {});
-                    },
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final side = constraints.maxWidth < constraints.maxHeight
+                            ? constraints.maxWidth
+                            : constraints.maxHeight;
+                        return Center(
+                          child: SizedBox(
+                            width: side,
+                            height: side,
+                            child: SudokuBoardWidget(
+                              key: _boardKey,
+                              onCellSelected: () {
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                  const SizedBox(height: 18),
-                  _buildNumberPanel(),
-                  const SizedBox(height: 16),
-                  _buildMemoToggle(),
-                  const SizedBox(height: 10),
-                  _buildPuzzleTools(),
-                  const SizedBox(height: 16),
-                  _buildActionButtons(),
+                  const SizedBox(height: 8),
+                  _buildNumberRow(),
+                  const SizedBox(height: 8),
+                  _buildToolRow(),
                 ],
               ),
             ),
@@ -103,61 +125,82 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildNumberPanel() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              _isMemoMode ? '메모 입력' : '숫자 입력',
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+  Widget _buildNumberRow() {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            _isMemoMode ? '메모 입력' : '숫자 입력',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: _ink,
             ),
           ),
-          const SizedBox(height: 7),
-          GridView.count(
-            crossAxisCount: 5,
-            mainAxisSpacing: 6,
-            crossAxisSpacing: 6,
-            childAspectRatio: 1.15,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _buildNumberButton(0, '삭제'),
-              ...List.generate(9, (index) {
-                return _buildNumberButton(index + 1, '${index + 1}');
-              }),
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            ...List.generate(9, (index) {
+              final number = index + 1;
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: _NumberKey(
+                    label: '$number',
+                    onPressed: () => _handleNumberInput(number),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ],
     );
   }
 
-  Widget _buildNumberButton(int number, String label) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: number == 0 ? Colors.red[400] : Colors.blue[400],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7),
-        ),
-        padding: EdgeInsets.zero,
-      ),
-      onPressed: () {
-        _handleNumberInput(number);
+  Widget _buildToolRow() {
+    return Consumer<GameNotifier>(
+      builder: (context, gameNotifier, _) {
+        return Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: _ToolKey(
+                label: '삭제',
+                emphasized: true,
+                onPressed: () => _handleNumberInput(0),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              flex: 3,
+              child: _ToolKey(
+                label: _isMemoMode ? '메모 ON' : '메모',
+                selected: _isMemoMode,
+                onPressed: () => setState(() => _isMemoMode = !_isMemoMode),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              flex: 3,
+              child: _ToolKey(
+                label: '힌트 ${gameNotifier.hintsRemaining}',
+                onPressed: gameNotifier.hintsRemaining == 0 ? null : _showHint,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              flex: 3,
+              child: _ToolKey(
+                label: '실행취소',
+                onPressed: gameNotifier.canUndo ? gameNotifier.undo : null,
+              ),
+            ),
+          ],
+        );
       },
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
     );
   }
 
@@ -172,7 +215,7 @@ class _GameScreenState extends State<GameScreen> {
 
     if (row == null || col == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('셀을 먼저 선택하세요')),
+        const SnackBar(content: Text('셀을 먼저 선택하세요')),
       );
       return;
     }
@@ -180,13 +223,12 @@ class _GameScreenState extends State<GameScreen> {
     final board = gameNotifier.board;
     if (board.isFixedCell(row, col)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('고정된 셀입니다')),
+        const SnackBar(content: Text('고정된 셀입니다')),
       );
       return;
     }
 
     if (_isMemoMode) {
-      // 메모 모드
       if (number == 0) {
         gameNotifier.clearMemo(row, col);
       } else {
@@ -198,11 +240,9 @@ class _GameScreenState extends State<GameScreen> {
         }
       }
     } else {
-      // 숫자 입력 모드
       gameNotifier.setCellValue(row, col, number);
       SystemSound.play(SystemSoundType.click);
 
-      // 퍼즐 완성 확인
       if (gameNotifier.isPuzzleComplete) {
         gameNotifier.completeGame();
         HapticFeedback.mediumImpact();
@@ -221,30 +261,6 @@ class _GameScreenState extends State<GameScreen> {
     HapticFeedback.mediumImpact();
     SystemSound.play(SystemSoundType.alert);
     _showCompletionDialog();
-  }
-
-  Widget _buildPuzzleTools() {
-    return Consumer<GameNotifier>(
-      builder: (context, gameNotifier, _) => Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: gameNotifier.canUndo ? gameNotifier.undo : null,
-              icon: const Icon(Icons.undo),
-              label: const Text('실행 취소'),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: FilledButton.tonalIcon(
-              onPressed: gameNotifier.hintsRemaining == 0 ? null : _showHint,
-              icon: const Icon(Icons.lightbulb_outline),
-              label: Text('힌트 ${gameNotifier.hintsRemaining}/3'),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   void _showHint() {
@@ -269,68 +285,11 @@ class _GameScreenState extends State<GameScreen> {
     boardState?.clearSelection();
   }
 
-  Widget _buildMemoToggle() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: _isMemoMode ? Colors.purple[100] : Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            _isMemoMode ? Icons.edit_note : Icons.edit,
-            color: _isMemoMode ? Colors.purple[700] : Colors.grey[700],
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              _isMemoMode ? '메모 모드 활성화' : '숫자 입력 모드',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ),
-          Switch(
-            value: _isMemoMode,
-            onChanged: (value) {
-              setState(() {
-                _isMemoMode = value;
-              });
-            },
-            activeThumbColor: Colors.purple[700],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButtons() {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: () => context.read<GameNotifier>().giveUp(),
-        icon: const Icon(Icons.refresh),
-        label: const Text('다시 풀기'),
-      ),
-    );
-  }
-
   Future<void> _confirmGiveUp() async {
     final shouldGiveUp = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('퍼즐을 나갈까요?'),
-        content: const Text('현재 진행 상황은 이어하기에 저장됩니다.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('계속 풀기'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('나가기'),
-          ),
-        ],
-      ),
+      barrierColor: const Color(0xCC152433),
+      builder: (context) => const GiveUpPuzzleDialog(),
     );
     if (shouldGiveUp == true && mounted) {
       Navigator.pop(context);
@@ -379,5 +338,105 @@ class _GameScreenState extends State<GameScreen> {
       return '$hours시간 $minutes분 $secs초';
     }
     return '$minutes분 $secs초';
+  }
+}
+
+class _NumberKey extends StatelessWidget {
+  const _NumberKey({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 42,
+      child: Material(
+        color: const Color(0xFFFBF7EC),
+        borderRadius: BorderRadius.circular(8),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFD8CBB0)),
+            ),
+            child: Center(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF24452D),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ToolKey extends StatelessWidget {
+  const _ToolKey({
+    required this.label,
+    required this.onPressed,
+    this.emphasized = false,
+    this.selected = false,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool emphasized;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onPressed != null;
+    final fill = !enabled
+        ? const Color(0xFFE8E0D0)
+        : selected
+            ? const Color(0xFFFFF0BB)
+            : emphasized
+                ? const Color(0xFFFFE4D6)
+                : const Color(0xFFFBF7EC);
+    final border = emphasized ? const Color(0xFFC66A45) : const Color(0xFFD8CBB0);
+    final color = !enabled
+        ? const Color(0xFF9AA59C)
+        : emphasized
+            ? const Color(0xFF9A4D31)
+            : const Color(0xFF24452D);
+
+    return SizedBox(
+      height: 44,
+      child: Material(
+        color: fill,
+        borderRadius: BorderRadius.circular(8),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: border),
+            ),
+            child: Center(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: color,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

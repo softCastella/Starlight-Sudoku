@@ -6,11 +6,11 @@ class ParchmentButton extends StatefulWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.height = 84,
-    this.fontSize = 20,
+    this.height = 64,
+    this.fontSize = 17,
   });
 
-  static const asset = 'assets/images/Button.png';
+  static const asset = 'assets/images/SystemUI/Button.png';
 
   final String label;
   final VoidCallback? onPressed;
@@ -60,7 +60,7 @@ class _ParchmentButtonState extends State<ParchmentButton> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 56),
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
                   child: Text(
                     widget.label,
                     textAlign: TextAlign.center,
