@@ -6,10 +6,17 @@ class VillageSceneBackdrop extends StatelessWidget {
   const VillageSceneBackdrop({
     super.key,
     required this.dawn,
+    this.scene,
   });
 
-  /// 0 is the night painting, 1 is the daytime painting.
+  /// 0 is night, 1 is day. Used for sky and overlay tint.
   final double dawn;
+
+  /// Which painting to show. Defaults to [dawn].
+  ///
+  /// Paintings are never crossfaded: two full scenes stacked with opacity
+  /// makes buildings look double-drawn and foggy.
+  final double? scene;
 
   static const nightSky = Color(0xFF1C3340);
   static const daySky = Color(0xFFBCE5F4);
@@ -21,71 +28,39 @@ class VillageSceneBackdrop extends StatelessWidget {
   /// Native ratio of the village paintings (941 x 1672).
   static const paintingAspectRatio = 941 / 1672;
 
-  static const _windowPoint = 0.42;
+  static const windowPoint = 0.42;
 
   static Color skyColor(double dawn) => Color.lerp(nightSky, daySky, dawn)!;
+
+  static String paintingAsset(double scene) {
+    final t = scene.clamp(0.0, 1.0);
+    if (t < windowPoint) return nightAsset;
+    if (t < 1) return windowsAsset;
+    return dayAsset;
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = dawn.clamp(0.0, 1.0);
-    final Widget paintings;
-    if (t < _windowPoint) {
-      final intoWindows = t / _windowPoint;
-      paintings = Stack(
-        fit: StackFit.expand,
-        children: [
-          _VillagePainting(asset: windowsAsset),
-          Opacity(
-            opacity: 1 - intoWindows,
-            child: _VillagePainting(asset: nightAsset),
-          ),
-        ],
-      );
-    } else {
-      final intoDay = (t - _windowPoint) / (1 - _windowPoint);
-      paintings = Stack(
-        fit: StackFit.expand,
-        children: [
-          _VillagePainting(asset: dayAsset),
-          Opacity(
-            opacity: 1 - intoDay,
-            child: _VillagePainting(asset: windowsAsset),
-          ),
-        ],
-      );
-    }
+    final asset = paintingAsset(scene ?? dawn);
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        paintings,
+        _VillagePainting(asset: asset),
         IgnorePointer(
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: const Alignment(0.02, 0.38),
-                radius: 0.78,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFFFFE56A).withValues(alpha: 0.28 * (1 - t * 0.55)),
-                  Color(0xFFF5CC3D).withValues(alpha: 0.10 * (1 - t * 0.4)),
-                  const Color(0x00FFE56A),
+                  Color.lerp(const Color(0x55152433), const Color(0x10FFFFFF), t)!,
+                  const Color(0x00000000),
+                  Color.lerp(const Color(0x44121C1A), const Color(0x10000000), t)!,
                 ],
                 stops: const [0, 0.42, 1],
               ),
-            ),
-          ),
-        ),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.lerp(const Color(0x66152433), const Color(0x14FFFFFF), t)!,
-                const Color(0x00000000),
-                Color.lerp(const Color(0x55121C1A), const Color(0x14000000), t)!,
-              ],
-              stops: const [0, 0.42, 1],
             ),
           ),
         ),
@@ -101,17 +76,14 @@ class _VillagePainting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cacheWidth = (MediaQuery.sizeOf(context).width *
-            MediaQuery.devicePixelRatioOf(context))
-        .round()
-        .clamp(480, 1440);
     return Image.asset(
       asset,
+      key: ValueKey(asset),
       fit: BoxFit.cover,
       alignment: Alignment.center,
       semanticLabel: AppLocalizations.of(context)?.villageVista ?? '별빛 마을 전경',
       filterQuality: FilterQuality.medium,
-      cacheWidth: cacheWidth,
+      gaplessPlayback: false,
     );
   }
 }

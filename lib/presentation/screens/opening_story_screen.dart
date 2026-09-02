@@ -57,7 +57,10 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
             duration: const Duration(milliseconds: 900),
             curve: Curves.easeInOutCubic,
             tween: Tween<double>(begin: _fromDawn, end: current.dawn),
-            builder: (context, dawn, _) => VillageSceneBackdrop(dawn: dawn),
+            builder: (context, dawn, _) => VillageSceneBackdrop(
+              dawn: dawn,
+              scene: current.dawn,
+            ),
           ),
           SafeArea(
             child: PlayViewport(

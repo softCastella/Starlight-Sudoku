@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
+import 'package:sudoku_game/presentation/config/app_fonts.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/notifiers/locale_override.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
@@ -12,6 +13,8 @@ class SudokuApp extends StatelessWidget {
 
   /// When set, skips device-language detection. Used by widget tests.
   final Locale? locale;
+
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
   static const _fallbackLocale = Locale('ko');
 
@@ -47,6 +50,7 @@ class SudokuApp extends StatelessWidget {
       child: Consumer<LocaleOverride>(
         builder: (context, locales, _) {
           return MaterialApp(
+            navigatorKey: navigatorKey,
             locale: locales.override ?? locale,
             onGenerateTitle: (context) =>
                 AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠',
@@ -61,6 +65,8 @@ class SudokuApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
+          fontFamily: AppFonts.family,
+          fontFamilyFallback: AppFonts.fallback,
           appBarTheme: AppBarTheme(
             backgroundColor: Colors.blue[600],
             foregroundColor: Colors.white,

@@ -90,69 +90,52 @@ class _MapHotspot extends StatelessWidget {
     final glow = restored ? landmark.glow : const Color(0xFFF5CC3D);
     final l10n = l10nOf(context);
     final name = l10n.buildingName(building.id);
+    final dayLook = dawn >= 1;
+    final pill = dayLook ? const Color(0xF2FFF8E8) : const Color(0xE6152433);
+    final labelColor = dayLook ? const Color(0xFF24452D) : const Color(0xFFFBF7EC);
 
-    return TweenAnimationBuilder<double>(
-      key: ValueKey('${building.id}-${building.level}'),
-      duration: const Duration(milliseconds: 650),
-      curve: Curves.easeOutBack,
-      tween: Tween(begin: 0.86, end: 1),
-      builder: (context, scale, child) => Transform.scale(scale: scale, child: child),
-      child: Semantics(
-        button: true,
-        label: l10n.buildingSemantics(name, building.level),
-        child: InkWell(
-          onTap: onTap,
-          splashColor: glow.withValues(alpha: 0.18),
-          highlightColor: glow.withValues(alpha: 0.10),
-          customBorder: const StadiumBorder(),
-          child: SizedBox(
-            width: landmark.width,
-            height: landmark.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (building.isComplete)
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 4),
-                    child: Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D), size: 16),
+    return Semantics(
+      button: true,
+      label: l10n.buildingSemantics(name, building.level),
+      child: InkWell(
+        onTap: onTap,
+        splashColor: glow.withValues(alpha: 0.18),
+        highlightColor: glow.withValues(alpha: 0.10),
+        customBorder: const StadiumBorder(),
+        child: SizedBox(
+          width: landmark.width,
+          height: landmark.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (building.isComplete)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 4),
+                  child: Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D), size: 16),
+                ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: pill,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: glow.withValues(alpha: restored ? 0.9 : 0.55),
                   ),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Color.lerp(
-                      const Color(0xCC152433),
-                      const Color(0xF2FFF8E8),
-                      dawn,
-                    ),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: glow.withValues(alpha: restored ? 0.85 : 0.45),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: glow.withValues(alpha: restored ? 0.28 : 0.08),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text(
-                      l10n.buildingLevelLabel(name, building.level),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: Color.lerp(
-                          const Color(0xFFFBF7EC),
-                          const Color(0xFF24452D),
-                          dawn,
-                        ),
-                      ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Text(
+                    l10n.buildingLevelLabel(name, building.level),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: labelColor,
+                      height: 1.1,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

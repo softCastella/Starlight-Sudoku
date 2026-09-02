@@ -93,12 +93,20 @@ class VillageScreen extends StatelessWidget {
                             child: Text(
                               l10n.restoredCount(completedCount, buildings.length),
                               style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Color.lerp(
-                                  const Color(0xFFB7D4C0),
-                                  const Color(0xFF2E7D32),
-                                  dawn,
-                                ),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: dawn >= 1
+                                    ? const Color(0xFF1B5E20)
+                                    : const Color(0xFFFBF7EC),
+                                shadows: dawn >= 1
+                                    ? const []
+                                    : const [
+                                        Shadow(
+                                          color: Color(0xCC000000),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
                               ),
                             ),
                           ),
