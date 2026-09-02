@@ -1,0 +1,175 @@
+{
+  "@@locale": "en",
+  "appTitle": "Starlight Sudoku",
+  "startNewPuzzle": "New puzzle",
+  "continueGame": "Continue",
+  "viewVillage": "Village",
+  "copyright": "© Tyche Spark. All rights reserved",
+  "puzzleComplete": "Puzzle complete!",
+  "starlightArrived": "Starlight has reached the village.",
+  "alreadyCleared": "You already cleared this stage.",
+  "elapsedTime": "Time  {time}",
+  "@elapsedTime": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "elapsedMinutesSeconds": "{minutes} min {seconds} sec",
+  "@elapsedMinutesSeconds": {
+    "placeholders": {
+      "minutes": {"type": "int"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "elapsedHoursMinutesSeconds": "{hours} hr {minutes} min {seconds} sec",
+  "@elapsedHoursMinutesSeconds": {
+    "placeholders": {
+      "hours": {"type": "int"},
+      "minutes": {"type": "int"},
+      "seconds": {"type": "int"}
+    }
+  },
+  "next": "Next",
+  "done": "Done",
+  "giveUpTitle": "Leave this puzzle?",
+  "giveUpMessage": "Your progress will be saved for Continue.",
+  "keepPlaying": "Keep playing",
+  "exitPuzzle": "Leave",
+  "giveUpTooltip": "Give up and leave",
+  "pauseTooltip": "Pause",
+  "retryTooltip": "Retry",
+  "autoCompleteTooltip": "Auto complete",
+  "memoInput": "Memo input",
+  "numberInput": "Number input",
+  "delete": "Erase",
+  "memo": "Memo",
+  "memoOn": "Memo ON",
+  "hintCount": "Hint {count}",
+  "@hintCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "undo": "Undo",
+  "selectCellFirst": "Select a cell first",
+  "fixedCell": "That cell is given",
+  "selectHintCell": "Select a cell for a hint",
+  "hintUnavailable": "A hint cannot be used on this cell",
+  "skip": "Skip",
+  "lightFirstWindow": "Light the first window",
+  "openingHeadline0": "A sleeping village",
+  "openingBody0": "Starlight Village had been night for a long time.\nThe windows were dark, and the alleys were still.",
+  "openingHeadline1": "Light in the windows",
+  "openingBody1": "Each puzzle is one window.\nEvery filled cell brings a little light to the village.",
+  "openingHeadline2": "When morning comes",
+  "openingBody2": "When starlight gathers, the sky grows bright.\nThe bakery, library, and fountain square wake again.",
+  "difficultySelect": "Choose a path",
+  "difficultyLead": "Which alley’s window will you light first?",
+  "difficultySub": "Choose a path to open that village’s stages.",
+  "difficultyEasy": "Easy",
+  "difficultyNormal": "Normal",
+  "difficultyHard": "Hard",
+  "difficultyBlurbEasy": "The path where the first windows light the alley",
+  "difficultyBlurbNormal": "The path where lights continue over the hill",
+  "difficultyBlurbHard": "The path through the village still fast asleep",
+  "stages": "Stages",
+  "starlight": "StarLight",
+  "stagesCleared": "{completed}/{total} cleared",
+  "@stagesCleared": {
+    "placeholders": {
+      "completed": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "previousStageFirst": "Clear the previous stage first",
+  "preparingPuzzle": "Preparing the puzzle",
+  "stageTitle": "{difficulty} stages",
+  "@stageTitle": {
+    "placeholders": {
+      "difficulty": {"type": "String"}
+    }
+  },
+  "morningComes": "Morning comes to the village as you clear stages.",
+  "villageTitle": "Starlight Village",
+  "mission": "Missions",
+  "restoredCount": "{completed} / {total} restored",
+  "@restoredCount": {
+    "placeholders": {
+      "completed": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "ownedStarlight": "StarLight  {amount}",
+  "@ownedStarlight": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "restorationLevel": "Restoration {level} / 5",
+  "@restorationLevel": {
+    "placeholders": {
+      "level": {"type": "int"}
+    }
+  },
+  "needsMoreStarlight": "{amount} more StarLight needed.",
+  "@needsMoreStarlight": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "harborUnlockTitle": "Moonlit Harbor unlocked",
+  "harborUnlockBody": "Starlight Village is beginning to shine again. The next story continues at Moonlit Harbor, where the sea wind blows.",
+  "towardHarbor": "To the harbor",
+  "nextVillage": "Next village: Moonlit Harbor",
+  "newStoryOpened": "A new story has opened.",
+  "harborStoryTooltip": "View the Moonlit Harbor story",
+  "missionsTitle": "Restoration missions",
+  "missionsLead": "Solve puzzles to gather starlight, and the windows light again.",
+  "currentStarlight": "Starlight now  {amount}",
+  "@currentStarlight": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "restorationComplete": "Restored",
+  "starlightRemaining": "{amount} StarLight left",
+  "@starlightRemaining": {
+    "placeholders": {
+      "amount": {"type": "int"}
+    }
+  },
+  "buildingBakery": "Bakery",
+  "buildingLibrary": "Library",
+  "buildingFountain": "Fountain square",
+  "bakeryHeadline": "The first warm light",
+  "bakeryDescription": "The old bakery oven is waiting for starlight.",
+  "bakeryCompleted": "The oven is lit. Fresh bread scent fills the alley.",
+  "libraryHeadline": "Sleeping stories",
+  "libraryDescription": "The dusty library books wait to be read again.",
+  "libraryCompleted": "The shelves are lit. The village stories continue.",
+  "fountainHeadline": "Song returns to the square",
+  "fountainDescription": "Laughter will not be far from the dry fountain square.",
+  "fountainCompleted": "The fountain flows again. The heart of the village shines.",
+  "villageVista": "Starlight Village vista",
+  "gameLevelTitle": "{difficulty} {level}",
+  "@gameLevelTitle": {
+    "placeholders": {
+      "difficulty": {"type": "String"},
+      "level": {"type": "int"}
+    }
+  },
+  "buildingLevelLabel": "{name}  {level}/5",
+  "@buildingLevelLabel": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "level": {"type": "int"}
+    }
+  },
+  "buildingSemantics": "{name}, restoration {level}",
+  "@buildingSemantics": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "level": {"type": "int"}
+    }
+  }
+}

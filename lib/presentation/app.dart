@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/l10n/app_localizations.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
 
 /// 메인 앱 위젯
 class SudokuApp extends StatelessWidget {
   const SudokuApp({super.key});
+
+  static const _fallbackLocale = Locale('ko');
+
+  static Locale _resolveLocale(Locale? locale, Iterable<Locale> supported) {
+    if (locale == null) return _fallbackLocale;
+    for (final candidate in supported) {
+      if (candidate.languageCode == locale.languageCode &&
+          candidate.countryCode == locale.countryCode) {
+        return candidate;
+      }
+    }
+    for (final candidate in supported) {
+      if (candidate.languageCode == locale.languageCode) {
+        return candidate;
+      }
+    }
+    return _fallbackLocale;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +40,15 @@ class SudokuApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: '별빛 스도쿠',
+        onGenerateTitle: (context) => AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠',
+        localeResolutionCallback: _resolveLocale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
