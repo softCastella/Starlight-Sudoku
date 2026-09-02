@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 
 /// 흰 화면에서 로고가 천천히 나타나며 살짝 커진 뒤, 같은 속도로 사라진다.
@@ -100,41 +101,51 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        const HomeScreen(),
-        if (_showOverlay) ...[
-          IgnorePointer(
-            child: FadeTransition(
-              opacity: _overlayOpacity,
-              child: const ColoredBox(
-                color: Colors.white,
-                child: SizedBox.expand(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: _showOverlay
+          ? const SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+              systemStatusBarContrastEnforced: false,
+            )
+          : HomeScreen.nightOverlayStyle,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          const HomeScreen(),
+          if (_showOverlay) ...[
+            IgnorePointer(
+              child: FadeTransition(
+                opacity: _overlayOpacity,
+                child: const ColoredBox(
+                  color: Colors.white,
+                  child: SizedBox.expand(),
+                ),
               ),
             ),
-          ),
-          IgnorePointer(
-            child: FadeTransition(
-              opacity: _logoOpacity,
-              child: ScaleTransition(
-                alignment: Alignment.center,
-                scale: _logoScale,
-                child: const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 48),
-                    child: Image(
-                      image: AssetImage(SplashScreen.logoAsset),
-                      width: 280,
-                      fit: BoxFit.contain,
+            IgnorePointer(
+              child: FadeTransition(
+                opacity: _logoOpacity,
+                child: ScaleTransition(
+                  alignment: Alignment.center,
+                  scale: _logoScale,
+                  child: const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 48),
+                      child: Image(
+                        image: AssetImage(SplashScreen.logoAsset),
+                        width: 280,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
