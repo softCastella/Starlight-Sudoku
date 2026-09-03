@@ -239,9 +239,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   l10n.copyright,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Colors.transparent,
+                    color: Colors.white,
                     fontSize: 11,
                     height: 1,
+                    shadows: [
+                      Shadow(color: Color(0xCC000000), blurRadius: 6),
+                    ],
                   ),
                 ),
               ),
