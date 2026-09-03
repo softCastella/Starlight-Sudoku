@@ -140,13 +140,32 @@ class GameNotifier extends ChangeNotifier {
     }).toList();
   }
 
-  /// 0 at night, 1 when every landmark in the first village is restored.
+  /// 0 at night, 1 when playable stages are cleared or the first village is restored.
   double get villageDawn {
+    final fromStages = _stageProgressDawn;
+    final fromBuildings = _buildingDawn;
+    return fromStages > fromBuildings ? fromStages : fromBuildings;
+  }
+
+  double get _buildingDawn {
     final landmarks = buildings;
     final required = landmarks.fold<int>(0, (sum, b) => sum + b.requiredStarLight);
     final restored = landmarks.fold<int>(0, (sum, b) => sum + b.restoredStarLight);
     if (required == 0) return 0;
     return (restored / required).clamp(0.0, 1.0);
+  }
+
+  double get _stageProgressDawn {
+    var completed = 0;
+    var total = 0;
+    for (final difficulty in SudokuDifficulty.values) {
+      final count = DifficultyConfig.getConfig(difficulty).stageCount;
+      if (count <= 0) continue;
+      total += count;
+      completed += _stageProgress.completedCount(difficulty);
+    }
+    if (total == 0) return 0;
+    return (completed / total).clamp(0.0, 1.0);
   }
 
   bool get isPuzzleComplete {

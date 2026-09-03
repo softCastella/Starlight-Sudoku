@@ -59,15 +59,15 @@ class VillageMissionsScreen extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               VillageSceneBackdrop(dawn: dawn),
-              const DecoratedBox(
+              DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0x55152433),
-                      Color(0x22121C1A),
-                      Color(0x99121C1A),
+                      Color.fromRGBO(21, 36, 51, 0.33 * (1 - dawn)),
+                      Color.fromRGBO(18, 28, 26, 0.13 * (1 - dawn)),
+                      Color.fromRGBO(18, 28, 26, 0.6 * (1 - dawn)),
                     ],
                   ),
                 ),

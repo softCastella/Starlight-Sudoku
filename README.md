@@ -4,8 +4,9 @@
 
 - 제품 라인: Tyche Spark
 - 개발사: Tyche works
-- 앱 ID: `com.softcastella.sudoku_game`
+- 앱 ID: `com.tychespark.starlightsudoku`
 - 웹 플레이: https://softcastella.github.io/Starlight-Sudoku/
+- 지금은 Play 체험판이다. Easy 10판만 있고, Normal / Hard는 숨긴다.
 
 ## 프로젝트 개요
 
@@ -15,15 +16,16 @@
 
 ## 현재 기능
 
-- Easy 20 / Normal 40 / Hard 50 스테이지
+- 체험판: Easy 10스테이지. 정식은 Easy 20 / Normal 40 / Hard 50 (`GameBalance.isTrial`)
 - 난이도별 유일해 퍼즐 생성 (같은 스테이지는 같은 퍼즐)
 - 앞 스테이지를 완료해야 다음 스테이지 해금, 클리어한 스테이지는 다시 플레이 가능
-- 메모, 힌트 3회, 힌트당 StarLight 10 감점, 실행 취소
+- 메모, 힌트 3회, 힌트당 StarLight 감점, 실행 취소, 틀린 숫자 StarLight 감점
 - 첫 클리어 StarLight 보상, 마을 복원, 건물 스토리
 - 진행 중 퍼즐 이어하기, 플레이 통계, 마을 진행도 로컬 저장
+- 체험판 10판 클리어 후 인앱 리뷰 안내 (앱 안에 머무름)
 - GitHub Pages 웹 배포
 
-난이도별 StarLight 보상은 Easy 80, Normal 120, Hard 180입니다.
+난이도별 StarLight 보상은 Easy 10, Normal 20, Hard 30이다. 실수·힌트에 따라 줄어들며 난이도별 최솟값이 있다.
 
 ## 화면 흐름
 
@@ -60,7 +62,7 @@ flutter run -d <device-id>
 
 ## Android 출시 준비
 
-앱 ID는 `com.softcastella.sudoku_game`이며 Android 7.0(API 24) 이상을 지원합니다.
+앱 ID는 `com.tychespark.starlightsudoku`이며 Android 7.0(API 24) 이상을 지원합니다.
 
 출시용 AAB를 만들기 전 다음을 준비해야 합니다.
 
@@ -73,7 +75,8 @@ flutter run -d <device-id>
 
 ## 다음 작업
 
+- 체험판 10판 클리어 후 리뷰 안내와 낮 배경 확인
+- 스토어 빌드 전 스테이지 스킵 벌레 버튼 제거
 - Android 실기기에서 스플래시와 게임 흐름 확인
-- APK/AAB 또는 내부 테스트 배포
-- 앱 아이콘에 Tyche Spark 로고 적용 여부 결정
+- 출시 서명 후 APK/AAB 또는 내부 테스트 배포
 - 달빛 항구 실제 지도와 콘텐츠 구현

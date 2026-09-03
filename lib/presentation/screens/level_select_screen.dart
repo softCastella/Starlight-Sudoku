@@ -6,6 +6,7 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/game_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
+import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// Numbered stage list for one difficulty, laid over the village at dusk.
@@ -23,7 +24,8 @@ class LevelSelectScreen extends StatelessWidget {
     final config = DifficultyConfig.getConfig(difficulty);
     final accent = _accentColor(difficulty);
 
-    return BgmScope(
+    return TrialEndHost(
+      child: BgmScope(
       cue: BgmCue.level,
       child: Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
@@ -114,6 +116,7 @@ class LevelSelectScreen extends StatelessWidget {
           },
         );
       },
+    ),
     ),
     );
   }

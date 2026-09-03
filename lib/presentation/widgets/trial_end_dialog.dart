@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
 class TrialEndDialog extends StatefulWidget {
   const TrialEndDialog({super.key});
+
+  static bool _showing = false;
+
+  static Future<void> maybeShow(BuildContext context) async {
+    if (_showing) return;
+    if (ModalRoute.of(context)?.isCurrent != true) return;
+    final game = context.read<GameNotifier>();
+    if (!game.isTrialComplete || game.hasSeenTrialEnd) return;
+    _showing = true;
+    try {
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: const Color(0xCC152433),
+        builder: (context) => const TrialEndDialog(),
+      );
+      if (context.mounted) await game.markTrialEndSeen();
+    } finally {
+      _showing = false;
+    }
+  }
 
   static const _ink = Color(0xFF24452D);
   static const _muted = Color(0xFF4D6554);
@@ -109,4 +133,44 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
       ),
     );
   }
+}
+
+/// Shows [TrialEndDialog] when this route is current after a trial clear.
+class TrialEndHost extends StatefulWidget {
+  const TrialEndHost({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<TrialEndHost> createState() => _TrialEndHostState();
+}
+
+class _TrialEndHostState extends State<TrialEndHost> with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      GameBgm.routeObserver.subscribe(this, route);
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) TrialEndDialog.maybeShow(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    GameBgm.routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) TrialEndDialog.maybeShow(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

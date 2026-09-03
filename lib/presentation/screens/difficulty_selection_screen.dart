@@ -6,6 +6,7 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/level_select_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
+import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// 난이도 선택 화면
@@ -19,81 +20,112 @@ class DifficultySelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
-    return BgmScope(
+    return TrialEndHost(
+      child: BgmScope(
       cue: BgmCue.level,
-      child: Scaffold(
-      backgroundColor: VillageSceneBackdrop.nightSky,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: _cream,
-        elevation: 0,
-        title: Text(
-          l10n.difficultySelect,
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            color: _cream,
-            shadows: [Shadow(color: Color(0x88000000), blurRadius: 8)],
-          ),
-        ),
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          const VillageSceneBackdrop(dawn: 0.16),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0x66152433),
-                  Color(0x22121C1A),
-                  Color(0x99121C1A),
-                ],
+      child: Consumer<GameNotifier>(
+      builder: (context, gameNotifier, _) {
+        return TweenAnimationBuilder<double>(
+          duration: const Duration(milliseconds: 900),
+          curve: Curves.easeOutCubic,
+          tween: Tween<double>(begin: 0, end: gameNotifier.villageDawn),
+          builder: (context, dawn, _) {
+            final titleColor = Color.lerp(_cream, _ink, dawn)!;
+            final night = 1 - dawn;
+            return Scaffold(
+              backgroundColor: VillageSceneBackdrop.skyColor(dawn),
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                foregroundColor: titleColor,
+                elevation: 0,
+                title: Text(
+                  l10n.difficultySelect,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: titleColor,
+                    shadows: [
+                      Shadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.53 * night),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          SafeArea(
-            child: PlayViewport(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+              body: Stack(
+                fit: StackFit.expand,
                 children: [
-                  Text(
-                    l10n.difficultyLead,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: _cream,
-                      height: 1.4,
-                      shadows: [Shadow(color: Color(0x88000000), blurRadius: 8)],
+                  VillageSceneBackdrop(dawn: dawn),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromRGBO(21, 36, 51, 0.4 * night),
+                          Color.fromRGBO(18, 28, 26, 0.13 * night),
+                          Color.fromRGBO(18, 28, 26, 0.6 * night),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.difficultySub,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xD6FFF8E8),
-                      height: 1.45,
+                  SafeArea(
+                    child: PlayViewport(
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+                        children: [
+                          Text(
+                            l10n.difficultyLead,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: titleColor,
+                              height: 1.4,
+                              shadows: [
+                                Shadow(
+                                  color: Color.fromRGBO(0, 0, 0, 0.53 * night),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            l10n.difficultySub,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color.lerp(
+                                const Color(0xD6FFF8E8),
+                                _muted,
+                                dawn,
+                              ),
+                              height: 1.45,
+                            ),
+                          ),
+                          const SizedBox(height: 22),
+                          ...SudokuDifficulty.values
+                              .where(
+                                (difficulty) =>
+                                    DifficultyConfig.getConfig(difficulty)
+                                        .stageCount >
+                                    0,
+                              )
+                              .map(
+                            (difficulty) =>
+                                _DifficultyPathCard(difficulty: difficulty),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 22),
-                  ...SudokuDifficulty.values
-                      .where(
-                        (difficulty) =>
-                            DifficultyConfig.getConfig(difficulty).stageCount >
-                            0,
-                      )
-                      .map(
-                    (difficulty) => _DifficultyPathCard(difficulty: difficulty),
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
+            );
+          },
+        );
+      },
+    ),
     ),
     );
   }

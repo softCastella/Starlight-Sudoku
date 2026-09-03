@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
-import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
@@ -29,7 +27,6 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _overlayOpacity;
   bool _showOverlay = true;
   bool _started = false;
-  bool _trialEndShowing = false;
 
   @override
   void initState() {
@@ -111,22 +108,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _maybeShowTrialEnd() {
-    if (!mounted || _showOverlay || _trialEndShowing) return;
-    if (ModalRoute.of(context)?.isCurrent != true) return;
-    final game = context.read<GameNotifier>();
-    if (!game.isTrialComplete || game.hasSeenTrialEnd) return;
-    _trialEndShowing = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        barrierColor: const Color(0xCC152433),
-        builder: (context) => const TrialEndDialog(),
-      );
-      if (!mounted) return;
-      await game.markTrialEndSeen();
-      _trialEndShowing = false;
+    if (!mounted || _showOverlay) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) TrialEndDialog.maybeShow(context);
     });
   }
 
