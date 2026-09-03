@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/game_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -22,7 +23,9 @@ class LevelSelectScreen extends StatelessWidget {
     final config = DifficultyConfig.getConfig(difficulty);
     final accent = _accentColor(difficulty);
 
-    return Consumer<GameNotifier>(
+    return BgmScope(
+      cue: BgmCue.level,
+      child: Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
         final completed = gameNotifier.completedStageCount(difficulty);
         final progress = config.stageCount == 0 ? 0.0 : completed / config.stageCount;
@@ -111,6 +114,7 @@ class LevelSelectScreen extends StatelessWidget {
           },
         );
       },
+    ),
     );
   }
 

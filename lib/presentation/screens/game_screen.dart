@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
@@ -35,7 +36,9 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
-    return PopScope(
+    return BgmScope(
+      cue: BgmCue.silence,
+      child: PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) _confirmGiveUp();
@@ -123,6 +126,7 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 

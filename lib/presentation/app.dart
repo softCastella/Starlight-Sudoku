@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/notifiers/locale_override.dart';
@@ -102,6 +103,7 @@ class SudokuApp extends StatelessWidget {
             ),
           ),
         ),
+        navigatorObservers: [GameBgm.routeObserver],
         home: const SplashScreen(),
           );
         },

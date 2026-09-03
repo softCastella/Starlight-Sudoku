@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/opening_story.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -23,6 +24,14 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
 
   int _page = 0;
   double _fromDawn = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) VillageSceneBackdrop.precacheAll(context);
+    });
+  }
 
   Future<void> _finish() async {
     await context.read<GameNotifier>().completeOpeningStory();
@@ -47,106 +56,108 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
     final isLast = _page == pages.length - 1;
     final l10n = l10nOf(context);
 
-    return Scaffold(
-      backgroundColor: VillageSceneBackdrop.skyColor(current.dawn),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          TweenAnimationBuilder<double>(
-            key: ValueKey(_page),
-            duration: const Duration(milliseconds: 900),
-            curve: Curves.easeInOutCubic,
-            tween: Tween<double>(begin: _fromDawn, end: current.dawn),
-            builder: (context, dawn, _) => VillageSceneBackdrop(
-              dawn: dawn,
-              scene: current.dawn,
+    return BgmScope(
+      cue: BgmCue.silence,
+      child: Scaffold(
+        backgroundColor: VillageSceneBackdrop.nightSky,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            TweenAnimationBuilder<double>(
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeInOutCubic,
+              tween: Tween<double>(begin: _fromDawn, end: current.dawn),
+              builder: (context, dawn, _) => VillageSceneBackdrop(
+                dawn: dawn,
+                scene: current.dawn,
+              ),
             ),
-          ),
-          SafeArea(
-            child: PlayViewport(
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _finish,
-                      child: Text(
-                        l10n.skip,
-                        style: TextStyle(
-                          color: Color.lerp(
-                            const Color(0xE6FFF8E8),
-                            const Color(0xE624452D),
-                            current.dawn,
+            SafeArea(
+              child: PlayViewport(
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _finish,
+                        child: Text(
+                          l10n.skip,
+                          style: TextStyle(
+                            color: Color.lerp(
+                              const Color(0xE6FFF8E8),
+                              const Color(0xE624452D),
+                              current.dawn,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xF2FFF8E8),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: const Color(0x66F5CC3D)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.openingHeadline(_page),
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              color: _ink,
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xF2FFF8E8),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: const Color(0x66F5CC3D)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.openingHeadline(_page),
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: _ink,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            l10n.openingBody(_page),
-                            style: const TextStyle(
-                              fontSize: 15,
-                              height: 1.55,
-                              color: Color(0xFF4D6554),
+                            const SizedBox(height: 10),
+                            Text(
+                              l10n.openingBody(_page),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                height: 1.55,
+                                color: Color(0xFF4D6554),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 18),
-                          Row(
-                            children: List.generate(pages.length, (dot) {
-                              return Container(
-                                margin: const EdgeInsets.only(right: 6),
-                                width: dot == _page ? 16 : 7,
-                                height: 7,
-                                decoration: BoxDecoration(
-                                  color: dot == _page ? _gold : const Color(0xFFD8CBB0),
-                                  borderRadius: BorderRadius.circular(99),
-                                ),
-                              );
-                            }),
-                          ),
-                          const SizedBox(height: 8),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: OvalImageButton(
-                              label: isLast ? l10n.lightFirstWindow : l10n.next,
-                              width: isLast ? 148 : 80,
-                              height: 28,
-                              fontSize: 12,
-                              onPressed: _next,
+                            const SizedBox(height: 18),
+                            Row(
+                              children: List.generate(pages.length, (dot) {
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 6),
+                                  width: dot == _page ? 16 : 7,
+                                  height: 7,
+                                  decoration: BoxDecoration(
+                                    color: dot == _page ? _gold : const Color(0xFFD8CBB0),
+                                    borderRadius: BorderRadius.circular(99),
+                                  ),
+                                );
+                              }),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: OvalImageButton(
+                                label: isLast ? l10n.lightFirstWindow : l10n.next,
+                                width: isLast ? 148 : 80,
+                                height: 28,
+                                fontSize: 12,
+                                onPressed: _next,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

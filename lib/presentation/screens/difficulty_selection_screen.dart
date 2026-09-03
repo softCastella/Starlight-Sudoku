@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/level_select_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -18,7 +19,9 @@ class DifficultySelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
-    return Scaffold(
+    return BgmScope(
+      cue: BgmCue.level,
+      child: Scaffold(
       backgroundColor: VillageSceneBackdrop.nightSky,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -85,6 +88,7 @@ class DifficultySelectionScreen extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

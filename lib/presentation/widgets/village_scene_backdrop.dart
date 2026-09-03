@@ -39,6 +39,25 @@ class VillageSceneBackdrop extends StatelessWidget {
     return dayAsset;
   }
 
+  static int cacheWidthFor(BuildContext context) {
+    return (MediaQuery.sizeOf(context).width *
+            MediaQuery.devicePixelRatioOf(context))
+        .round()
+        .clamp(480, 1440);
+  }
+
+  static ImageProvider paintingProvider(BuildContext context, String asset) {
+    return ResizeImage(AssetImage(asset), width: cacheWidthFor(context));
+  }
+
+  static Future<void> precacheAll(BuildContext context) {
+    return Future.wait([
+      precacheImage(paintingProvider(context, nightAsset), context),
+      precacheImage(paintingProvider(context, windowsAsset), context),
+      precacheImage(paintingProvider(context, dayAsset), context),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = dawn.clamp(0.0, 1.0);
@@ -47,6 +66,7 @@ class VillageSceneBackdrop extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
+        const ColoredBox(color: nightSky),
         _VillagePainting(asset: asset),
         IgnorePointer(
           child: DecoratedBox(
@@ -76,14 +96,13 @@ class _VillagePainting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      asset,
-      key: ValueKey(asset),
+    return Image(
+      image: VillageSceneBackdrop.paintingProvider(context, asset),
       fit: BoxFit.cover,
       alignment: Alignment.center,
       semanticLabel: AppLocalizations.of(context)?.villageVista ?? '별빛 마을 전경',
       filterQuality: FilterQuality.medium,
-      gaplessPlayback: false,
+      gaplessPlayback: true,
     );
   }
 }

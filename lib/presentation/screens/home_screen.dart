@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/icon_baker.dart';
 import 'package:sudoku_game/presentation/config/icon_layout.dart';
 import 'package:sudoku_game/presentation/config/icon_layout_persist.dart';
@@ -165,7 +166,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ParchmentButton(
                         label: l10n.startNewPuzzle,
                         fontSize: _fontSize,
-                        onPressed: () => _startNewPuzzle(context),
+                        onPressed: () {
+                          TitleButtonChime.play();
+                          _startNewPuzzle(context);
+                        },
                       ),
                       SizedBox(height: _gap),
                       Consumer<GameNotifier>(
@@ -179,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               label: l10n.continueGame,
                               fontSize: (_fontSize - 1).clamp(12, 18),
                               onPressed: () {
+                                TitleButtonChime.play();
                                 if (gameNotifier.continueGame()) {
                                   Navigator.push(
                                     context,
@@ -194,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         label: l10n.viewVillage,
                         fontSize: (_fontSize - 1).clamp(12, 18),
                         onPressed: () {
+                          TitleButtonChime.play();
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const VillageScreen()),

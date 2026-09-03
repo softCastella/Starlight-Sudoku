@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
@@ -14,7 +15,9 @@ class VillageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameNotifier>(
+    return BgmScope(
+      cue: BgmCue.silence,
+      child: Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
         final dawn = gameNotifier.villageDawn;
         final ink = Color.lerp(const Color(0xFFFBF7EC), const Color(0xFF24452D), dawn)!;
@@ -160,6 +163,7 @@ class VillageScreen extends StatelessWidget {
           ),
         );
       },
+    ),
     );
   }
 

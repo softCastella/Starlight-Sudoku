@@ -13,6 +13,7 @@ class OvalImageButton extends StatefulWidget {
 
   static const asset =
       'assets/images/SystemUI/button_modal_default_starlight_sudoku.png';
+  static const imageAspectRatio = 551 / 176;
 
   final String label;
   final VoidCallback onPressed;
@@ -44,14 +45,14 @@ class _OvalImageButtonState extends State<OvalImageButton> {
           scale: _pressed ? 0.97 : 1,
           child: SizedBox(
             width: widget.width,
-            height: widget.height,
+            height: widget.width / OvalImageButton.imageAspectRatio,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Positioned.fill(
                   child: Image.asset(
                     OvalImageButton.asset,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.contain,
                     filterQuality: FilterQuality.medium,
                   ),
                 ),

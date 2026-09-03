@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
@@ -18,7 +19,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   late final AnimationController _controller;
   late final Animation<double> _logoOpacity;
   late final Animation<double> _logoScale;
@@ -73,6 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
         setState(() => _showOverlay = false);
+        GameBgm.playTitle();
       }
     });
   }
@@ -80,9 +82,18 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      GameBgm.routeObserver.subscribe(this, route);
+    }
     if (_started) return;
     _started = true;
     _startSplash();
+  }
+
+  @override
+  void didPopNext() {
+    if (!_showOverlay) GameBgm.playTitle();
   }
 
   Future<void> _startSplash() async {
@@ -102,16 +113,14 @@ class _SplashScreenState extends State<SplashScreen>
     try {
       await Future.wait([
         precacheImage(AssetImage(TitleArt.assetOf(context)), context),
-        precacheImage(
-          const AssetImage(VillageSceneBackdrop.nightAsset),
-          context,
-        ),
+        VillageSceneBackdrop.precacheAll(context),
       ]).timeout(const Duration(milliseconds: 4000));
     } catch (_) {}
   }
 
   @override
   void dispose() {
+    GameBgm.routeObserver.unsubscribe(this);
     _controller.dispose();
     super.dispose();
   }
