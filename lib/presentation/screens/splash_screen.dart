@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
         setState(() => _showOverlay = false);
-        GameBgm.playTitle();
+        _playTitleIfCurrent();
       }
     });
   }
@@ -92,8 +92,17 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
+  void didPushNext() {}
+
+  @override
   void didPopNext() {
-    if (!_showOverlay) GameBgm.playTitle();
+    _playTitleIfCurrent();
+  }
+
+  void _playTitleIfCurrent() {
+    if (!mounted || _showOverlay) return;
+    if (ModalRoute.of(context)?.isCurrent != true) return;
+    GameBgm.playTitle();
   }
 
   Future<void> _startSplash() async {

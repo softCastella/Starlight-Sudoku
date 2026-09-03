@@ -3,176 +3,126 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-/// Looped scene BGM with fade-in at the start and fade-out at the end.
+/// Title gets one track. Difficulty through stage select share one other track.
+/// Switching scenes kills every live player so old audio cannot linger.
 class GameBgm {
   GameBgm._();
 
   static const titleAsset = 'audio/BGM/1_Title_Lamplight Grid.ogg';
   static const levelAsset = 'audio/BGM/2_Level_Starfall Grid.ogg';
-  static const fadeDuration = Duration(milliseconds: 1400);
+  static const fadeInDuration = Duration(milliseconds: 600);
 
   static final RouteObserver<ModalRoute<void>> routeObserver =
       RouteObserver<ModalRoute<void>>();
 
+  static final Set<AudioPlayer> _live = {};
   static AudioPlayer? _player;
-  static StreamSubscription<Duration>? _positionSub;
-  static StreamSubscription<Duration>? _durationSub;
   static Timer? _fadeTimer;
   static String? _current;
   static String? _wanted;
-  static int _generation = 0;
   static double _volume = 0;
-  static Duration _lastPosition = Duration.zero;
-  static Duration? _clipDuration;
-  static bool _audible = false;
-  static Future<void>? _unlocking;
+  static Future<void> _chain = Future.value();
 
-  static Future<void> playTitle() {
-    _wanted = titleAsset;
-    return _play(titleAsset);
-  }
-
-  static Future<void> playLevel() {
-    _wanted = levelAsset;
-    return _play(levelAsset);
-  }
+  static Future<void> playTitle() => _setWanted(titleAsset);
+  static Future<void> playLevel() => _setWanted(levelAsset);
 
   static Future<void> fadeOut() {
     _wanted = null;
-    return _stop(fade: true);
+    return _enqueue(_killAll);
   }
 
-  /// Browsers block sound until a tap. Call this on the first pointer down.
   static Future<void> unlock() {
     if (const bool.fromEnvironment('FLUTTER_TEST')) {
       return Future<void>.value();
     }
-    return _unlocking ??= _unlock().whenComplete(() {
-      _unlocking = null;
-    });
-  }
-
-  static Future<void> _unlock() async {
-    if (_wanted == null && _player == null) {
-      _wanted = titleAsset;
-    }
     final wanted = _wanted;
-    if (wanted == null) return;
-    if (_audible && _current == wanted && _isPlaying) return;
-    _current = null;
-    _audible = false;
-    await _play(wanted);
+    if (wanted == null) return Future<void>.value();
+    if (_isHolding(wanted)) return Future<void>.value();
+    return _enqueue(() => _play(wanted));
   }
 
-  static bool get _isPlaying =>
-      _player != null && _player!.state == PlayerState.playing;
+  static Future<void> _setWanted(String asset) {
+    _wanted = asset;
+    return _enqueue(() => _play(asset));
+  }
+
+  static Future<void> _enqueue(Future<void> Function() job) {
+    final done = Completer<void>();
+    _chain = _chain.then((_) => job()).whenComplete(done.complete);
+    return done.future;
+  }
+
+  static bool _isHolding(String asset) =>
+      _wanted == asset &&
+      _current == asset &&
+      _player != null &&
+      _live.length == 1 &&
+      _live.contains(_player);
 
   static Future<void> _play(String asset) async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
-    if (_current == asset && _isPlaying) return;
+    if (_wanted != asset) return;
+    if (_isHolding(asset)) return;
 
-    final generation = ++_generation;
-    await _stop(fade: _player != null && _audible);
-    if (generation != _generation) return;
+    await _killAll();
+    if (_wanted != asset) return;
 
-    _current = asset;
-    _lastPosition = Duration.zero;
-    _clipDuration = null;
-    _audible = false;
     final player = AudioPlayer();
+    _live.add(player);
     _player = player;
+    _current = asset;
+    _volume = 0;
     await player.setReleaseMode(ReleaseMode.loop);
     await player.setVolume(0);
-    _volume = 0;
     try {
       await player.play(AssetSource(asset));
     } catch (_) {
+      await _killAll();
       return;
     }
-    if (generation != _generation) return;
-
-    await Future<void>.delayed(const Duration(milliseconds: 40));
-    if (generation != _generation) return;
-    _audible = _isPlaying;
-    if (!_audible) return;
-
-    _clipDuration = await player.getDuration();
-    await _fadeTo(1, fadeDuration, generation);
-
-    await _positionSub?.cancel();
-    await _durationSub?.cancel();
-    _durationSub = player.onDurationChanged.listen((duration) {
-      if (generation == _generation) _clipDuration = duration;
-    });
-    _positionSub = player.onPositionChanged.listen((position) {
-      if (generation != _generation) return;
-      final duration = _clipDuration;
-      if (duration == null || duration <= Duration.zero) {
-        _lastPosition = position;
-        return;
-      }
-
-      if (position < _lastPosition) {
-        _volume = 0;
-        player.setVolume(0);
-        _fadeTo(1, fadeDuration, generation);
-        _lastPosition = position;
-        return;
-      }
-      _lastPosition = position;
-
-      final fadeFor = duration < fadeDuration ? duration : fadeDuration;
-      final remaining = duration - position;
-      if (remaining > Duration.zero && remaining <= fadeFor) {
-        final volume = remaining.inMilliseconds / fadeFor.inMilliseconds;
-        _volume = volume.clamp(0, 1);
-        player.setVolume(_volume);
-      }
-    });
-  }
-
-  static Future<void> _stop({required bool fade}) async {
-    _fadeTimer?.cancel();
-    await _positionSub?.cancel();
-    _positionSub = null;
-    await _durationSub?.cancel();
-    _durationSub = null;
-    final player = _player;
-    _player = null;
-    _current = null;
-    _audible = false;
-    if (player == null) return;
-    if (fade && _volume > 0) {
-      await _fadePlayer(player, _volume, 0, fadeDuration);
+    if (_wanted != asset || !identical(_player, player)) {
+      await _disposePlayer(player);
+      return;
     }
-    await player.stop();
-    await player.dispose();
+    await _fade(player, 0, 1, fadeInDuration);
   }
 
-  static Future<void> _fadeTo(
-    double target,
-    Duration duration,
-    int generation,
-  ) async {
-    final player = _player;
-    if (player == null) return;
-    await _fadePlayer(player, _volume, target, duration, generation);
+  static Future<void> _killAll() async {
+    _fadeTimer?.cancel();
+    _fadeTimer = null;
+    _current = null;
+    _volume = 0;
+    _player = null;
+    final players = _live.toList();
+    _live.clear();
+    for (final player in players) {
+      await _disposePlayer(player);
+    }
   }
 
-  static Future<void> _fadePlayer(
+  static Future<void> _disposePlayer(AudioPlayer player) async {
+    _live.remove(player);
+    try {
+      await player.setVolume(0);
+      await player.stop();
+      await player.release();
+      await player.dispose();
+    } catch (_) {}
+  }
+
+  static Future<void> _fade(
     AudioPlayer player,
     double from,
     double target,
-    Duration duration, [
-    int? generation,
-  ]) async {
+    Duration duration,
+  ) async {
     _fadeTimer?.cancel();
-    const steps = 18;
-    final stepMs = (duration.inMilliseconds / steps).round().clamp(16, 120);
+    const steps = 8;
+    final stepMs = (duration.inMilliseconds / steps).round().clamp(16, 80);
     var i = 0;
     final completer = Completer<void>();
     _fadeTimer = Timer.periodic(Duration(milliseconds: stepMs), (timer) {
-      if (generation != null && generation != _generation) {
+      if (!identical(_player, player)) {
         timer.cancel();
         if (!completer.isCompleted) completer.complete();
         return;
@@ -208,6 +158,7 @@ class BgmScope extends StatefulWidget {
 
 class _BgmScopeState extends State<BgmScope> with RouteAware {
   ModalRoute<void>? _route;
+  var _applied = false;
 
   @override
   void didChangeDependencies() {
@@ -217,7 +168,10 @@ class _BgmScopeState extends State<BgmScope> with RouteAware {
       if (_route != null) GameBgm.routeObserver.unsubscribe(this);
       GameBgm.routeObserver.subscribe(this, route);
       _route = route;
-      _apply();
+      if (!_applied) {
+        _applied = true;
+        _apply();
+      }
     }
   }
 
@@ -228,7 +182,11 @@ class _BgmScopeState extends State<BgmScope> with RouteAware {
   }
 
   @override
-  void didPush() => _apply();
+  void didPush() {
+    if (_applied) return;
+    _applied = true;
+    _apply();
+  }
 
   @override
   void didPopNext() => _apply();
