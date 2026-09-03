@@ -31,7 +31,6 @@ class LevelSelectScreen extends StatelessWidget {
       builder: (context, gameNotifier, _) {
         final completed = gameNotifier.completedStageCount(difficulty);
         final progress = config.stageCount == 0 ? 0.0 : completed / config.stageCount;
-        final currentLevel = _currentLevel(gameNotifier, config.stageCount);
         final l10n = l10nOf(context);
 
         return TweenAnimationBuilder<double>(
@@ -98,9 +97,6 @@ class LevelSelectScreen extends StatelessWidget {
                                   level: level,
                                   isCompleted: isCompleted,
                                   isUnlocked: unlocked,
-                                  isCurrent: unlocked &&
-                                      !isCompleted &&
-                                      level == currentLevel,
                                   onTap: () => _openStage(context, gameNotifier, level),
                                 );
                               },
@@ -119,16 +115,6 @@ class LevelSelectScreen extends StatelessWidget {
     ),
     ),
     );
-  }
-
-  int _currentLevel(GameNotifier gameNotifier, int stageCount) {
-    for (var level = 1; level <= stageCount; level++) {
-      if (gameNotifier.isStageUnlocked(difficulty, level) &&
-          !gameNotifier.isStageCompleted(difficulty, level)) {
-        return level;
-      }
-    }
-    return stageCount;
   }
 
   Future<void> _openStage(
@@ -246,14 +232,12 @@ class _StageTile extends StatefulWidget {
     required this.level,
     required this.isCompleted,
     required this.isUnlocked,
-    required this.isCurrent,
     required this.onTap,
   });
 
   final int level;
   final bool isCompleted;
   final bool isUnlocked;
-  final bool isCurrent;
   final VoidCallback onTap;
 
   @override
@@ -270,7 +254,6 @@ class _StageTileState extends State<_StageTile> {
   Widget build(BuildContext context) {
     final isUnlocked = widget.isUnlocked;
     final isCompleted = widget.isCompleted;
-    final isCurrent = widget.isCurrent;
     final lit = isUnlocked && _pressed;
 
     final fill = !isUnlocked
@@ -301,10 +284,13 @@ class _StageTileState extends State<_StageTile> {
               ? () async {
                   setState(() => _pressed = true);
                   await Future<void>.delayed(const Duration(milliseconds: 140));
-                  if (mounted) widget.onTap();
+                  if (!mounted) return;
+                  widget.onTap();
+                  if (mounted) setState(() => _pressed = false);
                 }
               : null,
           onTapDown: isUnlocked ? (_) => setState(() => _pressed = true) : null,
+          onTapUp: isUnlocked ? (_) => setState(() => _pressed = false) : null,
           onTapCancel: isUnlocked ? () => setState(() => _pressed = false) : null,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 140),
@@ -359,30 +345,11 @@ class _StageTileState extends State<_StageTile> {
                       )
                     : Icon(Icons.lock_rounded, size: 18, color: foreground),
               ),
-              // Trial: hide the cleared-stage star for now.
-              // if (isCompleted)
-              //   const Positioned(
-              //     top: 4,
-              //     right: 4,
-              //     child: Icon(Icons.auto_awesome, size: 12, color: _gold),
-              //   ),
-              if (isCurrent && isUnlocked && !isCompleted)
+              if (isCompleted)
                 const Positioned(
-                  bottom: 5,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: SizedBox(
-                      width: 6,
-                      height: 6,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF5CC3D),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  ),
+                  top: 4,
+                  right: 4,
+                  child: Icon(Icons.auto_awesome, size: 12, color: _gold),
                 ),
             ],
           ),
@@ -392,3 +359,4 @@ class _StageTileState extends State<_StageTile> {
     );
   }
 }
+

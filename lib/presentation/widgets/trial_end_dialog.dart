@@ -110,9 +110,9 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
                   child: IgnorePointer(
                     ignoring: _rating < 1 || _sending,
                     child: ParchmentModalButton(
-                      asset: ParchmentModal.continueAsset,
+                      asset: ParchmentModal.exitAsset,
                       label: l10n.sendReview,
-                      color: TrialEndDialog._ink,
+                      color: TrialEndDialog._cream,
                       onPressed: _send,
                     ),
                   ),
@@ -121,9 +121,9 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
               const SizedBox(width: 8),
               Expanded(
                 child: ParchmentModalButton(
-                  asset: ParchmentModal.exitAsset,
+                  asset: ParchmentModal.continueAsset,
                   label: l10n.close,
-                  color: TrialEndDialog._cream,
+                  color: TrialEndDialog._ink,
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
