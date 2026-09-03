@@ -2,9 +2,15 @@
 /// All game constants are defined here, not hardcoded in UI/Controllers.
 class GameBalance {
   // StarLight rewards (for completing Sudoku)
-  static const int easyStarLightReward = 80;
-  static const int normalStarLightReward = 120;
-  static const int hardStarLightReward = 180;
+  static const int easyStarLightReward = 10;
+  static const int normalStarLightReward = 20;
+  static const int hardStarLightReward = 30;
+
+  static const int easyMinStarLightReward = 3;
+  static const int normalMinStarLightReward = 5;
+  static const int hardMinStarLightReward = 8;
+
+  static const int hintRewardPenalty = 2;
 
   static const int easyMistakePenalty = 1;
   static const int normalMistakePenalty = 2;

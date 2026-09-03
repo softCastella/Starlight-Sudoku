@@ -72,7 +72,7 @@ class _TimerWidgetState extends State<TimerWidget> {
               ),
               const SizedBox(width: 5),
               Text(
-                reward.toString().padLeft(3, '0'),
+                '$reward',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,

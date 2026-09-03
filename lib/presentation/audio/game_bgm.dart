@@ -19,33 +19,83 @@ class GameBgm {
   static StreamSubscription<Duration>? _durationSub;
   static Timer? _fadeTimer;
   static String? _current;
+  static String? _wanted;
   static int _generation = 0;
   static double _volume = 0;
   static Duration _lastPosition = Duration.zero;
   static Duration? _clipDuration;
+  static bool _audible = false;
+  static Future<void>? _unlocking;
 
-  static Future<void> playTitle() => _play(titleAsset);
-  static Future<void> playLevel() => _play(levelAsset);
-  static Future<void> fadeOut() => _stop(fade: true);
+  static Future<void> playTitle() {
+    _wanted = titleAsset;
+    return _play(titleAsset);
+  }
+
+  static Future<void> playLevel() {
+    _wanted = levelAsset;
+    return _play(levelAsset);
+  }
+
+  static Future<void> fadeOut() {
+    _wanted = null;
+    return _stop(fade: true);
+  }
+
+  /// Browsers block sound until a tap. Call this on the first pointer down.
+  static Future<void> unlock() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) {
+      return Future<void>.value();
+    }
+    return _unlocking ??= _unlock().whenComplete(() {
+      _unlocking = null;
+    });
+  }
+
+  static Future<void> _unlock() async {
+    if (_wanted == null && _player == null) {
+      _wanted = titleAsset;
+    }
+    final wanted = _wanted;
+    if (wanted == null) return;
+    if (_audible && _current == wanted && _isPlaying) return;
+    _current = null;
+    _audible = false;
+    await _play(wanted);
+  }
+
+  static bool get _isPlaying =>
+      _player != null && _player!.state == PlayerState.playing;
 
   static Future<void> _play(String asset) async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
-    if (_current == asset && _player != null) return;
+    if (_current == asset && _isPlaying) return;
 
     final generation = ++_generation;
-    await _stop(fade: _player != null);
+    await _stop(fade: _player != null && _audible);
     if (generation != _generation) return;
 
     _current = asset;
     _lastPosition = Duration.zero;
     _clipDuration = null;
+    _audible = false;
     final player = AudioPlayer();
     _player = player;
     await player.setReleaseMode(ReleaseMode.loop);
     await player.setVolume(0);
     _volume = 0;
-    await player.play(AssetSource(asset));
+    try {
+      await player.play(AssetSource(asset));
+    } catch (_) {
+      return;
+    }
     if (generation != _generation) return;
+
+    await Future<void>.delayed(const Duration(milliseconds: 40));
+    if (generation != _generation) return;
+    _audible = _isPlaying;
+    if (!_audible) return;
+
     _clipDuration = await player.getDuration();
     await _fadeTo(1, fadeDuration, generation);
 
@@ -90,6 +140,7 @@ class GameBgm {
     final player = _player;
     _player = null;
     _current = null;
+    _audible = false;
     if (player == null) return;
     if (fade && _volume > 0) {
       await _fadePlayer(player, _volume, 0, fadeDuration);

@@ -28,6 +28,9 @@ class DifficultyConfig {
   // StarLight lost for one wrong number
   final int mistakeStarLightPenalty;
 
+  // First-clear payout never drops below this
+  final int minStarLightReward;
+
   // Time reduction for building restoration (in seconds)
   final int restorationTimeReduction;
 
@@ -43,9 +46,20 @@ class DifficultyConfig {
     required this.maxRemovalAttempts,
     required this.starLightReward,
     required this.mistakeStarLightPenalty,
+    required this.minStarLightReward,
     required this.restorationTimeReduction,
     required this.stageCount,
   });
+
+  int remainingStarLight({
+    required int hintsUsed,
+    required int mistakesUsed,
+  }) {
+    final penalty = (hintsUsed * GameBalance.hintRewardPenalty) +
+        (mistakesUsed * mistakeStarLightPenalty);
+    return (starLightReward - penalty)
+        .clamp(minStarLightReward, starLightReward);
+  }
 
   static DifficultyConfig getConfig(SudokuDifficulty difficulty) {
     switch (difficulty) {
@@ -59,6 +73,7 @@ class DifficultyConfig {
           maxRemovalAttempts: 100,
           starLightReward: GameBalance.easyStarLightReward,
           mistakeStarLightPenalty: GameBalance.easyMistakePenalty,
+          minStarLightReward: GameBalance.easyMinStarLightReward,
           restorationTimeReduction: GameBalance.easyTimeReduction,
           stageCount: GameBalance.easyStageCount,
         );
@@ -72,6 +87,7 @@ class DifficultyConfig {
           maxRemovalAttempts: 200,
           starLightReward: GameBalance.normalStarLightReward,
           mistakeStarLightPenalty: GameBalance.normalMistakePenalty,
+          minStarLightReward: GameBalance.normalMinStarLightReward,
           restorationTimeReduction: GameBalance.normalTimeReduction,
           stageCount: GameBalance.normalStageCount,
         );
@@ -85,6 +101,7 @@ class DifficultyConfig {
           maxRemovalAttempts: 300,
           starLightReward: GameBalance.hardStarLightReward,
           mistakeStarLightPenalty: GameBalance.hardMistakePenalty,
+          minStarLightReward: GameBalance.hardMinStarLightReward,
           restorationTimeReduction: GameBalance.hardTimeReduction,
           stageCount: GameBalance.hardStageCount,
         );

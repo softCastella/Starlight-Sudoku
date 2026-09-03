@@ -53,7 +53,7 @@ class ScoreWidget extends StatelessWidget {
               if (gameNotifier.hintsUsed > 0) ...[
                 SizedBox(height: 4),
                 Text(
-                  '힌트 ${gameNotifier.hintsUsed}/3 · 힌트당 -10',
+                  '힌트 ${gameNotifier.hintsUsed}/3 · 힌트당 -${GameNotifier.hintRewardPenalty}',
                   style: TextStyle(fontSize: 12, color: Colors.grey[700]),
                 ),
               ],

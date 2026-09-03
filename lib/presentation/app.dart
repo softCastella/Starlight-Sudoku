@@ -63,6 +63,13 @@ class SudokuApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
+            builder: (context, child) {
+              return Listener(
+                behavior: HitTestBehavior.translucent,
+                onPointerDown: (_) => GameBgm.unlock(),
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,

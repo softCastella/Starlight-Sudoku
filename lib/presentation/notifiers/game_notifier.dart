@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
 import 'package:sudoku_game/core/progress/player_statistics.dart';
 import 'package:sudoku_game/core/progress/stage_progress.dart';
@@ -15,7 +16,7 @@ import 'package:sudoku_game/data/local/game_progress_store.dart';
 /// Core 엔진과 UI를 연결하는 브릿지 역할
 class GameNotifier extends ChangeNotifier {
   static const maxHints = 3;
-  static const hintRewardPenalty = 10;
+  static const int hintRewardPenalty = GameBalance.hintRewardPenalty;
 
   GameNotifier({GameProgressStore? progressStore})
       : _progressStore = progressStore ?? GameProgressStore();
@@ -62,9 +63,10 @@ class GameNotifier extends ChangeNotifier {
   int get potentialStarLightReward {
     if (isCurrentLevelCleared) return 0;
     final config = DifficultyConfig.getConfig(_difficulty);
-    final penalty = (_hintsUsed * hintRewardPenalty) +
-        (_mistakesUsed * config.mistakeStarLightPenalty);
-    return (config.starLightReward - penalty).clamp(0, config.starLightReward);
+    return config.remainingStarLight(
+      hintsUsed: _hintsUsed,
+      mistakesUsed: _mistakesUsed,
+    );
   }
 
   bool get isCurrentLevelCleared =>
@@ -326,10 +328,10 @@ class GameNotifier extends ChangeNotifier {
     final isFirstClear = !_stageProgress.isCompleted(_difficulty, _levelNumber);
     if (isFirstClear) {
       final config = DifficultyConfig.getConfig(_difficulty);
-      _totalStarLight = (config.starLightReward -
-              (_hintsUsed * hintRewardPenalty) -
-              (_mistakesUsed * config.mistakeStarLightPenalty))
-          .clamp(0, config.starLightReward);
+      _totalStarLight = config.remainingStarLight(
+        hintsUsed: _hintsUsed,
+        mistakesUsed: _mistakesUsed,
+      );
       _starLightBalance += _totalStarLight;
       _stageProgress = _stageProgress.markCompleted(_difficulty, _levelNumber);
     } else {
