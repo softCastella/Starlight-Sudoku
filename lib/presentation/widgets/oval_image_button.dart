@@ -48,6 +48,7 @@ class _OvalImageButtonState extends State<OvalImageButton> {
             height: widget.width / OvalImageButton.imageAspectRatio,
             child: Stack(
               alignment: Alignment.center,
+              clipBehavior: Clip.hardEdge,
               children: [
                 Positioned.fill(
                   child: Image.asset(
@@ -56,18 +57,20 @@ class _OvalImageButtonState extends State<OvalImageButton> {
                     filterQuality: FilterQuality.medium,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      widget.label,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: widget.fontSize,
-                        fontWeight: FontWeight.w800,
-                        color: _ink,
-                        height: 1,
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        widget.label,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: widget.fontSize,
+                          fontWeight: FontWeight.w800,
+                          color: _ink,
+                          height: 1,
+                        ),
                       ),
                     ),
                   ),

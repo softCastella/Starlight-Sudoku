@@ -47,6 +47,7 @@ class VillageScreen extends StatelessWidget {
                       height: 32,
                       child: Stack(
                         alignment: Alignment.center,
+                        clipBehavior: Clip.hardEdge,
                         children: [
                           Positioned.fill(
                             child: Image.asset(
@@ -55,24 +56,34 @@ class VillageScreen extends StatelessWidget {
                               filterQuality: FilterQuality.medium,
                             ),
                           ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.auto_awesome,
-                                color: Color(0xFFC49612),
-                                size: 16,
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.auto_awesome,
+                                    color: Color(0xFFC49612),
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        l10n.mission,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          color: Color(0xFF24452D),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                l10n.mission,
-                                style: const TextStyle(
-                                  color: Color(0xFF24452D),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),

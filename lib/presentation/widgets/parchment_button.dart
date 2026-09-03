@@ -51,6 +51,7 @@ class _ParchmentButtonState extends State<ParchmentButton> {
                 aspectRatio: ParchmentButton.imageAspectRatio,
                 child: Stack(
                   alignment: Alignment.center,
+                  clipBehavior: Clip.hardEdge,
                   children: [
                     Positioned.fill(
                       child: Opacity(
@@ -63,18 +64,22 @@ class _ParchmentButtonState extends State<ParchmentButton> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Text(
-                        widget.label,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: widget.fontSize,
-                          fontWeight: FontWeight.w800,
-                          color: _ink,
-                          height: 1,
+                    Positioned.fill(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 36),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            widget.label,
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: widget.fontSize,
+                              fontWeight: FontWeight.w800,
+                              color: _ink,
+                              height: 1,
+                            ),
+                          ),
                         ),
                       ),
                     ),
