@@ -60,7 +60,7 @@ class VillageScreen extends StatelessWidget {
                             children: [
                               const Icon(
                                 Icons.auto_awesome,
-                                color: Color(0xFFF5CC3D),
+                                color: Color(0xFFC49612),
                                 size: 16,
                               ),
                               const SizedBox(width: 4),

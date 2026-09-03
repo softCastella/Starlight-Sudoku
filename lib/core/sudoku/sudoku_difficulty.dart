@@ -25,6 +25,9 @@ class DifficultyConfig {
   // StarLight reward for completing this difficulty
   final int starLightReward;
 
+  // StarLight lost for one wrong number
+  final int mistakeStarLightPenalty;
+
   // Time reduction for building restoration (in seconds)
   final int restorationTimeReduction;
 
@@ -39,6 +42,7 @@ class DifficultyConfig {
     required this.maxEmptyCells,
     required this.maxRemovalAttempts,
     required this.starLightReward,
+    required this.mistakeStarLightPenalty,
     required this.restorationTimeReduction,
     required this.stageCount,
   });
@@ -54,6 +58,7 @@ class DifficultyConfig {
           maxEmptyCells: 36,
           maxRemovalAttempts: 100,
           starLightReward: GameBalance.easyStarLightReward,
+          mistakeStarLightPenalty: GameBalance.easyMistakePenalty,
           restorationTimeReduction: GameBalance.easyTimeReduction,
           stageCount: GameBalance.easyStageCount,
         );
@@ -66,6 +71,7 @@ class DifficultyConfig {
           maxEmptyCells: 46,
           maxRemovalAttempts: 200,
           starLightReward: GameBalance.normalStarLightReward,
+          mistakeStarLightPenalty: GameBalance.normalMistakePenalty,
           restorationTimeReduction: GameBalance.normalTimeReduction,
           stageCount: GameBalance.normalStageCount,
         );
@@ -78,6 +84,7 @@ class DifficultyConfig {
           maxEmptyCells: 56,
           maxRemovalAttempts: 300,
           starLightReward: GameBalance.hardStarLightReward,
+          mistakeStarLightPenalty: GameBalance.hardMistakePenalty,
           restorationTimeReduction: GameBalance.hardTimeReduction,
           stageCount: GameBalance.hardStageCount,
         );

@@ -6,6 +6,10 @@ class GameBalance {
   static const int normalStarLightReward = 120;
   static const int hardStarLightReward = 180;
 
+  static const int easyMistakePenalty = 1;
+  static const int normalMistakePenalty = 2;
+  static const int hardMistakePenalty = 5;
+
   // Stage counts per difficulty
   static const int easyStageCount = 20;
   static const int normalStageCount = 40;

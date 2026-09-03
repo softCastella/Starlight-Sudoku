@@ -31,7 +31,11 @@ class GameNotifier extends ChangeNotifier {
   StageProgress _stageProgress = const StageProgress();
   ActiveGameSnapshot? _activeGame;
   final List<SudokuBoard> _undoHistory = [];
+  final List<int> _undoMistakes = [];
   int _hintsUsed = 0;
+  int _mistakesUsed = 0;
+  int _lastMistakePenalty = 0;
+  int _mistakeFlashId = 0;
   int _levelNumber = 1;
   bool _hasSeenOpeningStory = false;
 
@@ -49,13 +53,18 @@ class GameNotifier extends ChangeNotifier {
   bool get canUndo => _undoHistory.isNotEmpty;
   int get hintsUsed => _hintsUsed;
   int get hintsRemaining => maxHints - _hintsUsed;
+  int get mistakesUsed => _mistakesUsed;
+  int get lastMistakePenalty => _lastMistakePenalty;
+  int get mistakeFlashId => _mistakeFlashId;
   bool get isFirstVillageComplete =>
       buildings.every((building) => building.isComplete);
 
   int get potentialStarLightReward {
     if (isCurrentLevelCleared) return 0;
-    final reward = DifficultyConfig.getConfig(_difficulty).starLightReward;
-    return (reward - (_hintsUsed * hintRewardPenalty)).clamp(0, reward);
+    final config = DifficultyConfig.getConfig(_difficulty);
+    final penalty = (_hintsUsed * hintRewardPenalty) +
+        (_mistakesUsed * config.mistakeStarLightPenalty);
+    return (config.starLightReward - penalty).clamp(0, config.starLightReward);
   }
 
   bool get isCurrentLevelCleared =>
@@ -152,7 +161,11 @@ class GameNotifier extends ChangeNotifier {
     _hasAwardedCurrentGame = false;
     _isPaused = false;
     _hintsUsed = 0;
+    _mistakesUsed = 0;
+    _lastMistakePenalty = 0;
+    _mistakeFlashId = 0;
     _undoHistory.clear();
+    _undoMistakes.clear();
     _saveActiveGame();
 
     notifyListeners();
@@ -176,18 +189,33 @@ class GameNotifier extends ChangeNotifier {
     _totalStarLight = 0;
     _hasAwardedCurrentGame = false;
     _hintsUsed = snapshot.hintsUsed;
+    _mistakesUsed = snapshot.mistakesUsed;
+    _lastMistakePenalty = 0;
+    _mistakeFlashId = 0;
     _undoHistory.clear();
+    _undoMistakes.clear();
     notifyListeners();
     return true;
   }
 
   /// 셀에 값 설정
   void setCellValue(int row, int col, int value) {
+    if (value >= 1 && value <= 9 && _board.playerBoard[row][col] == value) {
+      return;
+    }
     _recordUndoState();
     if (value == 0) {
       _board.setValue(row, col, 0);
     } else if (value >= 1 && value <= 9) {
+      final isWrong = value != _board.solution[row][col];
       _board.setValue(row, col, value);
+      if (isWrong) {
+        final penalty =
+            DifficultyConfig.getConfig(_difficulty).mistakeStarLightPenalty;
+        _mistakesUsed++;
+        _lastMistakePenalty = penalty;
+        _mistakeFlashId++;
+      }
     }
     _saveActiveGame();
     notifyListeners();
@@ -234,6 +262,7 @@ class GameNotifier extends ChangeNotifier {
     if (_undoHistory.isEmpty) return;
 
     _board = _undoHistory.removeLast();
+    _mistakesUsed = _undoMistakes.removeLast();
     _saveActiveGame();
     notifyListeners();
   }
@@ -281,7 +310,11 @@ class GameNotifier extends ChangeNotifier {
     _totalStarLight = 0;
     _isPaused = false;
     _hintsUsed = 0;
+    _mistakesUsed = 0;
+    _lastMistakePenalty = 0;
+    _mistakeFlashId = 0;
     _undoHistory.clear();
+    _undoMistakes.clear();
     _saveActiveGame();
     notifyListeners();
   }
@@ -292,9 +325,11 @@ class GameNotifier extends ChangeNotifier {
 
     final isFirstClear = !_stageProgress.isCompleted(_difficulty, _levelNumber);
     if (isFirstClear) {
-      final reward = DifficultyConfig.getConfig(_difficulty).starLightReward;
-      _totalStarLight =
-          (reward - (_hintsUsed * hintRewardPenalty)).clamp(0, reward);
+      final config = DifficultyConfig.getConfig(_difficulty);
+      _totalStarLight = (config.starLightReward -
+              (_hintsUsed * hintRewardPenalty) -
+              (_mistakesUsed * config.mistakeStarLightPenalty))
+          .clamp(0, config.starLightReward);
       _starLightBalance += _totalStarLight;
       _stageProgress = _stageProgress.markCompleted(_difficulty, _levelNumber);
     } else {
@@ -330,6 +365,7 @@ class GameNotifier extends ChangeNotifier {
       elapsedSeconds: _elapsedSeconds,
       isPaused: _isPaused,
       hintsUsed: _hintsUsed,
+      mistakesUsed: _mistakesUsed,
       levelNumber: _levelNumber,
     );
     unawaited(_progressStore.saveActiveGame(_activeGame!));
@@ -338,7 +374,9 @@ class GameNotifier extends ChangeNotifier {
   void _recordUndoState() {
     if (_undoHistory.length == 100) {
       _undoHistory.removeAt(0);
+      _undoMistakes.removeAt(0);
     }
     _undoHistory.add(_board.copy());
+    _undoMistakes.add(_mistakesUsed);
   }
 }

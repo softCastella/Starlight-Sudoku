@@ -9,6 +9,7 @@ class ActiveGameSnapshot {
     required this.elapsedSeconds,
     required this.isPaused,
     required this.hintsUsed,
+    this.mistakesUsed = 0,
     this.levelNumber = 1,
   });
 
@@ -17,6 +18,7 @@ class ActiveGameSnapshot {
   final int elapsedSeconds;
   final bool isPaused;
   final int hintsUsed;
+  final int mistakesUsed;
   final int levelNumber;
 
   Map<String, Object> toJson() => {
@@ -30,6 +32,7 @@ class ActiveGameSnapshot {
         'elapsedSeconds': elapsedSeconds,
         'isPaused': isPaused,
         'hintsUsed': hintsUsed,
+        'mistakesUsed': mistakesUsed,
         'levelNumber': levelNumber,
       };
 
@@ -56,6 +59,7 @@ class ActiveGameSnapshot {
       elapsedSeconds: json['elapsedSeconds'] as int,
       isPaused: json['isPaused'] as bool,
       hintsUsed: json['hintsUsed'] as int? ?? 0,
+      mistakesUsed: json['mistakesUsed'] as int? ?? 0,
       levelNumber: json['levelNumber'] as int? ?? 1,
     );
   }

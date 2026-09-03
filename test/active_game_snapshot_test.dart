@@ -17,6 +17,7 @@ void main() {
       elapsedSeconds: 92,
       isPaused: true,
       hintsUsed: 2,
+      mistakesUsed: 3,
       levelNumber: 7,
     );
 
@@ -29,6 +30,7 @@ void main() {
     expect(restored.elapsedSeconds, 92);
     expect(restored.isPaused, isTrue);
     expect(restored.hintsUsed, 2);
+    expect(restored.mistakesUsed, 3);
     expect(restored.levelNumber, 7);
   });
 
