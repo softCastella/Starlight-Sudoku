@@ -39,6 +39,7 @@ class GameNotifier extends ChangeNotifier {
   int _mistakeFlashId = 0;
   int _levelNumber = 1;
   bool _hasSeenOpeningStory = false;
+  bool _hasSeenTrialEnd = false;
 
   // Getters
   SudokuBoard get board => _board;
@@ -51,6 +52,11 @@ class GameNotifier extends ChangeNotifier {
   int get currentLevel => _levelNumber;
   bool get hasActiveGame => _activeGame != null;
   bool get hasSeenOpeningStory => _hasSeenOpeningStory;
+  bool get hasSeenTrialEnd => _hasSeenTrialEnd;
+  bool get isTrialComplete =>
+      GameBalance.isTrial &&
+      _stageProgress.completedCount(SudokuDifficulty.easy) >=
+          GameBalance.trialStageCount;
   bool get canUndo => _undoHistory.isNotEmpty;
   int get hintsUsed => _hintsUsed;
   int get hintsRemaining => maxHints - _hintsUsed;
@@ -94,6 +100,7 @@ class GameNotifier extends ChangeNotifier {
     _statistics = progress.statistics;
     _stageProgress = progress.stageProgress;
     _hasSeenOpeningStory = progress.hasSeenOpeningStory;
+    _hasSeenTrialEnd = progress.hasSeenTrialEnd;
     _activeGame = await _progressStore.loadActiveGame();
     notifyListeners();
   }
@@ -103,6 +110,13 @@ class GameNotifier extends ChangeNotifier {
     _hasSeenOpeningStory = true;
     notifyListeners();
     await _progressStore.saveHasSeenOpeningStory();
+  }
+
+  Future<void> markTrialEndSeen() async {
+    if (_hasSeenTrialEnd) return;
+    _hasSeenTrialEnd = true;
+    notifyListeners();
+    await _progressStore.saveHasSeenTrialEnd();
   }
 
   List<BuildingProgress> get buildings {

@@ -55,6 +55,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get done => '완료';
 
   @override
+  String get trialEndTitle => '체험판은 여기까지입니다.';
+
+  @override
+  String get trialEndMessage => '응원해주신다면 리뷰를 남겨주시면 큰 힘이 됩니다.';
+
+  @override
+  String get sendReview => '전송';
+
+  @override
+  String get close => '닫기';
+
+  @override
   String get giveUpTitle => '퍼즐을 나갈까요?';
 
   @override

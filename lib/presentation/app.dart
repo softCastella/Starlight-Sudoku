@@ -52,6 +52,7 @@ class SudokuApp extends StatelessWidget {
         builder: (context, locales, _) {
           return MaterialApp(
             navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
             locale: locales.override ?? locale,
             onGenerateTitle: (context) =>
                 AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠',

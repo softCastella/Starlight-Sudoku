@@ -181,6 +181,30 @@ abstract class AppLocalizations {
   /// **'Done'**
   String get done;
 
+  /// No description provided for @trialEndTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s all for the trial.'**
+  String get trialEndTitle;
+
+  /// No description provided for @trialEndMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'If you\'d like to support us, a review would mean a lot.'**
+  String get trialEndMessage;
+
+  /// No description provided for @sendReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get sendReview;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
   /// No description provided for @giveUpTitle.
   ///
   /// In en, this message translates to:

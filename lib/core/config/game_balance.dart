@@ -16,10 +16,17 @@ class GameBalance {
   static const int normalMistakePenalty = 2;
   static const int hardMistakePenalty = 5;
 
-  // Stage counts per difficulty
-  static const int easyStageCount = 20;
-  static const int normalStageCount = 40;
-  static const int hardStageCount = 50;
+  /// Play Store trial: Easy 1–10 only. Set false for the full 20/40/50 game.
+  static const bool isTrial = true;
+  static const int trialStageCount = 10;
+
+  static const int fullEasyStageCount = 20;
+  static const int fullNormalStageCount = 40;
+  static const int fullHardStageCount = 50;
+
+  static int get easyStageCount => isTrial ? trialStageCount : fullEasyStageCount;
+  static int get normalStageCount => isTrial ? 0 : fullNormalStageCount;
+  static int get hardStageCount => isTrial ? 0 : fullHardStageCount;
 
   // Building restoration time reduction (in seconds)
   static const int easyTimeReduction = 300; // 5 minutes

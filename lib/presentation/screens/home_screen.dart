@@ -213,81 +213,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          if (!_showLayoutPanel && !_showIconPanel)
-            Positioned(
-              left: 12,
-              top: MediaQuery.paddingOf(context).top + 8,
-              child: const _LocaleDebugMenu(),
-            ),
+          // Trial: hide the title-screen locale switcher for now.
+          // if (!_showLayoutPanel && !_showIconPanel)
+          //   Positioned(
+          //     left: 12,
+          //     top: MediaQuery.paddingOf(context).top + 8,
+          //     child: const _LocaleDebugMenu(),
+          //   ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 28,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => setState(() {
-                _showIconPanel = false;
-                _showLayoutPanel = !_showLayoutPanel;
-              }),
-              onLongPress: () => setState(() {
-                _showLayoutPanel = false;
-                _showIconPanel = !_showIconPanel;
-              }),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
-                child: Text(
-                  l10n.copyright,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    height: 1,
-                    shadows: [
-                      Shadow(color: Color(0xCC000000), blurRadius: 6),
-                    ],
-                  ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
+              child: Text(
+                l10n.copyright,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  height: 1,
+                  shadows: [
+                    Shadow(color: Color(0xCC000000), blurRadius: 6),
+                  ],
                 ),
               ),
             ),
           ),
-          if (_showIconPanel)
-            Positioned(
-              left: 12,
-              right: 12,
-              top: MediaQuery.paddingOf(context).top + 8,
-              child: _IconLayoutPanel(
-                scale: _iconScale,
-                transparentPad: _iconTransparentPad,
-                layoutJson: _iconJson,
-                baking: _bakingIcon,
-                canBake: canBakeLauncherIcons,
-                onScale: (value) => _applyIconLayout(() => _iconScale = value),
-                onTransparentPad: (value) =>
-                    _applyIconLayout(() => _iconTransparentPad = value),
-                onBake: _bakeIconFiles,
-                onClose: () => setState(() => _showIconPanel = false),
-              ),
-            ),
-          if (_showLayoutPanel)
-            Positioned(
-              left: 12,
-              right: 12,
-              top: MediaQuery.paddingOf(context).top + 8,
-              child: _TitleLayoutPanel(
-                alignY: _alignY,
-                maxWidth: _maxWidth,
-                gap: _gap,
-                fontSize: _fontSize,
-                scale: _scale,
-                layoutJson: _layoutJson,
-                onAlignY: (value) => _applyLayout(() => _alignY = value),
-                onMaxWidth: (value) => _applyLayout(() => _maxWidth = value),
-                onGap: (value) => _applyLayout(() => _gap = value),
-                onFontSize: (value) => _applyLayout(() => _fontSize = value),
-                onScale: (value) => _applyLayout(() => _scale = value),
-                onClose: () => setState(() => _showLayoutPanel = false),
-              ),
-            ),
+          // Trial: hide title/icon layout tuners.
+          // if (_showIconPanel) ...
+          // if (_showLayoutPanel) ...
         ],
       ),
     );
@@ -610,6 +565,7 @@ class _IconMaskPreview extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _LocaleDebugMenu extends StatelessWidget {
   const _LocaleDebugMenu();
 

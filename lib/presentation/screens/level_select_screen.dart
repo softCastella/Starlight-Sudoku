@@ -356,12 +356,13 @@ class _StageTileState extends State<_StageTile> {
                       )
                     : Icon(Icons.lock_rounded, size: 18, color: foreground),
               ),
-              if (isCompleted)
-                const Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Icon(Icons.auto_awesome, size: 12, color: _gold),
-                ),
+              // Trial: hide the cleared-stage star for now.
+              // if (isCompleted)
+              //   const Positioned(
+              //     top: 4,
+              //     right: 4,
+              //     child: Icon(Icons.auto_awesome, size: 12, color: _gold),
+              //   ),
               if (isCurrent && isUnlocked && !isCompleted)
                 const Positioned(
                   bottom: 5,

@@ -55,6 +55,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get done => '完了';
 
   @override
+  String get trialEndTitle => '体験版はここまでです。';
+
+  @override
+  String get trialEndMessage => '応援していただけるなら、レビューを残していただけると大きな力になります。';
+
+  @override
+  String get sendReview => '送信';
+
+  @override
+  String get close => '閉じる';
+
+  @override
   String get giveUpTitle => 'パズルを終了しますか？';
 
   @override

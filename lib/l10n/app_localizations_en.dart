@@ -55,6 +55,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
+  String get trialEndTitle => 'That\'s all for the trial.';
+
+  @override
+  String get trialEndMessage =>
+      'If you\'d like to support us, a review would mean a lot.';
+
+  @override
+  String get sendReview => 'Send';
+
+  @override
+  String get close => 'Close';
+
+  @override
   String get giveUpTitle => 'Leave this puzzle?';
 
   @override

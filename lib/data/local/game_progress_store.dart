@@ -16,6 +16,7 @@ class GameProgressStore {
   static const _activeGameKey = 'active_game';
   static const _stageProgressKey = 'stage_progress';
   static const _seenIntroKey = 'has_seen_opening_story';
+  static const _seenTrialEndKey = 'has_seen_trial_end';
 
   Future<
       ({
@@ -23,6 +24,7 @@ class GameProgressStore {
         PlayerStatistics statistics,
         StageProgress stageProgress,
         bool hasSeenOpeningStory,
+        bool hasSeenTrialEnd,
       })> load() async {
     final preferences = await SharedPreferences.getInstance();
     return (
@@ -38,6 +40,7 @@ class GameProgressStore {
         _decodeJsonMap(preferences.getString(_stageProgressKey)),
       ),
       hasSeenOpeningStory: preferences.getBool(_seenIntroKey) ?? false,
+      hasSeenTrialEnd: preferences.getBool(_seenTrialEndKey) ?? false,
     );
   }
 
@@ -64,6 +67,11 @@ class GameProgressStore {
   Future<void> saveHasSeenOpeningStory() async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setBool(_seenIntroKey, true);
+  }
+
+  Future<void> saveHasSeenTrialEnd() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setBool(_seenTrialEndKey, true);
   }
 
   Map<String, dynamic>? _decodeJsonMap(String? encoded) {

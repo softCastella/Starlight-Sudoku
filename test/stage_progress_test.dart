@@ -6,10 +6,11 @@ import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 void main() {
   group('StageProgress', () {
     test('difficulty stage counts match the requested layout', () {
-      expect(DifficultyConfig.getConfig(SudokuDifficulty.easy).stageCount, 20);
-      expect(DifficultyConfig.getConfig(SudokuDifficulty.normal).stageCount, 40);
-      expect(DifficultyConfig.getConfig(SudokuDifficulty.hard).stageCount, 50);
-      expect(GameBalance.easyStageCount, 20);
+      expect(DifficultyConfig.getConfig(SudokuDifficulty.easy).stageCount, 10);
+      expect(DifficultyConfig.getConfig(SudokuDifficulty.normal).stageCount, 0);
+      expect(DifficultyConfig.getConfig(SudokuDifficulty.hard).stageCount, 0);
+      expect(GameBalance.easyStageCount, 10);
+      expect(GameBalance.isTrial, isTrue);
     });
 
     test('only stage 1 starts unlocked', () {
@@ -17,7 +18,8 @@ void main() {
 
       expect(progress.isUnlocked(SudokuDifficulty.easy, 1), isTrue);
       expect(progress.isUnlocked(SudokuDifficulty.easy, 2), isFalse);
-      expect(progress.isUnlocked(SudokuDifficulty.normal, 1), isTrue);
+      expect(progress.isUnlocked(SudokuDifficulty.easy, 11), isFalse);
+      expect(progress.isUnlocked(SudokuDifficulty.normal, 1), isFalse);
       expect(progress.isUnlocked(SudokuDifficulty.hard, 2), isFalse);
     });
 

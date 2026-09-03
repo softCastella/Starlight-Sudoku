@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.softcastella" "\0"
+            VALUE "CompanyName", "Tyche Spark" "\0"
             VALUE "FileDescription", "sudoku_game" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "sudoku_game" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.softcastella. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Tyche Spark. All rights reserved." "\0"
             VALUE "OriginalFilename", "sudoku_game.exe" "\0"
             VALUE "ProductName", "sudoku_game" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

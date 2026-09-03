@@ -79,7 +79,13 @@ class DifficultySelectionScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 22),
-                  ...SudokuDifficulty.values.map(
+                  ...SudokuDifficulty.values
+                      .where(
+                        (difficulty) =>
+                            DifficultyConfig.getConfig(difficulty).stageCount >
+                            0,
+                      )
+                      .map(
                     (difficulty) => _DifficultyPathCard(difficulty: difficulty),
                   ),
                 ],

@@ -115,7 +115,7 @@ void main() {
 
     expect(find.text('New puzzle'), findsOneWidget);
     expect(_assetImage(TitleArt.english), findsWidgets);
-  });
+  }, skip: 'Title locale switcher is hidden for the trial build.');
 
   testWidgets('system back returns from village to title', (
     WidgetTester tester,

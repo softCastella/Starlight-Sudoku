@@ -1,4 +1,4 @@
-package com.softcastella.sudoku_game
+package com.tychespark.starlightsudoku
 
 import io.flutter.embedding.android.FlutterActivity
 

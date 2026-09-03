@@ -55,6 +55,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get done => '完成';
 
   @override
+  String get trialEndTitle => '试玩到此结束。';
+
+  @override
+  String get trialEndMessage => '如果愿意支持我们，留下评价会是很大的鼓励。';
+
+  @override
+  String get sendReview => '发送';
+
+  @override
+  String get close => '关闭';
+
+  @override
   String get giveUpTitle => '要离开这道谜题吗？';
 
   @override
@@ -355,6 +367,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get done => '完成';
+
+  @override
+  String get trialEndTitle => '試玩到此結束。';
+
+  @override
+  String get trialEndMessage => '如果願意支持我們，留下評價會是很大的鼓勵。';
+
+  @override
+  String get sendReview => '傳送';
+
+  @override
+  String get close => '關閉';
 
   @override
   String get giveUpTitle => '要離開這道謎題嗎？';
