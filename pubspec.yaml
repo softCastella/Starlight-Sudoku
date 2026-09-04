@@ -78,6 +78,7 @@ flutter:
     - assets/images/SystemUI/
     - assets/audio/BGM/
     - assets/audio/SFX/
+    - assets/audio/Voice/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

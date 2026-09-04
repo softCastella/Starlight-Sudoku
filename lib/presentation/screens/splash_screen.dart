@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/audio/splash_voice.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
@@ -85,6 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
+        unawaited(SplashVoice.stop());
         setState(() {
           _showOverlay = false;
           _showWebAudioGate = kIsWeb;
@@ -137,7 +139,9 @@ class _SplashScreenState extends State<SplashScreen>
     } catch (_) {}
     if (!mounted) return;
     await Future<void>.delayed(Duration.zero);
-    if (mounted) _controller.forward();
+    if (!mounted) return;
+    unawaited(SplashVoice.play());
+    _controller.forward();
   }
 
   Future<void> _precacheGameArt() async {
@@ -152,6 +156,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     GameBgm.routeObserver.unsubscribe(this);
+    unawaited(SplashVoice.stop());
     _controller.dispose();
     super.dispose();
   }

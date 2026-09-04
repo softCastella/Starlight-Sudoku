@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/audio/splash_voice.dart';
 import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
@@ -188,6 +189,7 @@ class _AppAudioLifecycleState extends State<_AppAudioLifecycle>
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         TitleButtonChime.stop();
+        SplashVoice.stop();
         GameBgm.silenceForBackground();
       case AppLifecycleState.resumed:
         GameBgm.restoreFromBackground();
