@@ -46,12 +46,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #ffffff;
+      background: #0E2040;
     }
   </style>
 </head>
 <body>
   <div id="launch-splash"></div>
+  <script>
+    (function () {
+      var search = new URLSearchParams(window.location.search);
+      var hashQuery = window.location.hash.split('?')[1] || '';
+      var hash = new URLSearchParams(hashQuery);
+      var lang = search.get('lang') || hash.get('lang');
+      if (lang) {
+        try { sessionStorage.setItem('starlight_lang', lang); } catch (e) {}
+      }
+    })();
+  </script>
   <script>
     window.addEventListener('flutter-first-frame', function () {
       var splash = document.getElementById('launch-splash');

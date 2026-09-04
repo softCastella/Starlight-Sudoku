@@ -185,6 +185,8 @@ class _AppAudioLifecycleState extends State<_AppAudioLifecycle>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.inactive:
+        // Startup and transient overlays fire inactive. Do not kill the ident.
+        break;
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:

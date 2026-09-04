@@ -4,15 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/audio/splash_voice.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/exit_game_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
-/// 흰 화면에서 로고가 천천히 나타나며 살짝 커진 뒤, 같은 속도로 사라진다.
+/// APK: white logo splash. Web skips this and starts at the BGM ON/OFF gate.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -30,8 +32,8 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _logoOpacity;
   late final Animation<double> _logoScale;
   late final Animation<double> _overlayOpacity;
-  bool _showOverlay = true;
-  bool _showWebAudioGate = false;
+  bool _showOverlay = !kIsWeb;
+  bool _showWebAudioGate = kIsWeb;
   bool _started = false;
 
   @override
@@ -85,13 +87,10 @@ class _SplashScreenState extends State<SplashScreen>
     ]).animate(_controller);
 
     _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed && mounted) {
+      if (status == AnimationStatus.completed && mounted && !kIsWeb) {
         unawaited(SplashVoice.stop());
-        setState(() {
-          _showOverlay = false;
-          _showWebAudioGate = kIsWeb;
-        });
-        if (!kIsWeb) _playTitleIfCurrent();
+        setState(() => _showOverlay = false);
+        _playTitleIfCurrent();
       }
     });
   }
@@ -105,6 +104,10 @@ class _SplashScreenState extends State<SplashScreen>
     }
     if (_started) return;
     _started = true;
+    if (kIsWeb) {
+      unawaited(_precacheGameArt());
+      return;
+    }
     _startSplash();
   }
 
@@ -122,11 +125,11 @@ class _SplashScreenState extends State<SplashScreen>
     GameBgm.playTitle();
   }
 
-  Future<void> _startWebAudio() async {
+  Future<void> _finishWebAudioGate({required bool bgmOn}) async {
     if (!_showWebAudioGate) return;
     setState(() => _showWebAudioGate = false);
-    await context.read<AppSettings>().setBgmEnabled(true);
-    if (mounted) _playTitleIfCurrent();
+    await context.read<AppSettings>().setBgmEnabled(bgmOn);
+    if (mounted) GameBgm.playTitle();
   }
 
   Future<void> _startSplash() async {
@@ -138,8 +141,6 @@ class _SplashScreenState extends State<SplashScreen>
       ).timeout(const Duration(milliseconds: 1200));
     } catch (_) {}
     if (!mounted) return;
-    await Future<void>.delayed(Duration.zero);
-    if (!mounted) return;
     unawaited(SplashVoice.play());
     _controller.forward();
   }
@@ -149,7 +150,7 @@ class _SplashScreenState extends State<SplashScreen>
       await Future.wait([
         precacheImage(AssetImage(TitleArt.assetOf(context)), context),
         VillageSceneBackdrop.precacheAll(context),
-      ]).timeout(const Duration(milliseconds: 4000));
+      ]);
     } catch (_) {}
   }
 
@@ -183,7 +184,9 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             const HomeScreen(),
             if (_showOverlay)
-              AbsorbPointer(
+              Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerDown: (_) => unawaited(SplashVoice.play()),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -214,29 +217,57 @@ class _SplashScreenState extends State<SplashScreen>
                   ],
                 ),
               ),
-            if (_showWebAudioGate)
-              ColoredBox(
-                color: const Color(0xD907152F),
-                child: Center(
-                  child: FilledButton.icon(
-                    key: const Key('web-audio-start'),
-                    onPressed: _startWebAudio,
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 18,
-                      ),
-                      foregroundColor: const Color(0xFF172118),
-                      backgroundColor: const Color(0xFFFFE3A0),
-                    ),
-                    icon: const Icon(Icons.music_note_rounded),
-                    label: const Text(
-                      'BGM ON',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
+            if (_showWebAudioGate) _webAudioGate(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _webAudioGate() {
+    final l10n = l10nOf(context);
+    const onColor = Color(0xFF172118);
+    return ColoredBox(
+      color: const Color(0xD907152F),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FilledButton.icon(
+              key: const Key('web-audio-start'),
+              onPressed: () => unawaited(_finishWebAudioGate(bgmOn: true)),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(48, 48),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 18,
+                ),
+                foregroundColor: onColor,
+                backgroundColor: const Color(0xFFFFE3A0),
+              ),
+              icon: const Icon(Icons.music_note_rounded),
+              label: Text(
+                l10n.webBgmOn,
+                style: PlayUi.buttonStyle(color: onColor),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              key: const Key('web-audio-off'),
+              onPressed: () => unawaited(_finishWebAudioGate(bgmOn: false)),
+              style: TextButton.styleFrom(
+                foregroundColor: PlayUi.cream,
+                minimumSize: const Size(48, 48),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 14,
                 ),
               ),
+              child: Text(
+                l10n.webBgmOff,
+                style: PlayUi.buttonStyle(color: PlayUi.cream),
+              ),
+            ),
           ],
         ),
       ),

@@ -331,6 +331,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsBgm => 'BGM';
 
   @override
+  String get webBgmOn => 'BGM ON';
+
+  @override
+  String get webBgmOff => 'BGM OFF';
+
+  @override
   String get settingsSfx => '効果音';
 
   @override

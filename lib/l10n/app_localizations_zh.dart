@@ -331,6 +331,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsBgm => 'BGM';
 
   @override
+  String get webBgmOn => 'BGM ON';
+
+  @override
+  String get webBgmOff => 'BGM OFF';
+
+  @override
   String get settingsSfx => '音效';
 
   @override
@@ -695,6 +701,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get settingsBgm => 'BGM';
+
+  @override
+  String get webBgmOn => 'BGM ON';
+
+  @override
+  String get webBgmOff => 'BGM OFF';
 
   @override
   String get settingsSfx => '音效';

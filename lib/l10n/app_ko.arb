@@ -97,6 +97,8 @@
   "settingsTitle": "설정",
   "settingsTooltip": "설정",
   "settingsBgm": "BGM",
+  "webBgmOn": "BGM ON",
+  "webBgmOff": "BGM OFF",
   "settingsSfx": "효과음",
   "settingsUserId": "유저 ID",
   "settingsCopyId": "복사",

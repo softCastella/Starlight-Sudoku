@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:sudoku_game/presentation/app.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
 import 'package:sudoku_game/presentation/config/web_back_button.dart';
+import 'package:sudoku_game/presentation/config/web_locale_entry.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 
 void main() async {
@@ -15,7 +16,7 @@ void main() async {
   ]);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(
-    kIsWeb ? HomeScreen.splashOverlayStyle : HomeScreen.nightOverlayStyle,
+    kIsWeb ? HomeScreen.nightOverlayStyle : HomeScreen.splashOverlayStyle,
   );
-  runApp(const SudokuApp());
+  runApp(SudokuApp(locale: kIsWeb ? localeFromWebEntry() : null));
 }

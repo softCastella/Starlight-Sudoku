@@ -685,6 +685,18 @@ abstract class AppLocalizations {
   /// **'BGM'**
   String get settingsBgm;
 
+  /// No description provided for @webBgmOn.
+  ///
+  /// In en, this message translates to:
+  /// **'BGM ON'**
+  String get webBgmOn;
+
+  /// No description provided for @webBgmOff.
+  ///
+  /// In en, this message translates to:
+  /// **'BGM OFF'**
+  String get webBgmOff;
+
   /// No description provided for @settingsSfx.
   ///
   /// In en, this message translates to:

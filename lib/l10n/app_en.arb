@@ -180,6 +180,8 @@
   "settingsTitle": "Settings",
   "settingsTooltip": "Settings",
   "settingsBgm": "BGM",
+  "webBgmOn": "BGM ON",
+  "webBgmOff": "BGM OFF",
   "settingsSfx": "Sound effects",
   "settingsUserId": "User ID",
   "settingsCopyId": "Copy",
