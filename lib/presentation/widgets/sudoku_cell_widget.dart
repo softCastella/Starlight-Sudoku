@@ -10,6 +10,7 @@ class SudokuCellWidget extends StatelessWidget {
   final bool isInvalid;
   final bool isSelected;
   final bool isLineHint;
+  final bool isSameNumber;
   final bool showFocusRing;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
@@ -24,6 +25,7 @@ class SudokuCellWidget extends StatelessWidget {
     required this.isInvalid,
     required this.isSelected,
     this.isLineHint = false,
+    this.isSameNumber = false,
     this.showFocusRing = false,
     required this.onTap,
     this.onLongPress,
@@ -79,6 +81,7 @@ class SudokuCellWidget extends StatelessWidget {
   Color _getCellColor() {
     if (isInvalid) return const Color(0xFFFFD9D2);
     if (isSelected) return const Color(0xFFFFF0BB);
+    if (isSameNumber) return const Color(0xFFFFF0BB);
     if (isLineHint) return const Color(0xFFFFF6D4);
     if (isFixed) return const Color(0xFFEAF0E6);
     return const Color(0xFFFFFDF8);

@@ -29,6 +29,9 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
         final invalidCells = gameNotifier.invalidCells.toList().toSet();
         final easyGuide =
             gameNotifier.difficulty == SudokuDifficulty.easy;
+        final selectedValue = _selectedRow != null && _selectedCol != null
+            ? board.getValue(_selectedRow!, _selectedCol!)
+            : 0;
 
         return Padding(
           padding: const EdgeInsets.all(2),
@@ -64,6 +67,10 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                       !isSelected &&
                       _selectedRow != null &&
                       (row == _selectedRow || col == _selectedCol);
+                  final isSameNumber = easyGuide &&
+                      !isSelected &&
+                      selectedValue != 0 &&
+                      value == selectedValue;
                   final memos = board.getMemo(row, col);
 
                   return SudokuCellWidget(
@@ -75,6 +82,7 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                     isInvalid: isInvalid,
                     isSelected: isSelected,
                     isLineHint: isLineHint,
+                    isSameNumber: isSameNumber,
                     showFocusRing: easyGuide && isSelected,
                     onTap: () {
                       setState(() {

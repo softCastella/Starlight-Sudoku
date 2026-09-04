@@ -124,7 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
         fit: StackFit.expand,
         children: [
           const ColoredBox(color: TwinklingStarField.nightSky),
-          const Positioned.fill(child: TwinklingStarField()),
           Positioned.fill(
             child: Image.asset(
               titleAsset,
@@ -139,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .clamp(480, 1440),
             ),
           ),
+          const Positioned.fill(child: TwinklingStarField()),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
