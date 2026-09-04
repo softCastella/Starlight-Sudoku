@@ -6,7 +6,6 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/level_select_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
-import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// 난이도 선택 화면
@@ -20,8 +19,7 @@ class DifficultySelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
-    return TrialEndHost(
-      child: BgmScope(
+    return BgmScope(
       cue: BgmCue.level,
       child: Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
@@ -125,7 +123,6 @@ class DifficultySelectionScreen extends StatelessWidget {
           },
         );
       },
-    ),
     ),
     );
   }

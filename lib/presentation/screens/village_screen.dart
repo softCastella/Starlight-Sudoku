@@ -8,7 +8,6 @@ import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
-import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_map_widget.dart';
 
 /// Shows the restoration progress unlocked by completed puzzles.
@@ -17,8 +16,7 @@ class VillageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TrialEndHost(
-      child: BgmScope(
+    return BgmScope(
       cue: BgmCue.silence,
       child: Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
@@ -142,7 +140,6 @@ class VillageScreen extends StatelessWidget {
           ),
         );
       },
-    ),
     ),
     );
   }

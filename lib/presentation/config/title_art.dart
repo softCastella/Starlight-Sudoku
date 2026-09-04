@@ -7,15 +7,20 @@ class TitleArt {
   static const korean =
       'assets/images/Scene/Title_Image_Starlight Sdoku KR.png';
   static const english =
-      'assets/images/Scene/Title_Image_Starlight Sdoku Title EN.png';
+      'assets/images/Scene/Title_Image_Starlight Sdoku EN.png';
   static const japanese =
-      'assets/images/Scene/Title_Image_Starlight Sdoku Title JP.png';
+      'assets/images/Scene/Title_Image_Starlight Sdoku JP.png';
   static const chineseSimplified =
-      'assets/images/Scene/Title_Image_Starlight Sdoku Title CN.png';
+      'assets/images/Scene/Title_Image_Starlight Sdoku CN.png';
   static const chineseTraditional =
-      'assets/images/Scene/Title_Image_Starlight Sdoku Title TW.png';
+      'assets/images/Scene/Title_Image_Starlight Sdoku TW.png';
 
   static const fallback = korean;
+
+  /// Native pixel size of the locale title paintings.
+  static const paintingWidth = 1080.0;
+  static const paintingHeight = 2340.0;
+  static const paintingAspectRatio = paintingWidth / paintingHeight;
 
   static String assetFor(Locale locale) {
     if (locale.languageCode == 'zh') {

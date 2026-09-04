@@ -161,11 +161,15 @@ class _SettingsSwitchRow extends StatelessWidget {
               style: PlayUi.labelStyle(),
             ),
           ),
-          Switch.adaptive(
-            value: value,
-            onChanged: onChanged,
-            activeThumbColor: PlayUi.gold,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          Transform.scale(
+            scale: 0.82,
+            alignment: Alignment.centerRight,
+            child: Switch.adaptive(
+              value: value,
+              onChanged: onChanged,
+              activeThumbColor: PlayUi.gold,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
           ),
         ],
       ),

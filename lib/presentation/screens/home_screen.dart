@@ -117,149 +117,168 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
     final titleAsset = TitleArt.assetOf(context);
+    final media = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: TwinklingStarField.nightSky,
       extendBodyBehindAppBar: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          const ColoredBox(color: TwinklingStarField.nightSky),
-          Positioned.fill(
-            child: Image.asset(
-              titleAsset,
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-              semanticLabel: l10n.appTitle,
-              filterQuality: FilterQuality.medium,
-              cacheWidth:
-                  (MediaQuery.sizeOf(context).width *
-                          MediaQuery.devicePixelRatioOf(context))
-                      .round()
-                      .clamp(480, 1440),
-            ),
-          ),
-          const Positioned.fill(child: TwinklingStarField()),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0x00000000),
-                  Color(0x00000000),
-                  Color(0x99121C1A),
-                  Color(0xE6121C1A),
-                ],
-                stops: [0, 0.48, 0.72, 1],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 4,
-            top: MediaQuery.paddingOf(context).top + 4,
-            child: IconButton(
-              key: const Key('title-settings'),
-              tooltip: l10n.settingsTooltip,
-              icon: const Icon(Icons.settings, color: Colors.white),
-              onPressed: () => SettingsDialog.show(context),
-            ),
-          ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment(0, _alignY),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(36, 0, 36, 36),
-                child: Transform.scale(
-                  scale: _scale,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: _maxWidth),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ParchmentButton(
-                          label: l10n.startNewPuzzle,
-                          fontSize: _fontSize,
-                          onPressed: () {
-                            TitleButtonChime.play();
-                            _startNewPuzzle(context);
-                          },
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          const aspect = TitleArt.paintingAspectRatio;
+          var frameW = constraints.maxWidth;
+          var frameH = frameW / aspect;
+          if (frameH > constraints.maxHeight) {
+            frameH = constraints.maxHeight;
+            frameW = frameH * aspect;
+          }
+          final cacheW = (frameW * media.devicePixelRatio).round().clamp(480, 1440);
+
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              const ColoredBox(color: TwinklingStarField.nightSky),
+              const Positioned.fill(child: TwinklingStarField()),
+              Center(
+                child: SizedBox(
+                  width: frameW,
+                  height: frameH,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    clipBehavior: Clip.hardEdge,
+                    children: [
+                      Image.asset(
+                        titleAsset,
+                        fit: BoxFit.fill,
+                        alignment: Alignment.center,
+                        semanticLabel: l10n.appTitle,
+                        filterQuality: FilterQuality.medium,
+                        cacheWidth: cacheW,
+                      ),
+                      const DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0x00000000),
+                              Color(0x00000000),
+                              Color(0x99121C1A),
+                              Color(0xE6121C1A),
+                            ],
+                            stops: [0, 0.48, 0.72, 1],
+                          ),
                         ),
-                        SizedBox(height: _gap),
-                        Consumer<GameNotifier>(
-                          builder: (context, gameNotifier, _) {
-                            if (!gameNotifier.hasActiveGame) {
-                              return const SizedBox.shrink();
-                            }
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: _gap),
-                              child: ParchmentButton(
-                                label: l10n.continueGame,
-                                fontSize: (_fontSize - 1).clamp(12, 18),
-                                onPressed: () {
-                                  TitleButtonChime.play();
-                                  if (gameNotifier.continueGame()) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const GameScreen(),
-                                      ),
-                                    );
-                                  }
-                                },
+                      ),
+                      Positioned(
+                        right: 4,
+                        top: media.padding.top + 4,
+                        child: IconButton(
+                          key: const Key('title-settings'),
+                          tooltip: l10n.settingsTooltip,
+                          icon: const Icon(Icons.settings, color: Colors.white),
+                          onPressed: () => SettingsDialog.show(context),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: media.padding.bottom),
+                        child: Align(
+                          alignment: Alignment(0, _alignY),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(36, 0, 36, 36),
+                            child: Transform.scale(
+                              scale: _scale,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: _maxWidth),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ParchmentButton(
+                                      label: l10n.startNewPuzzle,
+                                      fontSize: _fontSize,
+                                      onPressed: () {
+                                        TitleButtonChime.play();
+                                        _startNewPuzzle(context);
+                                      },
+                                    ),
+                                    SizedBox(height: _gap),
+                                    Consumer<GameNotifier>(
+                                      builder: (context, gameNotifier, _) {
+                                        if (!gameNotifier.hasActiveGame) {
+                                          return const SizedBox.shrink();
+                                        }
+                                        return Padding(
+                                          padding: EdgeInsets.only(bottom: _gap),
+                                          child: ParchmentButton(
+                                            label: l10n.continueGame,
+                                            fontSize: (_fontSize - 1).clamp(12, 18),
+                                            onPressed: () {
+                                              TitleButtonChime.play();
+                                              if (gameNotifier.continueGame()) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const GameScreen(),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    ParchmentButton(
+                                      label: l10n.viewVillage,
+                                      fontSize: (_fontSize - 1).clamp(12, 18),
+                                      onPressed: () {
+                                        TitleButtonChime.play();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const VillageScreen(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                        ParchmentButton(
-                          label: l10n.viewVillage,
-                          fontSize: (_fontSize - 1).clamp(12, 18),
-                          onPressed: () {
-                            TitleButtonChime.play();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const VillageScreen(),
-                              ),
-                            );
-                          },
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: media.padding.bottom > 0
+                            ? media.padding.bottom
+                            : 28,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
+                          child: Text(
+                            l10n.copyright,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              height: 1,
+                              shadows: [
+                                Shadow(
+                                  color: Color(0xCC000000),
+                                  blurRadius: 6,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ),
-          // Trial: hide the title-screen locale switcher for now.
-          // if (!_showLayoutPanel && !_showIconPanel)
-          //   Positioned(
-          //     left: 12,
-          //     top: MediaQuery.paddingOf(context).top + 8,
-          //     child: const _LocaleDebugMenu(),
-          //   ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 28,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 10, 24, 10),
-              child: Text(
-                l10n.copyright,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  height: 1,
-                  shadows: [Shadow(color: Color(0xCC000000), blurRadius: 6)],
-                ),
-              ),
-            ),
-          ),
-          // Trial: hide title/icon layout tuners.
-          // if (_showIconPanel) ...
-          // if (_showLayoutPanel) ...
-        ],
+            ],
+          );
+        },
       ),
     );
   }

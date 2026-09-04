@@ -106,7 +106,7 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
   }
 }
 
-/// Shows [TrialEndDialog] when this route is current after a trial clear.
+/// Shows [TrialEndDialog] on the stage list after a trial clear.
 class TrialEndHost extends StatefulWidget {
   const TrialEndHost({super.key, required this.child});
 

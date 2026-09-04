@@ -6,7 +6,6 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/exit_game_dialog.dart';
-import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// 흰 화면에서 로고가 천천히 나타나며 살짝 커진 뒤, 같은 속도로 사라진다.
@@ -106,20 +105,12 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void didPopNext() {
     _playTitleIfCurrent();
-    _maybeShowTrialEnd();
   }
 
   void _playTitleIfCurrent() {
     if (!mounted || _showOverlay) return;
     if (ModalRoute.of(context)?.isCurrent != true) return;
     GameBgm.playTitle();
-  }
-
-  void _maybeShowTrialEnd() {
-    if (!mounted || _showOverlay) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) TrialEndDialog.maybeShow(context);
-    });
   }
 
   Future<void> _startSplash() async {

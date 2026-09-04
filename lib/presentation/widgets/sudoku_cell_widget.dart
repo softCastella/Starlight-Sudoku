@@ -68,7 +68,7 @@ class SudokuCellWidget extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.fromBorderSide(
-                    BorderSide(color: Color(0xFFFFFFFF), width: 2.5),
+                    BorderSide(color: Color(0xFFE0B422), width: 2.5),
                   ),
                 ),
               ),
