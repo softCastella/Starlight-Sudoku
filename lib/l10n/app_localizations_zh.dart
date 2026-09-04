@@ -317,6 +317,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String buildingSemantics(String name, int level) {
     return '$name，修复 $level';
   }
+
+  @override
+  String get settingsTitle => '设置';
+
+  @override
+  String get settingsTooltip => '设置';
+
+  @override
+  String get settingsBgm => 'BGM';
+
+  @override
+  String get settingsSfx => '音效';
+
+  @override
+  String get settingsUserId => '用户 ID';
+
+  @override
+  String get settingsCopyId => '复制';
+
+  @override
+  String get settingsIdCopied => '已复制';
+
+  @override
+  String get settingsPrivacyPolicy => '隐私政策';
+
+  @override
+  String get settingsPrivacyOpenError => '无法打开页面';
+
+  @override
+  String get exitGameTitle => '要退出星光数独吗？';
+
+  @override
+  String get exitGameMessage => '进度会保存在这台设备上。';
+
+  @override
+  String get stayInGame => '留下';
+
+  @override
+  String get quitGame => '退出';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -631,4 +670,43 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String buildingSemantics(String name, int level) {
     return '$name，修復 $level';
   }
+
+  @override
+  String get settingsTitle => '設定';
+
+  @override
+  String get settingsTooltip => '設定';
+
+  @override
+  String get settingsBgm => 'BGM';
+
+  @override
+  String get settingsSfx => '音效';
+
+  @override
+  String get settingsUserId => '使用者 ID';
+
+  @override
+  String get settingsCopyId => '複製';
+
+  @override
+  String get settingsIdCopied => '已複製';
+
+  @override
+  String get settingsPrivacyPolicy => '隱私權政策';
+
+  @override
+  String get settingsPrivacyOpenError => '無法開啟頁面';
+
+  @override
+  String get exitGameTitle => '要結束星光數獨嗎？';
+
+  @override
+  String get exitGameMessage => '進度會保存在這台裝置上。';
+
+  @override
+  String get stayInGame => '留下';
+
+  @override
+  String get quitGame => '結束';
 }

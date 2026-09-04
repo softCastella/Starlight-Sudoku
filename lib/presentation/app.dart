@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
+import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/notifiers/locale_override.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
@@ -41,6 +42,13 @@ class SudokuApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) {
+            final settings = AppSettings();
+            settings.load();
+            return settings;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
             final notifier = GameNotifier();
             notifier.loadProgress();
             return notifier;
@@ -71,48 +79,48 @@ class SudokuApp extends StatelessWidget {
                 child: child ?? const SizedBox.shrink(),
               );
             },
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
-          fontFamily: AppFonts.family,
-          fontFamilyFallback: AppFonts.fallback,
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.blue[600],
-            foregroundColor: Colors.white,
-            elevation: 0,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[600],
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              useMaterial3: true,
+              fontFamily: AppFonts.family,
+              fontFamilyFallback: AppFonts.fallback,
+              appBarTheme: AppBarTheme(
+                backgroundColor: Colors.blue[600],
+                foregroundColor: Colors.white,
+                elevation: 0,
               ),
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-            ),
-          ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.blue[600],
-              side: BorderSide(color: Colors.blue[600]!, width: 2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[600],
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                ),
               ),
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.blue[600],
+                  side: BorderSide(color: Colors.blue[600]!, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                ),
+              ),
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+              ),
             ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
-        ),
-        navigatorObservers: [GameBgm.routeObserver],
-        home: const SplashScreen(),
+            navigatorObservers: [GameBgm.routeObserver],
+            home: const SplashScreen(),
           );
         },
       ),

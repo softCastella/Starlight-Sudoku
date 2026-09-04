@@ -175,5 +175,18 @@
       "name": {"type": "String"},
       "level": {"type": "int"}
     }
-  }
+  },
+  "settingsTitle": "Settings",
+  "settingsTooltip": "Settings",
+  "settingsBgm": "BGM",
+  "settingsSfx": "Sound effects",
+  "settingsUserId": "User ID",
+  "settingsCopyId": "Copy",
+  "settingsIdCopied": "Copied",
+  "settingsPrivacyPolicy": "Privacy policy",
+  "settingsPrivacyOpenError": "Couldn't open the page",
+  "exitGameTitle": "Leave Starlight Sudoku?",
+  "exitGameMessage": "Your progress stays on this device.",
+  "stayInGame": "Stay",
+  "quitGame": "Quit"
 }

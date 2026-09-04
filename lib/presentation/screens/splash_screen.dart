@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
+import 'package:sudoku_game/presentation/widgets/exit_game_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
@@ -13,7 +14,8 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   static const Duration displayDuration = Duration(milliseconds: 3200);
-  static const String logoAsset = 'assets/images/Logo/Spark_Lineup_Logo_nuki.png';
+  static const String logoAsset =
+      'assets/images/Logo/Spark_Lineup_Logo_nuki.png';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -54,11 +56,17 @@ class _SplashScreenState extends State<SplashScreen>
 
     _logoScale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.78, end: 0.98).chain(CurveTween(curve: fade)),
+        tween: Tween<double>(
+          begin: 0.78,
+          end: 0.98,
+        ).chain(CurveTween(curve: fade)),
         weight: 38,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.98, end: 1.0).chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 0.98,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 18,
       ),
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 44),
@@ -145,47 +153,59 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _showOverlay
-          ? HomeScreen.splashOverlayStyle
-          : HomeScreen.nightOverlayStyle,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          const HomeScreen(),
-          if (_showOverlay)
-            AbsorbPointer(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  FadeTransition(
-                    opacity: _overlayOpacity,
-                    child: const ColoredBox(
-                      color: Colors.white,
-                      child: SizedBox.expand(),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (_showOverlay) {
+          await SystemNavigator.pop();
+          return;
+        }
+        final leave = await ExitGameDialog.confirm(context);
+        if (leave) await SystemNavigator.pop();
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: _showOverlay
+            ? HomeScreen.splashOverlayStyle
+            : HomeScreen.nightOverlayStyle,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            const HomeScreen(),
+            if (_showOverlay)
+              AbsorbPointer(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    FadeTransition(
+                      opacity: _overlayOpacity,
+                      child: const ColoredBox(
+                        color: Colors.white,
+                        child: SizedBox.expand(),
+                      ),
                     ),
-                  ),
-                  FadeTransition(
-                    opacity: _logoOpacity,
-                    child: ScaleTransition(
-                      alignment: Alignment.center,
-                      scale: _logoScale,
-                      child: const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 48),
-                          child: Image(
-                            image: AssetImage(SplashScreen.logoAsset),
-                            width: 232,
-                            fit: BoxFit.contain,
+                    FadeTransition(
+                      opacity: _logoOpacity,
+                      child: ScaleTransition(
+                        alignment: Alignment.center,
+                        scale: _logoScale,
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 48),
+                            child: Image(
+                              image: AssetImage(SplashScreen.logoAsset),
+                              width: 232,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

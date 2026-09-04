@@ -5,8 +5,8 @@ class IconArt {
   IconArt._();
 
   static const sourceAsset =
-      'assets/images/Icon/Icon_Starlight_Sudoku_v1_sample_1024.png';
-  static const padNavy = Color(0xFF022E85);
+      'assets/images/Icon/icon_gg.png';
+  static const padNavy = Color(0xFF0E2040);
   static const defaultScale = 1.0;
-  static const defaultTransparentPad = true;
+  static const defaultTransparentPad = false;
 }

@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/give_up_puzzle_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
+import 'package:sudoku_game/presentation/widgets/settings_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
 
@@ -81,9 +83,10 @@ class _GameScreenState extends State<GameScreen> {
               },
             ),
             IconButton(
-              tooltip: l10n.autoCompleteTooltip,
-              icon: const Icon(Icons.bug_report),
-              onPressed: _simulateCompletion,
+              key: const Key('game-settings'),
+              tooltip: l10n.settingsTooltip,
+              icon: const Icon(Icons.settings),
+              onPressed: () => SettingsDialog.show(context),
             ),
           ],
         ),
@@ -248,26 +251,21 @@ class _GameScreenState extends State<GameScreen> {
       }
     } else {
       gameNotifier.setCellValue(row, col, number);
-      SystemSound.play(SystemSoundType.click);
+      if (AppSettings.sfxOn) {
+        SystemSound.play(SystemSoundType.click);
+      }
 
       if (gameNotifier.isPuzzleComplete) {
         gameNotifier.completeGame();
         HapticFeedback.mediumImpact();
-        SystemSound.play(SystemSoundType.alert);
+        if (AppSettings.sfxOn) {
+          SystemSound.play(SystemSoundType.alert);
+        }
         _showCompletionDialog();
       }
     }
 
     boardState.clearSelection();
-  }
-
-  void _simulateCompletion() {
-    final gameNotifier = context.read<GameNotifier>();
-    gameNotifier.completePuzzleForDebug();
-    gameNotifier.completeGame();
-    HapticFeedback.mediumImpact();
-    SystemSound.play(SystemSoundType.alert);
-    _showCompletionDialog();
   }
 
   void _showHint() {

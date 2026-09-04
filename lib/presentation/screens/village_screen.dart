@@ -22,7 +22,11 @@ class VillageScreen extends StatelessWidget {
       child: Consumer<GameNotifier>(
       builder: (context, gameNotifier, _) {
         final dawn = gameNotifier.villageDawn;
-        final ink = Color.lerp(const Color(0xFFFBF7EC), const Color(0xFF24452D), dawn)!;
+        final nightSky = dawn < 1;
+        final header = nightSky ? const Color(0xFFFBF7EC) : const Color(0xFF24452D);
+        final headerShadow = nightSky
+            ? const [Shadow(color: Color(0xCC000000), blurRadius: 8, offset: Offset(0, 1))]
+            : const <Shadow>[];
         final buildings = gameNotifier.buildings;
         final completedCount = buildings.where((building) => building.isComplete).length;
 
@@ -33,11 +37,21 @@ class VillageScreen extends StatelessWidget {
             const Color(0xFFF4F8EE),
             dawn,
           ),
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
-            title: Text(l10n.villageTitle),
+            title: Text(
+              l10n.villageTitle,
+              style: TextStyle(
+                color: header,
+                fontWeight: FontWeight.w700,
+                shadows: headerShadow,
+              ),
+            ),
             backgroundColor: Colors.transparent,
-            foregroundColor: ink,
+            foregroundColor: header,
             elevation: 0,
+            surfaceTintColor: Colors.transparent,
+            scrolledUnderElevation: 0,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -95,84 +109,65 @@ class VillageScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: SafeArea(
-            top: false,
-            child: PlayViewport(
-              child: SizedBox.expand(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              l10n.restoredCount(completedCount, buildings.length),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: dawn >= 1
-                                    ? const Color(0xFF1B5E20)
-                                    : const Color(0xFFFBF7EC),
-                                shadows: dawn >= 1
-                                    ? const []
-                                    : const [
-                                        Shadow(
-                                          color: Color(0xCC000000),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ],
-                              ),
-                            ),
-                          ),
-                          Text(
-                            l10n.ownedStarlight(gameNotifier.starLightBalance),
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFFF5CC3D),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            TweenAnimationBuilder<double>(
-                              duration: const Duration(milliseconds: 900),
-                              curve: Curves.easeOutCubic,
-                              tween: Tween<double>(begin: 0, end: gameNotifier.villageDawn),
-                              builder: (context, mapDawn, _) => VillageMapWidget(
-                                buildings: buildings,
-                                dawn: mapDawn,
-                                expand: true,
-                                onBuildingSelected: (building) => _showBuildingDetails(
-                                  context,
-                                  building,
-                                ),
-                              ),
-                            ),
-                            if (gameNotifier.isFirstVillageComplete)
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12),
-                                  child: _NextVillageUnlockCard(
-                                    onOpen: () => _showNextVillageDialog(context),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 900),
+                curve: Curves.easeOutCubic,
+                tween: Tween<double>(begin: 0, end: dawn),
+                builder: (context, mapDawn, _) => VillageMapWidget(
+                  buildings: buildings,
+                  dawn: mapDawn,
+                  expand: true,
+                  onBuildingSelected: (building) => _showBuildingDetails(
+                    context,
+                    building,
                   ),
                 ),
               ),
-            ),
+              if (gameNotifier.isFirstVillageComplete)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(32, 0, 32, 28),
+                    child: _NextVillageUnlockCard(
+                      onOpen: () => _showNextVillageDialog(context),
+                    ),
+                  ),
+                ),
+              SafeArea(
+                child: PlayViewport(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, kToolbarHeight, 20, 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l10n.restoredCount(completedCount, buildings.length),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: header,
+                              shadows: headerShadow,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          l10n.ownedStarlight(gameNotifier.starLightBalance),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFFF5CC3D),
+                            shadows: headerShadow,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },

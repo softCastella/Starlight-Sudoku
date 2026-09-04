@@ -140,20 +140,8 @@ class GameNotifier extends ChangeNotifier {
     }).toList();
   }
 
-  /// 0 at night, 1 when playable stages are cleared or the first village is restored.
-  double get villageDawn {
-    final fromStages = _stageProgressDawn;
-    final fromBuildings = _buildingDawn;
-    return fromStages > fromBuildings ? fromStages : fromBuildings;
-  }
-
-  double get _buildingDawn {
-    final landmarks = buildings;
-    final required = landmarks.fold<int>(0, (sum, b) => sum + b.requiredStarLight);
-    final restored = landmarks.fold<int>(0, (sum, b) => sum + b.restoredStarLight);
-    if (required == 0) return 0;
-    return (restored / required).clamp(0.0, 1.0);
-  }
+  /// 하늘·창문 그림은 스테이지 클리어만 본다. 건물 복원이 하늘을 앞질러 낮/창문을 켜지 않는다.
+  double get villageDawn => _stageProgressDawn;
 
   double get _stageProgressDawn {
     var completed = 0;
@@ -253,18 +241,6 @@ class GameNotifier extends ChangeNotifier {
       }
     }
     _saveActiveGame();
-    notifyListeners();
-  }
-
-  /// Fills the current puzzle with its solution for debug UI verification.
-  void completePuzzleForDebug() {
-    for (var row = 0; row < 9; row++) {
-      for (var col = 0; col < 9; col++) {
-        if (!_board.isFixedCell(row, col)) {
-          _board.setValue(row, col, _board.solution[row][col]);
-        }
-      }
-    }
     notifyListeners();
   }
 

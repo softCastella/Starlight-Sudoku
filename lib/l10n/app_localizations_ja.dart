@@ -317,4 +317,43 @@ class AppLocalizationsJa extends AppLocalizations {
   String buildingSemantics(String name, int level) {
     return '$name、復元 $level';
   }
+
+  @override
+  String get settingsTitle => '設定';
+
+  @override
+  String get settingsTooltip => '設定';
+
+  @override
+  String get settingsBgm => 'BGM';
+
+  @override
+  String get settingsSfx => '効果音';
+
+  @override
+  String get settingsUserId => 'ユーザーID';
+
+  @override
+  String get settingsCopyId => 'コピー';
+
+  @override
+  String get settingsIdCopied => 'コピーしました';
+
+  @override
+  String get settingsPrivacyPolicy => 'プライバシーポリシー';
+
+  @override
+  String get settingsPrivacyOpenError => 'ページを開けませんでした';
+
+  @override
+  String get exitGameTitle => 'スターライト数独を終了しますか？';
+
+  @override
+  String get exitGameMessage => '進行状況はこの端末に保存されています。';
+
+  @override
+  String get stayInGame => '続ける';
+
+  @override
+  String get quitGame => '終了';
 }

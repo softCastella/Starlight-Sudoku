@@ -18,6 +18,7 @@ import 'package:sudoku_game/presentation/screens/game_screen.dart';
 import 'package:sudoku_game/presentation/screens/opening_story_screen.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_button.dart';
+import 'package:sudoku_game/presentation/widgets/settings_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/twinkling_star_field.dart';
 
 /// 게임 홈 화면
@@ -29,23 +30,23 @@ class HomeScreen extends StatefulWidget {
 
   /// Opaque colors on web: Chrome paints a yellow bar if theme-color is transparent.
   static SystemUiOverlayStyle get nightOverlayStyle => SystemUiOverlayStyle(
-        statusBarColor: kIsWeb ? _navy : Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemStatusBarContrastEnforced: false,
-        systemNavigationBarColor: kIsWeb ? _navy : Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.light,
-        systemNavigationBarContrastEnforced: false,
-      );
+    statusBarColor: kIsWeb ? _navy : Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
+    systemStatusBarContrastEnforced: false,
+    systemNavigationBarColor: kIsWeb ? _navy : Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.light,
+    systemNavigationBarContrastEnforced: false,
+  );
 
   static SystemUiOverlayStyle get splashOverlayStyle => SystemUiOverlayStyle(
-        statusBarColor: kIsWeb ? Colors.white : Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-        systemStatusBarContrastEnforced: false,
-        systemNavigationBarColor: kIsWeb ? Colors.white : Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      );
+    statusBarColor: kIsWeb ? Colors.white : Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemStatusBarContrastEnforced: false,
+    systemNavigationBarColor: kIsWeb ? Colors.white : Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  );
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -64,12 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _iconTransparentPad = IconArt.defaultTransparentPad;
 
   String get _layoutJson => jsonEncode({
-        'alignY': double.parse(_alignY.toStringAsFixed(2)),
-        'maxWidth': _maxWidth.round(),
-        'gap': _gap.round(),
-        'fontSize': _fontSize.round(),
-        'scale': double.parse(_scale.toStringAsFixed(2)),
-      });
+    'alignY': double.parse(_alignY.toStringAsFixed(2)),
+    'maxWidth': _maxWidth.round(),
+    'gap': _gap.round(),
+    'fontSize': _fontSize.round(),
+    'scale': double.parse(_scale.toStringAsFixed(2)),
+  });
 
   void _applyLayout(void Function() change) {
     setState(change);
@@ -77,9 +78,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String get _iconJson => jsonEncode({
-        'scale': double.parse(_iconScale.toStringAsFixed(2)),
-        'transparentPad': _iconTransparentPad,
-      });
+    'scale': double.parse(_iconScale.toStringAsFixed(2)),
+    'transparentPad': _iconTransparentPad,
+  });
 
   void _applyIconLayout(void Function() change) {
     setState(change);
@@ -101,14 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
         transparentPad: _iconTransparentPad,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('아이콘 파일에 적용했어요')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('아이콘 파일에 적용했어요')));
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('아이콘 파일을 저장하지 못했어요')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('아이콘 파일을 저장하지 못했어요')));
     } finally {
       if (mounted) setState(() => _bakingIcon = false);
     }
@@ -130,10 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
             alignment: const Alignment(0, -0.12),
             semanticLabel: l10n.appTitle,
             filterQuality: FilterQuality.medium,
-            cacheWidth: (MediaQuery.sizeOf(context).width *
-                    MediaQuery.devicePixelRatioOf(context))
-                .round()
-                .clamp(480, 1440),
+            cacheWidth:
+                (MediaQuery.sizeOf(context).width *
+                        MediaQuery.devicePixelRatioOf(context))
+                    .round()
+                    .clamp(480, 1440),
           ),
           const DecoratedBox(
             decoration: BoxDecoration(
@@ -151,6 +151,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const Positioned.fill(child: TwinklingStarField()),
+          Positioned(
+            right: 4,
+            top: MediaQuery.paddingOf(context).top + 4,
+            child: IconButton(
+              key: const Key('title-settings'),
+              tooltip: l10n.settingsTooltip,
+              icon: const Icon(Icons.settings, color: Colors.white),
+              onPressed: () => SettingsDialog.show(context),
+            ),
+          ),
           SafeArea(
             child: Align(
               alignment: Alignment(0, _alignY),
@@ -160,55 +170,60 @@ class _HomeScreenState extends State<HomeScreen> {
                   scale: _scale,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: _maxWidth),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ParchmentButton(
-                        label: l10n.startNewPuzzle,
-                        fontSize: _fontSize,
-                        onPressed: () {
-                          TitleButtonChime.play();
-                          _startNewPuzzle(context);
-                        },
-                      ),
-                      SizedBox(height: _gap),
-                      Consumer<GameNotifier>(
-                        builder: (context, gameNotifier, _) {
-                          if (!gameNotifier.hasActiveGame) {
-                            return const SizedBox.shrink();
-                          }
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: _gap),
-                            child: ParchmentButton(
-                              label: l10n.continueGame,
-                              fontSize: (_fontSize - 1).clamp(12, 18),
-                              onPressed: () {
-                                TitleButtonChime.play();
-                                if (gameNotifier.continueGame()) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const GameScreen()),
-                                  );
-                                }
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      ParchmentButton(
-                        label: l10n.viewVillage,
-                        fontSize: (_fontSize - 1).clamp(12, 18),
-                        onPressed: () {
-                          TitleButtonChime.play();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const VillageScreen()),
-                          );
-                        },
-                      ),
-                    ],
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ParchmentButton(
+                          label: l10n.startNewPuzzle,
+                          fontSize: _fontSize,
+                          onPressed: () {
+                            TitleButtonChime.play();
+                            _startNewPuzzle(context);
+                          },
+                        ),
+                        SizedBox(height: _gap),
+                        Consumer<GameNotifier>(
+                          builder: (context, gameNotifier, _) {
+                            if (!gameNotifier.hasActiveGame) {
+                              return const SizedBox.shrink();
+                            }
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: _gap),
+                              child: ParchmentButton(
+                                label: l10n.continueGame,
+                                fontSize: (_fontSize - 1).clamp(12, 18),
+                                onPressed: () {
+                                  TitleButtonChime.play();
+                                  if (gameNotifier.continueGame()) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const GameScreen(),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        ParchmentButton(
+                          label: l10n.viewVillage,
+                          fontSize: (_fontSize - 1).clamp(12, 18),
+                          onPressed: () {
+                            TitleButtonChime.play();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const VillageScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 ),
               ),
             ),
@@ -233,9 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                   fontSize: 11,
                   height: 1,
-                  shadows: [
-                    Shadow(color: Color(0xCC000000), blurRadius: 6),
-                  ],
+                  shadows: [Shadow(color: Color(0xCC000000), blurRadius: 6)],
                 ),
               ),
             ),
@@ -452,7 +465,10 @@ class _IconLayoutPanel extends StatelessWidget {
                   width: 88,
                   child: Text(
                     '그림 크기 ${(scale * 100).round()}%',
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF24452D)),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF24452D),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -494,8 +510,8 @@ class _IconLayoutPanel extends StatelessWidget {
                     baking
                         ? '적용 중…'
                         : canBake
-                            ? '파일에 적용'
-                            : '미리보기만',
+                        ? '파일에 적용'
+                        : '미리보기만',
                   ),
                 ),
               ],
@@ -533,7 +549,11 @@ class _IconMaskPreview extends StatelessWidget {
             color: const Color(0xFF5A6B52),
             borderRadius: BorderRadius.circular(radius),
             boxShadow: const [
-              BoxShadow(color: Color(0x33000000), blurRadius: 8, offset: Offset(0, 3)),
+              BoxShadow(
+                color: Color(0x33000000),
+                blurRadius: 8,
+                offset: Offset(0, 3),
+              ),
             ],
           ),
           clipBehavior: Clip.antiAlias,
@@ -615,4 +635,3 @@ class _LocaleDebugMenu extends StatelessWidget {
     );
   }
 }
-

@@ -92,5 +92,18 @@
   "villageVista": "星明り村の景色",
   "gameLevelTitle": "{difficulty} {level}",
   "buildingLevelLabel": "{name}  {level}/5",
-  "buildingSemantics": "{name}、復元 {level}"
+  "buildingSemantics": "{name}、復元 {level}",
+  "settingsTitle": "設定",
+  "settingsTooltip": "設定",
+  "settingsBgm": "BGM",
+  "settingsSfx": "効果音",
+  "settingsUserId": "ユーザーID",
+  "settingsCopyId": "コピー",
+  "settingsIdCopied": "コピーしました",
+  "settingsPrivacyPolicy": "プライバシーポリシー",
+  "settingsPrivacyOpenError": "ページを開けませんでした",
+  "exitGameTitle": "スターライト数独を終了しますか？",
+  "exitGameMessage": "進行状況はこの端末に保存されています。",
+  "stayInGame": "続ける",
+  "quitGame": "終了"
 }

@@ -333,4 +333,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String buildingSemantics(String name, int level) {
     return '$name, restoration $level';
   }
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsTooltip => 'Settings';
+
+  @override
+  String get settingsBgm => 'BGM';
+
+  @override
+  String get settingsSfx => 'Sound effects';
+
+  @override
+  String get settingsUserId => 'User ID';
+
+  @override
+  String get settingsCopyId => 'Copy';
+
+  @override
+  String get settingsIdCopied => 'Copied';
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get settingsPrivacyOpenError => 'Couldn\'t open the page';
+
+  @override
+  String get exitGameTitle => 'Leave Starlight Sudoku?';
+
+  @override
+  String get exitGameMessage => 'Your progress stays on this device.';
+
+  @override
+  String get stayInGame => 'Stay';
+
+  @override
+  String get quitGame => 'Quit';
 }

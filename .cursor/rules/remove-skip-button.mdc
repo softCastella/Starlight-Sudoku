@@ -1,0 +1,11 @@
+---
+description: 스토어 빌드에 퍼즐 스킵(벌레) 버튼을 다시 넣지 않는다
+alwaysApply: true
+---
+
+# 스테이지 스킵 버튼은 넣지 않는다
+
+퍼즐 AppBar의 벌레 아이콘(`Icons.bug_report` → 강제 클리어)은 제거했다.
+그 자리는 **설정**이다. 스토어 APK/AAB, Play 업로드, 출시 빌드에 스킵을 다시 넣지 않는다.
+
+위치: `lib/presentation/screens/game_screen.dart` AppBar 설정 아이콘

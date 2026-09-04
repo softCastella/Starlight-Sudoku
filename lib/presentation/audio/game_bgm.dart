@@ -21,7 +21,16 @@ class GameBgm {
   static String? _current;
   static String? _wanted;
   static double _volume = 0;
+  static bool _enabled = true;
   static Future<void> _chain = Future.value();
+
+  static Future<void> setEnabled(bool on) {
+    _enabled = on;
+    if (!on) return _enqueue(_killAll);
+    final wanted = _wanted;
+    if (wanted == null) return Future<void>.value();
+    return _enqueue(() => _play(wanted));
+  }
 
   static Future<void> playTitle() => _setWanted(titleAsset);
   static Future<void> playLevel() => _setWanted(levelAsset);
@@ -35,6 +44,7 @@ class GameBgm {
     if (const bool.fromEnvironment('FLUTTER_TEST')) {
       return Future<void>.value();
     }
+    if (!_enabled) return Future<void>.value();
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
     if (_isHolding(wanted)) return Future<void>.value();
@@ -62,6 +72,10 @@ class GameBgm {
   static Future<void> _play(String asset) async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
     if (_wanted != asset) return;
+    if (!_enabled) {
+      await _killAll();
+      return;
+    }
     if (_isHolding(asset)) return;
 
     await _killAll();

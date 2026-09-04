@@ -1,0 +1,15 @@
+---
+description: sample-v1 is a frozen preservation branch. Never change it.
+alwaysApply: true
+---
+
+# sample-v1 is frozen
+
+`sample-v1` is a read-only snapshot. Do not touch it.
+
+- Never checkout `sample-v1` to do work
+- Never commit, amend, rebase, merge into, or force-push `sample-v1`
+- Never delete `sample-v1`
+- New work goes on `main` only
+
+If a task would change `sample-v1`, stop and stay on `main`.

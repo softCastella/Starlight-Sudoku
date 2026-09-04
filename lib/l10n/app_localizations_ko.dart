@@ -318,4 +318,43 @@ class AppLocalizationsKo extends AppLocalizations {
   String buildingSemantics(String name, int level) {
     return '$name, 복원 단계 $level';
   }
+
+  @override
+  String get settingsTitle => '설정';
+
+  @override
+  String get settingsTooltip => '설정';
+
+  @override
+  String get settingsBgm => 'BGM';
+
+  @override
+  String get settingsSfx => '효과음';
+
+  @override
+  String get settingsUserId => '유저 ID';
+
+  @override
+  String get settingsCopyId => '복사';
+
+  @override
+  String get settingsIdCopied => '복사했어요';
+
+  @override
+  String get settingsPrivacyPolicy => '개인정보처리방침';
+
+  @override
+  String get settingsPrivacyOpenError => '페이지를 열 수 없어요';
+
+  @override
+  String get exitGameTitle => '별빛 스도쿠를 종료할까요?';
+
+  @override
+  String get exitGameMessage => '진행 상황은 이 기기에 저장되어 있습니다.';
+
+  @override
+  String get stayInGame => '계속하기';
+
+  @override
+  String get quitGame => '종료';
 }

@@ -92,5 +92,18 @@
   "villageVista": "星光村景色",
   "gameLevelTitle": "{difficulty} {level}",
   "buildingLevelLabel": "{name}  {level}/5",
-  "buildingSemantics": "{name}，修复 {level}"
+  "buildingSemantics": "{name}，修复 {level}",
+  "settingsTitle": "设置",
+  "settingsTooltip": "设置",
+  "settingsBgm": "BGM",
+  "settingsSfx": "音效",
+  "settingsUserId": "用户 ID",
+  "settingsCopyId": "复制",
+  "settingsIdCopied": "已复制",
+  "settingsPrivacyPolicy": "隐私政策",
+  "settingsPrivacyOpenError": "无法打开页面",
+  "exitGameTitle": "要退出星光数独吗？",
+  "exitGameMessage": "进度会保存在这台设备上。",
+  "stayInGame": "留下",
+  "quitGame": "退出"
 }

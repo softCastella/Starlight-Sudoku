@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 
 /// Title parchment tap chime. Fades out in the last moments of the clip.
 class TitleButtonChime {
@@ -17,6 +18,7 @@ class TitleButtonChime {
 
   static Future<void> play() async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (!AppSettings.sfxOn) return;
 
     final generation = ++_generation;
     final player = _player ??= AudioPlayer();

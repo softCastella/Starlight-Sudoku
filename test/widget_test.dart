@@ -64,7 +64,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('쉬움 스테이지'), findsOneWidget);
-    expect(find.text('0/20 클리어'), findsOneWidget);
+    expect(find.text('0/10 클리어'), findsOneWidget);
   });
 
   testWidgets('English locale shows English title art and home buttons', (
@@ -115,7 +115,7 @@ void main() {
 
     expect(find.text('New puzzle'), findsOneWidget);
     expect(_assetImage(TitleArt.english), findsWidgets);
-  }, skip: 'Title locale switcher is hidden for the trial build.');
+  }, skip: true);
 
   testWidgets('system back returns from village to title', (
     WidgetTester tester,
@@ -155,5 +155,23 @@ void main() {
 
     expect(find.text('잠든 마을'), findsNothing);
     expect(find.text('새 퍼즐 시작'), findsOneWidget);
+  });
+
+  testWidgets('title settings opens audio and privacy rows', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const SudokuApp(locale: Locale('ko')));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(SplashScreen.displayDuration);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('title-settings')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('BGM'), findsOneWidget);
+    expect(find.text('효과음'), findsOneWidget);
+    expect(find.text('유저 ID'), findsOneWidget);
+    expect(find.text('개인정보처리방침'), findsOneWidget);
   });
 }

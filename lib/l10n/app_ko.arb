@@ -92,5 +92,18 @@
   "villageVista": "별빛 마을 전경",
   "gameLevelTitle": "{difficulty} {level}",
   "buildingLevelLabel": "{name}  {level}/5",
-  "buildingSemantics": "{name}, 복원 단계 {level}"
+  "buildingSemantics": "{name}, 복원 단계 {level}",
+  "settingsTitle": "설정",
+  "settingsTooltip": "설정",
+  "settingsBgm": "BGM",
+  "settingsSfx": "효과음",
+  "settingsUserId": "유저 ID",
+  "settingsCopyId": "복사",
+  "settingsIdCopied": "복사했어요",
+  "settingsPrivacyPolicy": "개인정보처리방침",
+  "settingsPrivacyOpenError": "페이지를 열 수 없어요",
+  "exitGameTitle": "별빛 스도쿠를 종료할까요?",
+  "exitGameMessage": "진행 상황은 이 기기에 저장되어 있습니다.",
+  "stayInGame": "계속하기",
+  "quitGame": "종료"
 }

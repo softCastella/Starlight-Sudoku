@@ -660,6 +660,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name}, restoration {level}'**
   String buildingSemantics(String name, int level);
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTooltip;
+
+  /// No description provided for @settingsBgm.
+  ///
+  /// In en, this message translates to:
+  /// **'BGM'**
+  String get settingsBgm;
+
+  /// No description provided for @settingsSfx.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound effects'**
+  String get settingsSfx;
+
+  /// No description provided for @settingsUserId.
+  ///
+  /// In en, this message translates to:
+  /// **'User ID'**
+  String get settingsUserId;
+
+  /// No description provided for @settingsCopyId.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get settingsCopyId;
+
+  /// No description provided for @settingsIdCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get settingsIdCopied;
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @settingsPrivacyOpenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the page'**
+  String get settingsPrivacyOpenError;
+
+  /// No description provided for @exitGameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave Starlight Sudoku?'**
+  String get exitGameTitle;
+
+  /// No description provided for @exitGameMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your progress stays on this device.'**
+  String get exitGameMessage;
+
+  /// No description provided for @stayInGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get stayInGame;
+
+  /// No description provided for @quitGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get quitGame;
 }
 
 class _AppLocalizationsDelegate
