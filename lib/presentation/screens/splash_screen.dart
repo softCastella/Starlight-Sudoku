@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/audio/splash_voice.dart';
-import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/exit_game_dialog.dart';
+import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
 
 /// APK: white logo splash. Web skips this and starts at the BGM ON/OFF gate.
@@ -226,47 +226,22 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _webAudioGate() {
     final l10n = l10nOf(context);
-    const onColor = Color(0xFF172118);
     return ColoredBox(
       color: const Color(0xD907152F),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FilledButton.icon(
+            OvalImageButton(
               key: const Key('web-audio-start'),
+              label: l10n.webBgmOn,
               onPressed: () => unawaited(_finishWebAudioGate(bgmOn: true)),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size(48, 48),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 18,
-                ),
-                foregroundColor: onColor,
-                backgroundColor: const Color(0xFFFFE3A0),
-              ),
-              icon: const Icon(Icons.music_note_rounded),
-              label: Text(
-                l10n.webBgmOn,
-                style: PlayUi.buttonStyle(color: onColor),
-              ),
             ),
             const SizedBox(height: 12),
-            TextButton(
+            OvalImageButton(
               key: const Key('web-audio-off'),
+              label: l10n.webBgmOff,
               onPressed: () => unawaited(_finishWebAudioGate(bgmOn: false)),
-              style: TextButton.styleFrom(
-                foregroundColor: PlayUi.cream,
-                minimumSize: const Size(48, 48),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 14,
-                ),
-              ),
-              child: Text(
-                l10n.webBgmOff,
-                style: PlayUi.buttonStyle(color: PlayUi.cream),
-              ),
             ),
           ],
         ),
