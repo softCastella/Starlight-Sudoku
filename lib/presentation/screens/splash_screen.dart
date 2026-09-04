@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
@@ -28,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _logoScale;
   late final Animation<double> _overlayOpacity;
   bool _showOverlay = true;
+  bool _showWebAudioGate = false;
   bool _started = false;
 
   @override
@@ -82,8 +84,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
-        setState(() => _showOverlay = false);
-        _playTitleIfCurrent();
+        setState(() {
+          _showOverlay = false;
+          _showWebAudioGate = kIsWeb;
+        });
+        if (!kIsWeb) _playTitleIfCurrent();
       }
     });
   }
@@ -113,6 +118,12 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted || _showOverlay) return;
     if (ModalRoute.of(context)?.isCurrent != true) return;
     GameBgm.playTitle();
+  }
+
+  void _startWebAudio() {
+    if (!_showWebAudioGate) return;
+    setState(() => _showWebAudioGate = false);
+    _playTitleIfCurrent();
   }
 
   void _maybeShowTrialEnd() {
@@ -202,6 +213,29 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                   ],
+                ),
+              ),
+            if (_showWebAudioGate)
+              ColoredBox(
+                color: const Color(0xD907152F),
+                child: Center(
+                  child: FilledButton.icon(
+                    key: const Key('web-audio-start'),
+                    onPressed: _startWebAudio,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 18,
+                      ),
+                      foregroundColor: const Color(0xFF172118),
+                      backgroundColor: const Color(0xFFFFE3A0),
+                    ),
+                    icon: const Icon(Icons.music_note_rounded),
+                    label: const Text(
+                      'BGM ON',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
                 ),
               ),
           ],
