@@ -721,6 +721,24 @@ abstract class AppLocalizations {
   /// **'Couldn\'t open the page'**
   String get settingsPrivacyOpenError;
 
+  /// No description provided for @settingsCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get settingsCredits;
+
+  /// No description provided for @creditsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get creditsTitle;
+
+  /// No description provided for @creditsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Starlight Sudoku\n\nDeveloped by Tyche Works\nLine: Tyche Spark\n\n© Tyche Spark. All rights reserved'**
+  String get creditsBody;
+
   /// No description provided for @exitGameTitle.
   ///
   /// In en, this message translates to:

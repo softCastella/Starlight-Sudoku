@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
+import 'package:sudoku_game/presentation/widgets/sudoku_cell_guide.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_cell_widget.dart';
 
 /// Sudoku 게임 보드 전체 위젯 (9x9 그리드)
@@ -27,8 +27,6 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
       builder: (context, gameNotifier, _) {
         final board = gameNotifier.board;
         final invalidCells = gameNotifier.invalidCells.toList().toSet();
-        final easyGuide =
-            gameNotifier.difficulty == SudokuDifficulty.easy;
         final selectedValue = _selectedRow != null && _selectedCol != null
             ? board.getValue(_selectedRow!, _selectedCol!)
             : 0;
@@ -62,15 +60,15 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                   final value = board.getValue(row, col);
                   final isFixed = board.isFixedCell(row, col);
                   final isInvalid = invalidCells.contains((row, col));
-                  final isSelected = _selectedRow == row && _selectedCol == col;
-                  final isLineHint = easyGuide &&
-                      !isSelected &&
-                      _selectedRow != null &&
-                      (row == _selectedRow || col == _selectedCol);
-                  final isSameNumber = easyGuide &&
-                      !isSelected &&
-                      selectedValue != 0 &&
-                      value == selectedValue;
+                  final guide = SudokuCellGuide(
+                    difficulty: gameNotifier.difficulty,
+                    row: row,
+                    col: col,
+                    cellValue: value,
+                    selectedRow: _selectedRow,
+                    selectedCol: _selectedCol,
+                    selectedValue: selectedValue,
+                  );
                   final memos = board.getMemo(row, col);
 
                   return SudokuCellWidget(
@@ -80,10 +78,10 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                     memos: memos,
                     isFixed: isFixed,
                     isInvalid: isInvalid,
-                    isSelected: isSelected,
-                    isLineHint: isLineHint,
-                    isSameNumber: isSameNumber,
-                    showFocusRing: easyGuide && isSelected,
+                    isSelected: guide.isSelected,
+                    isLineHint: guide.isRegionHint,
+                    isSameNumber: guide.isSameNumber,
+                    showFocusRing: guide.showFocusRing,
                     onTap: () {
                       setState(() {
                         _selectedRow = row;

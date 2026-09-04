@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 
 /// Layout and type tokens. Use these instead of one-off font sizes and padding.
 class PlayUi {
@@ -8,11 +9,44 @@ class PlayUi {
 
   /// Smallest allowed type. Captions and scaled-down labels stop here.
   static const double minType = 11;
-  static const double caption = 11;
-  static const double body = 13;
-  static const double label = 14;
-  static const double button = 15;
-  static const double title = 18;
+
+  static const double kCaption = 11;
+  static const double kBody = 13;
+  static const double kLabel = 14;
+  static const double kButton = 15;
+  static const double kTitle = 18;
+  static const double kModalInset = 24;
+  static const double kModalPadX = 40;
+  static const double kModalPadY = 40;
+  static const double kModalMinWidth = 280;
+  static const double kModalMaxWidth = 420;
+  static const double kRowGap = 8;
+  static const double kButtonMaxWidth = 200;
+  static const double kButtonMinWidth = 112;
+  static const double kOvalEndFraction = 0.19;
+  static const double kScreenPad = 20;
+  static const double ovalAspect = 551 / 176;
+  static const double ovalSideInset = 22;
+
+  static PlayUiTune get _tune => PlayUiTune.instance;
+
+  static double get caption => _tune.caption;
+  static double get body => _tune.body;
+  static double get label => _tune.label;
+  static double get button => _tune.button;
+  static double get title => _tune.title;
+  static double get modalInset => _tune.modalInset;
+  static double get modalPadX => _tune.modalPadX;
+  static double get modalPadY => _tune.modalPadY;
+  static double get modalPadTop => modalPadY;
+  static double get modalPadBottom => modalPadY;
+  static double get modalMinWidth => _tune.modalMinWidth;
+  static double get modalMaxWidth => _tune.modalMaxWidth;
+  static double get rowGap => _tune.rowGap;
+  static double get buttonMaxWidth => _tune.buttonMaxWidth;
+  static double get buttonMinWidth => _tune.buttonMinWidth;
+  static double get ovalEndFraction => _tune.ovalEndFraction;
+  static double get screenPad => _tune.screenPad;
 
   static const Color ink = Color(0xFF24452D);
   static const Color muted = Color(0xFF4D6554);
@@ -20,22 +54,6 @@ class PlayUi {
   /// Darker gold for day skies. `#F5CC3D` washes out on morning village.
   static const Color goldOnLight = Color(0xFFB57A14);
   static const Color cream = Color(0xFFFBF7EC);
-
-  static const double screenPad = 20;
-  static const double modalInset = 24;
-  /// Minimum inset from the parchment art. Extra space is centering, not more pad.
-  static const double modalPadX = 40;
-  static const double modalPadY = 40;
-  static const double modalPadTop = modalPadY;
-  static const double modalPadBottom = modalPadY;
-  static const double rowGap = 8;
-  /// Cap after growing the oval to fit the label. Buttons do not fill the modal.
-  static const double buttonMaxWidth = 200;
-  static const double buttonMinWidth = 112;
-  /// Pointed ends + stars. Keep copy in the flat middle of the oval.
-  static const double ovalEndFraction = 0.19;
-  static const double ovalAspect = 551 / 176;
-  static const double ovalSideInset = 22;
 
   static TextStyle titleStyle({Color color = ink}) => TextStyle(
         fontSize: title,
@@ -148,8 +166,8 @@ class OvalButtonLayout {
   static OvalButtonLayout forLabel(
     String label, {
     required TextDirection direction,
-    double preferredFontSize = PlayUi.button,
-    double maxWidth = PlayUi.buttonMaxWidth,
+    double preferredFontSize = PlayUi.kButton,
+    double maxWidth = PlayUi.kButtonMaxWidth,
     Color color = PlayUi.ink,
   }) {
     final cap = math.max(1.0, maxWidth);

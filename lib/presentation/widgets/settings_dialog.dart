@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
+import 'package:sudoku_game/presentation/widgets/credits_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -123,6 +125,21 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   color: PlayUi.muted,
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () => CreditsDialog.show(context),
+            onLongPress: () => PlayUiTune.instance.setPanelOpen(true),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                l10n.settingsCredits,
+                style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                  decoration: TextDecoration.underline,
+                  decorationColor: PlayUi.ink,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 12),

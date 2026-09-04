@@ -17,10 +17,12 @@
 
 - 저장소: `softCastella/Starlight-Sudoku`
 - 호스팅: GitHub Pages
-- 배포 대상: `main` 브랜치
+- 배포 대상: `pages` 브랜치 (체험판 웹 데모)
 - 자동화: `.github/workflows/deploy-pages.yml`
 
-`main` 브랜치에 변경을 푸시하면 GitHub Actions가 Flutter 웹 릴리스를 빌드하고 GitHub Pages에 자동 배포한다.
+`pages`에 변경을 푸시하면 GitHub Actions가 Flutter 웹 릴리스를 빌드하고 GitHub Pages에 자동 배포한다. `main`은 APK 작업용이며, `main` 푸시로는 Pages가 갱신되지 않는다. 공개 웹을 바꿀 때만 `pages`에 올린다.
+
+개발은 `main`에서 한다. `pages`는 웹 데모 스냅샷이다. `sample-v1`은 읽기 전용 그대로.
 
 ## 배포 후 확인
 

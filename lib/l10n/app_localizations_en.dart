@@ -364,6 +364,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsPrivacyOpenError => 'Couldn\'t open the page';
 
   @override
+  String get settingsCredits => 'Credits';
+
+  @override
+  String get creditsTitle => 'Credits';
+
+  @override
+  String get creditsBody =>
+      'Starlight Sudoku\n\nDeveloped by Tyche Works\nLine: Tyche Spark\n\n© Tyche Spark. All rights reserved';
+
+  @override
   String get exitGameTitle => 'Leave Starlight Sudoku?';
 
   @override

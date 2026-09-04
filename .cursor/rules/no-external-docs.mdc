@@ -1,0 +1,13 @@
+---
+description: Do not mention or use Notion, OneDrive, or unrelated document tools
+alwaysApply: true
+---
+
+# Project docs only
+
+This project’s source of truth is the repo itself, especially `Docs/`.
+
+- Do not mention Notion, OneDrive, or other external doc/cloud tools.
+- Do not offer to search, sync, or authenticate those services.
+- Do not treat them as related to this game or its workflow.
+- When looking up prior work, read `Docs/` and the code.

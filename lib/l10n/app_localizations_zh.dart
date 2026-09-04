@@ -349,6 +349,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsPrivacyOpenError => '无法打开页面';
 
   @override
+  String get settingsCredits => '制作人员';
+
+  @override
+  String get creditsTitle => '制作人员';
+
+  @override
+  String get creditsBody =>
+      '星光数独\n\n开发  Tyche Works\n产品线  Tyche Spark\n\n© Tyche Spark. All rights reserved';
+
+  @override
   String get exitGameTitle => '要退出星光数独吗？';
 
   @override
@@ -703,6 +713,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get settingsPrivacyOpenError => '無法開啟頁面';
+
+  @override
+  String get settingsCredits => '製作人員';
+
+  @override
+  String get creditsTitle => '製作人員';
+
+  @override
+  String get creditsBody =>
+      '星光數獨\n\n開發  Tyche Works\n產品線  Tyche Spark\n\n© Tyche Spark. All rights reserved';
 
   @override
   String get exitGameTitle => '要結束星光數獨嗎？';

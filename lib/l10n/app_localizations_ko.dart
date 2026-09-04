@@ -350,6 +350,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsPrivacyOpenError => '페이지를 열 수 없어요';
 
   @override
+  String get settingsCredits => '크레딧';
+
+  @override
+  String get creditsTitle => '크레딧';
+
+  @override
+  String get creditsBody =>
+      '별빛 스도쿠\n\n개발  티케웍스 (Tyche Works)\n라인  티케스파크 (Tyche Spark)\n\n© Tyche Spark. All rights reserved';
+
+  @override
   String get exitGameTitle => '별빛 스도쿠를 종료할까요?';
 
   @override

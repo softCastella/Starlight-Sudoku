@@ -5,10 +5,13 @@ import 'package:sudoku_game/l10n/app_localizations.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
+import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/notifiers/locale_override.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
+import 'package:sudoku_game/presentation/widgets/play_ui_tuner_panel.dart';
+import 'package:sudoku_game/presentation/widgets/web_phone_frame.dart';
 
 /// 메인 앱 위젯
 class SudokuApp extends StatelessWidget {
@@ -45,6 +48,7 @@ class SudokuApp extends StatelessWidget {
           create: (_) {
             final settings = AppSettings();
             settings.load();
+            PlayUiTune.instance.load();
             return settings;
           },
         ),
@@ -56,6 +60,7 @@ class SudokuApp extends StatelessWidget {
           },
         ),
         ChangeNotifierProvider(create: (_) => LocaleOverride()),
+        ChangeNotifierProvider<PlayUiTune>.value(value: PlayUiTune.instance),
       ],
       child: Consumer<LocaleOverride>(
         builder: (context, locales, _) {
@@ -74,12 +79,32 @@ class SudokuApp extends StatelessWidget {
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
-              return _AppAudioLifecycle(
-                child: Listener(
-                  behavior: HitTestBehavior.translucent,
-                  onPointerDown: (_) => GameBgm.unlock(),
-                  child: child ?? const SizedBox.shrink(),
-                ),
+              return ListenableBuilder(
+                listenable: PlayUiTune.instance,
+                builder: (context, _) {
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      WebPhoneFrame(
+                        child: _AppAudioLifecycle(
+                          child: Listener(
+                            behavior: HitTestBehavior.translucent,
+                            onPointerDown: (_) => GameBgm.unlock(),
+                            child: child ?? const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                      if (PlayUiTune.instance.panelOpen)
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            width: 300,
+                            child: PlayUiTunerPanel(),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               );
             },
             theme: ThemeData(

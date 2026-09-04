@@ -123,12 +123,17 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       body: LayoutBuilder(
         builder: (context, constraints) {
-          const aspect = TitleArt.paintingAspectRatio;
+          // Web demo is one phone size (see WebPhoneFrame). Skip fold letterbox.
           var frameW = constraints.maxWidth;
-          var frameH = frameW / aspect;
-          if (frameH > constraints.maxHeight) {
-            frameH = constraints.maxHeight;
-            frameW = frameH * aspect;
+          var frameH = constraints.maxHeight;
+          if (!kIsWeb) {
+            const aspect = TitleArt.paintingAspectRatio;
+            frameW = constraints.maxWidth;
+            frameH = frameW / aspect;
+            if (frameH > constraints.maxHeight) {
+              frameH = constraints.maxHeight;
+              frameW = frameH * aspect;
+            }
           }
           final cacheW = (frameW * media.devicePixelRatio).round().clamp(480, 1440);
 

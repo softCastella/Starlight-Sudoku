@@ -173,5 +173,6 @@ void main() {
     expect(find.text('효과음'), findsOneWidget);
     expect(find.text('유저 ID'), findsOneWidget);
     expect(find.text('개인정보처리방침'), findsOneWidget);
+    expect(find.text('크레딧'), findsOneWidget);
   });
 }

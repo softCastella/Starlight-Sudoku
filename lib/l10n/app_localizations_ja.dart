@@ -349,6 +349,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsPrivacyOpenError => 'ページを開けませんでした';
 
   @override
+  String get settingsCredits => 'クレジット';
+
+  @override
+  String get creditsTitle => 'クレジット';
+
+  @override
+  String get creditsBody =>
+      'スターライト数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\n© Tyche Spark. All rights reserved';
+
+  @override
   String get exitGameTitle => 'スターライト数独を終了しますか？';
 
   @override

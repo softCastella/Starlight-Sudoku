@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 
 /// Parchment window that keeps copy and buttons inside the art.
 class ParchmentModal extends StatelessWidget {
@@ -27,8 +28,18 @@ class ParchmentModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: PlayUiTune.instance,
+      builder: (context, _) => _buildDialog(context),
+    );
+  }
+
+  Widget _buildDialog(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final maxW = (size.width - PlayUi.modalInset * 2).clamp(280.0, 420.0);
+    final maxW = (size.width - PlayUi.modalInset * 2).clamp(
+      PlayUi.modalMinWidth,
+      PlayUi.modalMaxWidth,
+    );
     final maxH = size.height - 48;
     final frameH = maxW / aspectRatio;
     final padX = math.max(PlayUi.modalPadX, maxW * 0.12);
@@ -37,7 +48,7 @@ class ParchmentModal extends StatelessWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(
+      insetPadding: EdgeInsets.symmetric(
         horizontal: PlayUi.modalInset,
         vertical: 24,
       ),
@@ -125,6 +136,7 @@ class _ParchmentModalButtonState extends State<ParchmentModalButton> {
         final layout = OvalButtonLayout.forLabel(
           widget.label,
           direction: Directionality.of(context),
+          preferredFontSize: PlayUi.button,
           maxWidth: cap,
           color: widget.color,
         );

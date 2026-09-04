@@ -74,5 +74,8 @@ key.properties
 secrets.json
 api_keys.dart
 
+# Live PlayUi tuner dump (paste values back into play_ui.dart)
+play_ui_layout.json
+
 # iOS/macOS
 **/ios/Flutter/Flutter.xcframework
