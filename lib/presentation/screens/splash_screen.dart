@@ -125,11 +125,16 @@ class _SplashScreenState extends State<SplashScreen>
     GameBgm.playTitle();
   }
 
-  Future<void> _finishWebAudioGate({required bool bgmOn}) async {
+  void _finishWebAudioGate({required bool bgmOn}) {
     if (!_showWebAudioGate) return;
     setState(() => _showWebAudioGate = false);
-    await context.read<AppSettings>().setBgmEnabled(bgmOn);
-    if (mounted) GameBgm.playTitle();
+    if (bgmOn) {
+      unawaited(GameBgm.startTitleFromGesture());
+    } else {
+      GameBgm.rememberTitle();
+      unawaited(GameBgm.setEnabled(false));
+    }
+    unawaited(context.read<AppSettings>().persistBgmEnabled(bgmOn));
   }
 
   Future<void> _startSplash() async {
@@ -232,16 +237,20 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            OvalImageButton(
-              key: const Key('web-audio-start'),
-              label: l10n.webBgmOn,
-              onPressed: () => unawaited(_finishWebAudioGate(bgmOn: true)),
+            Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (_) => unawaited(GameBgm.startTitleFromGesture()),
+              child: OvalImageButton(
+                key: const Key('web-audio-start'),
+                label: l10n.webBgmOn,
+                onPressed: () => _finishWebAudioGate(bgmOn: true),
+              ),
             ),
             const SizedBox(height: 12),
             OvalImageButton(
               key: const Key('web-audio-off'),
               label: l10n.webBgmOff,
-              onPressed: () => unawaited(_finishWebAudioGate(bgmOn: false)),
+              onPressed: () => _finishWebAudioGate(bgmOn: false),
             ),
           ],
         ),

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/level_select_screen.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -19,6 +21,9 @@ class DifficultySelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
+    return ListenableBuilder(
+      listenable: PlayUiTune.instance,
+      builder: (context, _) {
     return BgmScope(
       cue: BgmCue.level,
       child: Consumer<GameNotifier>(
@@ -71,12 +76,17 @@ class DifficultySelectionScreen extends StatelessWidget {
                   SafeArea(
                     child: PlayViewport(
                       child: ListView(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+                        padding: EdgeInsets.fromLTRB(
+                          PlayUi.screenPad,
+                          8,
+                          PlayUi.screenPad,
+                          28,
+                        ),
                         children: [
                           Text(
                             l10n.difficultyLead,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: PlayUi.title,
                               fontWeight: FontWeight.w700,
                               color: titleColor,
                               height: 1.4,
@@ -92,7 +102,7 @@ class DifficultySelectionScreen extends StatelessWidget {
                           Text(
                             l10n.difficultySub,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: PlayUi.label,
                               color: Color.lerp(
                                 const Color(0xD6FFF8E8),
                                 _muted,
@@ -124,6 +134,8 @@ class DifficultySelectionScreen extends StatelessWidget {
         );
       },
     ),
+    );
+      },
     );
   }
 }
@@ -241,7 +253,7 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
                               child: Text(
                                 l10n.difficultyPathTitle(difficulty),
                                 style: TextStyle(
-                                  fontSize: 22,
+                                  fontSize: PlayUi.title,
                                   fontWeight: FontWeight.w800,
                                   color: accent,
                                 ),
@@ -250,10 +262,8 @@ class _DifficultyPathCardState extends State<_DifficultyPathCard> {
                             const SizedBox(height: 2),
                             Text(
                               l10n.difficultyBlurb(difficulty),
-                              style: const TextStyle(
-                                fontSize: 13,
+                              style: PlayUi.bodyStyle(
                                 color: DifficultySelectionScreen._muted,
-                                height: 1.35,
                               ),
                             ),
                           ],

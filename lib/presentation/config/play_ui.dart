@@ -25,6 +25,12 @@ class PlayUi {
   static const double kButtonMinWidth = 112;
   static const double kOvalEndFraction = 0.19;
   static const double kScreenPad = 20;
+  static const double kModalInsetY = 24;
+  static const double kModalOffsetX = 0;
+  static const double kModalOffsetY = 0;
+  static const double kButtonTextOffsetX = 0;
+  static const double kButtonTextOffsetY = 0;
+  static const double kParchmentTextPad = 36;
   static const double ovalAspect = 551 / 176;
   static const double ovalSideInset = 22;
 
@@ -47,6 +53,12 @@ class PlayUi {
   static double get buttonMinWidth => _tune.buttonMinWidth;
   static double get ovalEndFraction => _tune.ovalEndFraction;
   static double get screenPad => _tune.screenPad;
+  static double get modalInsetY => _tune.modalInsetY;
+  static double get modalOffsetX => _tune.modalOffsetX;
+  static double get modalOffsetY => _tune.modalOffsetY;
+  static double get buttonTextOffsetX => _tune.buttonTextOffsetX;
+  static double get buttonTextOffsetY => _tune.buttonTextOffsetY;
+  static double get parchmentTextPad => _tune.parchmentTextPad;
 
   static const Color ink = Color(0xFF24452D);
   static const Color muted = Color(0xFF4D6554);
@@ -75,6 +87,13 @@ class PlayUi {
         fontWeight: FontWeight.w800,
         color: color,
         height: 1,
+      );
+
+  static TextStyle bodyStyle({Color color = muted}) => TextStyle(
+        fontSize: body,
+        fontWeight: FontWeight.w500,
+        color: color,
+        height: 1.4,
       );
 
   static TextStyle captionStyle({Color color = muted}) => TextStyle(

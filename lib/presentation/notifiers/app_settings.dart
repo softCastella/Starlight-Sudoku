@@ -39,6 +39,13 @@ class AppSettings extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> persistBgmEnabled(bool value) async {
+    _bgmOn = value;
+    notifyListeners();
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setBool(_bgmKey, value);
+  }
+
   Future<void> setBgmEnabled(bool value) async {
     if (_bgmOn == value) return;
     _bgmOn = value;

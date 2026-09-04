@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/opening_story.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
@@ -56,6 +58,9 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
     final isLast = _page == pages.length - 1;
     final l10n = l10nOf(context);
 
+    return ListenableBuilder(
+      listenable: PlayUiTune.instance,
+      builder: (context, _) {
     return BgmScope(
       cue: BgmCue.silence,
       child: Scaffold(
@@ -94,10 +99,20 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                     ),
                     const Spacer(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+                      padding: EdgeInsets.fromLTRB(
+                        PlayUi.screenPad,
+                        12,
+                        PlayUi.screenPad,
+                        28,
+                      ),
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                        padding: EdgeInsets.fromLTRB(
+                          PlayUi.screenPad,
+                          PlayUi.screenPad,
+                          PlayUi.screenPad,
+                          16,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xF2FFF8E8),
                           borderRadius: BorderRadius.circular(18),
@@ -108,22 +123,14 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                           children: [
                             Text(
                               l10n.openingHeadline(_page),
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: _ink,
-                              ),
+                              style: PlayUi.titleStyle(color: _ink),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: PlayUi.rowGap * 1.25),
                             Text(
                               l10n.openingBody(_page),
-                              style: const TextStyle(
-                                fontSize: 15,
-                                height: 1.55,
-                                color: Color(0xFF4D6554),
-                              ),
+                              style: PlayUi.bodyStyle().copyWith(height: 1.55),
                             ),
-                            const SizedBox(height: 18),
+                            SizedBox(height: PlayUi.rowGap * 2.25),
                             Row(
                               children: List.generate(pages.length, (dot) {
                                 return Container(
@@ -143,8 +150,6 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                               child: OvalImageButton(
                                 label: isLast ? l10n.lightFirstWindow : l10n.next,
                                 width: isLast ? 148 : 80,
-                                height: 28,
-                                fontSize: 12,
                                 onPressed: _next,
                               ),
                             ),
@@ -159,6 +164,8 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
           ],
         ),
       ),
+    );
+      },
     );
   }
 }

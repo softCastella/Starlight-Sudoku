@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
 /// Exit confirmation used only on the puzzle screen.
 class GiveUpPuzzleDialog extends StatelessWidget {
   const GiveUpPuzzleDialog({super.key});
-
-  static const _ink = Color(0xFF24452D);
-  static const _muted = Color(0xFF4D6554);
-  static const _cream = Color(0xFFFBF7EC);
 
   @override
   Widget build(BuildContext context) {
@@ -21,39 +18,31 @@ class GiveUpPuzzleDialog extends StatelessWidget {
           Text(
             l10n.giveUpTitle,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: _ink,
-            ),
+            style: PlayUi.titleStyle(),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: PlayUi.rowGap),
           Text(
             l10n.giveUpMessage,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: _muted,
-            ),
+            style: PlayUi.bodyStyle(),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: PlayUi.rowGap * 1.75),
           Row(
             children: [
               Expanded(
                 child: ParchmentModalButton(
                   asset: ParchmentModal.continueAsset,
                   label: l10n.keepPlaying,
-                  color: _ink,
+                  color: PlayUi.ink,
                   onPressed: () => Navigator.pop(context, false),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: PlayUi.rowGap),
               Expanded(
                 child: ParchmentModalButton(
                   asset: ParchmentModal.exitAsset,
                   label: l10n.exitPuzzle,
-                  color: _cream,
+                  color: PlayUi.cream,
                   onPressed: () => Navigator.pop(context, true),
                 ),
               ),

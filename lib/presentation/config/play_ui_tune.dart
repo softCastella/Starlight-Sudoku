@@ -23,16 +23,22 @@ class PlayUiTune extends ChangeNotifier {
   double title = PlayUi.kTitle;
 
   double modalInset = PlayUi.kModalInset;
+  double modalInsetY = PlayUi.kModalInsetY;
   double modalPadX = PlayUi.kModalPadX;
   double modalPadY = PlayUi.kModalPadY;
   double modalMinWidth = PlayUi.kModalMinWidth;
   double modalMaxWidth = PlayUi.kModalMaxWidth;
+  double modalOffsetX = PlayUi.kModalOffsetX;
+  double modalOffsetY = PlayUi.kModalOffsetY;
 
   double rowGap = PlayUi.kRowGap;
   double buttonMaxWidth = PlayUi.kButtonMaxWidth;
   double buttonMinWidth = PlayUi.kButtonMinWidth;
   double ovalEndFraction = PlayUi.kOvalEndFraction;
   double screenPad = PlayUi.kScreenPad;
+  double buttonTextOffsetX = PlayUi.kButtonTextOffsetX;
+  double buttonTextOffsetY = PlayUi.kButtonTextOffsetY;
+  double parchmentTextPad = PlayUi.kParchmentTextPad;
 
   Map<String, double> toMap() => {
         'caption': caption,
@@ -41,15 +47,21 @@ class PlayUiTune extends ChangeNotifier {
         'button': button,
         'title': title,
         'modalInset': modalInset,
+        'modalInsetY': modalInsetY,
         'modalPadX': modalPadX,
         'modalPadY': modalPadY,
         'modalMinWidth': modalMinWidth,
         'modalMaxWidth': modalMaxWidth,
+        'modalOffsetX': modalOffsetX,
+        'modalOffsetY': modalOffsetY,
         'rowGap': rowGap,
         'buttonMaxWidth': buttonMaxWidth,
         'buttonMinWidth': buttonMinWidth,
         'ovalEndFraction': ovalEndFraction,
         'screenPad': screenPad,
+        'buttonTextOffsetX': buttonTextOffsetX,
+        'buttonTextOffsetY': buttonTextOffsetY,
+        'parchmentTextPad': parchmentTextPad,
       };
 
   String get layoutJson =>
@@ -90,15 +102,21 @@ class PlayUiTune extends ChangeNotifier {
     button = PlayUi.kButton;
     title = PlayUi.kTitle;
     modalInset = PlayUi.kModalInset;
+    modalInsetY = PlayUi.kModalInsetY;
     modalPadX = PlayUi.kModalPadX;
     modalPadY = PlayUi.kModalPadY;
     modalMinWidth = PlayUi.kModalMinWidth;
     modalMaxWidth = PlayUi.kModalMaxWidth;
+    modalOffsetX = PlayUi.kModalOffsetX;
+    modalOffsetY = PlayUi.kModalOffsetY;
     rowGap = PlayUi.kRowGap;
     buttonMaxWidth = PlayUi.kButtonMaxWidth;
     buttonMinWidth = PlayUi.kButtonMinWidth;
     ovalEndFraction = PlayUi.kOvalEndFraction;
     screenPad = PlayUi.kScreenPad;
+    buttonTextOffsetX = PlayUi.kButtonTextOffsetX;
+    buttonTextOffsetY = PlayUi.kButtonTextOffsetY;
+    parchmentTextPad = PlayUi.kParchmentTextPad;
     notifyListeners();
     unawaited(_save());
   }
@@ -116,15 +134,21 @@ class PlayUiTune extends ChangeNotifier {
     button = read('button', button);
     title = read('title', title);
     modalInset = read('modalInset', modalInset);
+    modalInsetY = read('modalInsetY', modalInsetY);
     modalPadX = read('modalPadX', modalPadX);
     modalPadY = read('modalPadY', modalPadY);
     modalMinWidth = read('modalMinWidth', modalMinWidth);
     modalMaxWidth = read('modalMaxWidth', modalMaxWidth);
+    modalOffsetX = read('modalOffsetX', modalOffsetX);
+    modalOffsetY = read('modalOffsetY', modalOffsetY);
     rowGap = read('rowGap', rowGap);
     buttonMaxWidth = read('buttonMaxWidth', buttonMaxWidth);
     buttonMinWidth = read('buttonMinWidth', buttonMinWidth);
     ovalEndFraction = read('ovalEndFraction', ovalEndFraction);
     screenPad = read('screenPad', screenPad);
+    buttonTextOffsetX = read('buttonTextOffsetX', buttonTextOffsetX);
+    buttonTextOffsetY = read('buttonTextOffsetY', buttonTextOffsetY);
+    parchmentTextPad = read('parchmentTextPad', parchmentTextPad);
   }
 
   Future<void> _save() async {

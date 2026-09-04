@@ -97,9 +97,10 @@ class SudokuApp extends StatelessWidget {
                       ),
                       if (PlayUiTune.instance.panelOpen)
                         const Align(
-                          alignment: Alignment.centerLeft,
-                          child: SizedBox(
-                            width: 300,
+                          alignment: Alignment.bottomCenter,
+                          child: FractionallySizedBox(
+                            heightFactor: 0.46,
+                            widthFactor: 1,
                             child: PlayUiTunerPanel(),
                           ),
                         ),

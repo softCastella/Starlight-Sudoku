@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Title gets one track. Difficulty through stage select share one other track.
@@ -36,6 +37,23 @@ class GameBgm {
 
   static Future<void> playTitle() => _setWanted(titleAsset);
   static Future<void> playLevel() => _setWanted(levelAsset);
+
+  /// Keep the title track remembered while BGM is off, so Settings can start it later.
+  static void rememberTitle() {
+    _wanted = titleAsset;
+  }
+
+  /// Starts title BGM in the same tap as the web BGM ON button.
+  /// Do not await prefs or enqueue first — browsers drop the gesture.
+  static Future<void> startTitleFromGesture() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) {
+      return Future<void>.value();
+    }
+    _enabled = true;
+    _silencedForBackground = false;
+    _wanted = titleAsset;
+    return _playNow(titleAsset);
+  }
 
   static Future<void> fadeOut() {
     _wanted = null;
@@ -127,24 +145,50 @@ class GameBgm {
     await _killAll();
     if (_wanted != asset) return;
 
+    await _playNow(asset);
+  }
+
+  /// Call [AudioPlayer.play] before other awaits when this is a user tap.
+  static Future<void> _playNow(String asset) async {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (_wanted != asset) return;
+    if (!_enabled) {
+      await _killAll();
+      return;
+    }
+    if (_silencedForBackground) return;
+    if (_isHolding(asset)) return;
+
+    final oldPlayers = _live.toList();
+    _live.clear();
+    _fadeTimer?.cancel();
+    _fadeTimer = null;
+    _player = null;
+
     final player = AudioPlayer();
     _live.add(player);
     _player = player;
     _current = asset;
-    _volume = 0;
-    await player.setReleaseMode(ReleaseMode.loop);
-    await player.setVolume(0);
+    final startVolume = kIsWeb ? 1.0 : 0.0;
+    _volume = startVolume;
     try {
-      await player.play(AssetSource(asset));
+      final play = player.play(AssetSource(asset), volume: startVolume);
+      unawaited(player.setReleaseMode(ReleaseMode.loop));
+      await play;
     } catch (_) {
       await _killAll();
       return;
+    }
+    for (final old in oldPlayers) {
+      unawaited(_disposePlayer(old));
     }
     if (_wanted != asset || !identical(_player, player)) {
       await _disposePlayer(player);
       return;
     }
-    await _fade(player, 0, 1, fadeInDuration);
+    if (!kIsWeb) {
+      await _fade(player, 0, 1, fadeInDuration);
+    }
   }
 
   static Future<void> _killAll() async {

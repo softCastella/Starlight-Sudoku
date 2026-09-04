@@ -40,33 +40,35 @@ class ParchmentModal extends StatelessWidget {
       PlayUi.modalMinWidth,
       PlayUi.modalMaxWidth,
     );
-    final maxH = size.height - 48;
-    final frameH = maxW / aspectRatio;
-    final padX = math.max(PlayUi.modalPadX, maxW * 0.12);
-    final padY = math.max(PlayUi.modalPadY, math.min(frameH, maxH) * 0.16);
-    final innerW = maxW - padX * 2;
+    final maxH = size.height - PlayUi.modalInsetY * 2;
+    final padX = PlayUi.modalPadX;
+    final padY = PlayUi.modalPadY;
+    final innerW = math.max(0.0, maxW - padX * 2);
 
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(
         horizontal: PlayUi.modalInset,
-        vertical: 24,
+        vertical: PlayUi.modalInsetY,
       ),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxW, maxHeight: maxH),
-        child: AspectRatio(
-          aspectRatio: aspectRatio,
-          child: _ParchmentFrame(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(padX, padY, padX, padY),
-              child: Center(
-                child: shrinkContent
-                    ? FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.center,
-                        child: SizedBox(width: innerW, child: child),
-                      )
-                    : SizedBox(width: innerW, child: child),
+      child: Transform.translate(
+        offset: Offset(PlayUi.modalOffsetX, PlayUi.modalOffsetY),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxW, maxHeight: maxH),
+          child: AspectRatio(
+            aspectRatio: aspectRatio,
+            child: _ParchmentFrame(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(padX, padY, padX, padY),
+                child: Center(
+                  child: shrinkContent
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          child: SizedBox(width: innerW, child: child),
+                        )
+                      : SizedBox(width: innerW, child: child),
+                ),
               ),
             ),
           ),
@@ -173,13 +175,19 @@ class _ParchmentModalButtonState extends State<ParchmentModalButton> {
                         padding: EdgeInsets.symmetric(
                           horizontal: layout.sideInset,
                         ),
-                        child: Text(
-                          widget.label,
-                          maxLines: 1,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.visible,
-                          style: PlayUi.buttonStyle(color: widget.color)
-                              .copyWith(fontSize: layout.fontSize),
+                        child: Transform.translate(
+                          offset: Offset(
+                            PlayUi.buttonTextOffsetX,
+                            PlayUi.buttonTextOffsetY,
+                          ),
+                          child: Text(
+                            widget.label,
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.visible,
+                            style: PlayUi.buttonStyle(color: widget.color)
+                                .copyWith(fontSize: layout.fontSize),
+                          ),
                         ),
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
 /// Celebrates a completed puzzle and reveals the earned StarLight.
@@ -21,11 +22,6 @@ class CompletionRewardDialog extends StatelessWidget {
   final VoidCallback onViewVillage;
   final VoidCallback onClose;
 
-  static const _ink = Color(0xFF24452D);
-  static const _muted = Color(0xFF4D6554);
-  static const _cream = Color(0xFFFBF7EC);
-  static const _gold = Color(0xFFF5CC3D);
-
   @override
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
@@ -39,71 +35,56 @@ class CompletionRewardDialog extends StatelessWidget {
           Text(
             l10n.puzzleComplete,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: _ink,
-            ),
+            style: PlayUi.titleStyle(),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: PlayUi.rowGap),
           Text(
             isReplay ? l10n.alreadyCleared : l10n.starlightArrived,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.35,
-              color: _muted,
-            ),
+            style: PlayUi.bodyStyle(),
           ),
           if (!isReplay) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: PlayUi.rowGap),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.star_rounded,
-                  color: _gold,
-                  size: 20,
+                  color: PlayUi.gold,
+                  size: PlayUi.title,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '+ $starLight StarLight',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: _gold,
-                  ),
+                  style: PlayUi.titleStyle(color: PlayUi.gold),
                 ),
               ],
             ),
           ],
-          const SizedBox(height: 4),
+          SizedBox(height: PlayUi.rowGap / 2),
           Text(
             l10n.elapsedTime(elapsedTimeLabel),
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 12,
-              color: _muted,
-            ),
+            style: PlayUi.captionStyle(),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: PlayUi.rowGap * 1.5),
           Row(
             children: [
               Expanded(
                 child: ParchmentModalButton(
                   asset: ParchmentModal.continueAsset,
                   label: l10n.viewVillage,
-                  color: _ink,
+                  color: PlayUi.ink,
                   onPressed: onViewVillage,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: PlayUi.rowGap),
               Expanded(
                 child: ParchmentModalButton(
                   asset: ParchmentModal.exitAsset,
                   label: primaryLabel,
-                  color: _cream,
+                  color: PlayUi.cream,
                   onPressed: primaryAction,
                 ),
               ),

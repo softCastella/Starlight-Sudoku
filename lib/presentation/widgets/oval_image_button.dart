@@ -77,13 +77,19 @@ class _OvalImageButtonState extends State<OvalImageButton> {
                           padding: EdgeInsets.symmetric(
                             horizontal: layout.sideInset,
                           ),
-                          child: Text(
-                            widget.label,
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.visible,
-                            style: PlayUi.buttonStyle().copyWith(
-                              fontSize: layout.fontSize,
+                          child: Transform.translate(
+                            offset: Offset(
+                              PlayUi.buttonTextOffsetX,
+                              PlayUi.buttonTextOffsetY,
+                            ),
+                            child: Text(
+                              widget.label,
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.visible,
+                              style: PlayUi.buttonStyle().copyWith(
+                                fontSize: layout.fontSize,
+                              ),
                             ),
                           ),
                         ),
