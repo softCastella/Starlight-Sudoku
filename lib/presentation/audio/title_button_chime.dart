@@ -3,18 +3,17 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 
-/// Title parchment tap chime. Fades out in the last moments of the clip.
+/// Title parchment tap chime. Sparkle, then fade — do not play the whole tail.
 class TitleButtonChime {
   TitleButtonChime._();
 
   static const assetPath = 'audio/SFX/title button twinkle chime.ogg';
-  static const fadeDuration = Duration(milliseconds: 420);
+  static const holdDuration = Duration(milliseconds: 200);
+  static const fadeDuration = Duration(milliseconds: 180);
 
   static AudioPlayer? _player;
-  static StreamSubscription<Duration>? _positionSub;
-  static StreamSubscription<Duration>? _durationSub;
+  static Timer? _fadeTimer;
   static int _generation = 0;
-  static Duration? _clipDuration;
 
   static Future<void> play() async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
@@ -22,37 +21,37 @@ class TitleButtonChime {
 
     final generation = ++_generation;
     final player = _player ??= AudioPlayer();
-    await _positionSub?.cancel();
-    await _durationSub?.cancel();
+    _fadeTimer?.cancel();
     await player.stop();
     await player.setVolume(1);
     await player.play(AssetSource(assetPath));
-    _clipDuration = await player.getDuration();
+    if (generation != _generation) return;
 
-    _durationSub = player.onDurationChanged.listen((duration) {
-      if (generation == _generation) _clipDuration = duration;
-    });
-    _positionSub = player.onPositionChanged.listen((position) {
-      if (generation != _generation) return;
-      final duration = _clipDuration;
-      if (duration == null || duration <= Duration.zero) return;
+    final started = DateTime.now();
+    _fadeTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      if (generation != _generation) {
+        timer.cancel();
+        return;
+      }
+      final elapsed = DateTime.now().difference(started);
+      if (elapsed <= holdDuration) return;
 
-      final fadeFor = duration < fadeDuration ? duration : fadeDuration;
-      final remaining = duration - position;
-      if (remaining <= Duration.zero) return;
-      if (remaining > fadeFor) return;
-
-      final volume = remaining.inMilliseconds / fadeFor.inMilliseconds;
-      player.setVolume(volume.clamp(0, 1));
+      final intoFade = elapsed - holdDuration;
+      if (intoFade >= fadeDuration) {
+        timer.cancel();
+        player.setVolume(0);
+        player.stop();
+        return;
+      }
+      final t = intoFade.inMilliseconds / fadeDuration.inMilliseconds;
+      player.setVolume((1 - t).clamp(0.0, 1.0));
     });
   }
 
   static Future<void> stop() async {
     _generation++;
-    await _positionSub?.cancel();
-    await _durationSub?.cancel();
-    _positionSub = null;
-    _durationSub = null;
+    _fadeTimer?.cancel();
+    _fadeTimer = null;
     try {
       await _player?.stop();
     } catch (_) {}

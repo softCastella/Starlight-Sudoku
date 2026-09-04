@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_cell_widget.dart';
 
@@ -26,6 +27,8 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
       builder: (context, gameNotifier, _) {
         final board = gameNotifier.board;
         final invalidCells = gameNotifier.invalidCells.toList().toSet();
+        final easyGuide =
+            gameNotifier.difficulty == SudokuDifficulty.easy;
 
         return Padding(
           padding: const EdgeInsets.all(2),
@@ -57,6 +60,10 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                   final isFixed = board.isFixedCell(row, col);
                   final isInvalid = invalidCells.contains((row, col));
                   final isSelected = _selectedRow == row && _selectedCol == col;
+                  final isLineHint = easyGuide &&
+                      !isSelected &&
+                      _selectedRow != null &&
+                      (row == _selectedRow || col == _selectedCol);
                   final memos = board.getMemo(row, col);
 
                   return SudokuCellWidget(
@@ -67,6 +74,8 @@ class SudokuBoardWidgetState extends State<SudokuBoardWidget> {
                     isFixed: isFixed,
                     isInvalid: isInvalid,
                     isSelected: isSelected,
+                    isLineHint: isLineHint,
+                    showFocusRing: easyGuide && isSelected,
                     onTap: () {
                       setState(() {
                         _selectedRow = row;

@@ -9,6 +9,8 @@ class SudokuCellWidget extends StatelessWidget {
   final bool isFixed;
   final bool isInvalid;
   final bool isSelected;
+  final bool isLineHint;
+  final bool showFocusRing;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
 
@@ -21,6 +23,8 @@ class SudokuCellWidget extends StatelessWidget {
     required this.isFixed,
     required this.isInvalid,
     required this.isSelected,
+    this.isLineHint = false,
+    this.showFocusRing = false,
     required this.onTap,
     this.onLongPress,
   });
@@ -30,31 +34,44 @@ class SudokuCellWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              width: row % 3 == 0 ? 2.0 : 0.5,
-              color: const Color(0xFF315042),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  width: row % 3 == 0 ? 2.0 : 0.5,
+                  color: const Color(0xFF315042),
+                ),
+                left: BorderSide(
+                  width: col % 3 == 0 ? 2.0 : 0.5,
+                  color: const Color(0xFF315042),
+                ),
+                right: BorderSide(
+                  width: col == 8 ? 2.0 : 0.5,
+                  color: const Color(0xFF315042),
+                ),
+                bottom: BorderSide(
+                  width: row == 8 ? 2.0 : 0.5,
+                  color: const Color(0xFF315042),
+                ),
+              ),
+              color: _getCellColor(),
             ),
-            left: BorderSide(
-              width: col % 3 == 0 ? 2.0 : 0.5,
-              color: const Color(0xFF315042),
-            ),
-            right: BorderSide(
-              width: col == 8 ? 2.0 : 0.5,
-              color: const Color(0xFF315042),
-            ),
-            bottom: BorderSide(
-              width: row == 8 ? 2.0 : 0.5,
-              color: const Color(0xFF315042),
-            ),
+            child: value == 0 ? _buildMemoGrid() : _buildValueDisplay(),
           ),
-          color: _getCellColor(),
-        ),
-        child: value == 0
-            ? _buildMemoGrid()
-            : _buildValueDisplay(),
+          if (showFocusRing)
+            const IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.fromBorderSide(
+                    BorderSide(color: Color(0xFFFFFFFF), width: 2.5),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -62,6 +79,7 @@ class SudokuCellWidget extends StatelessWidget {
   Color _getCellColor() {
     if (isInvalid) return const Color(0xFFFFD9D2);
     if (isSelected) return const Color(0xFFFFF0BB);
+    if (isLineHint) return const Color(0xFFFFF6D4);
     if (isFixed) return const Color(0xFFEAF0E6);
     return const Color(0xFFFFFDF8);
   }

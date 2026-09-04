@@ -58,69 +58,29 @@ class _SettingsDialogState extends State<SettingsDialog> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    _SettingsSwitchRow(
-                      label: l10n.settingsBgm,
-                      value: settings.bgmEnabled,
-                      onChanged: settings.setBgmEnabled,
-                    ),
-                    _SettingsSwitchRow(
-                      label: l10n.settingsSfx,
-                      value: settings.sfxEnabled,
-                      onChanged: settings.setSfxEnabled,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: GestureDetector(
-                  onTap: _openPrivacy,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: FitLabel(
-                          l10n.settingsPrivacyPolicy,
-                          style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
-                            decoration: TextDecoration.underline,
-                            decorationColor: PlayUi.ink,
-                          ),
-                          maxLines: 2,
-                          alignment: Alignment.centerRight,
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.open_in_new,
-                        size: 16,
-                        color: PlayUi.muted,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+          _SettingsSwitchRow(
+            label: l10n.settingsBgm,
+            value: settings.bgmEnabled,
+            onChanged: settings.setBgmEnabled,
           ),
-          const SizedBox(height: 14),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              l10n.settingsUserId,
-              style: PlayUi.captionStyle(),
-            ),
+          _SettingsSwitchRow(
+            label: l10n.settingsSfx,
+            value: settings.sfxEnabled,
+            onChanged: settings.setSfxEnabled,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 12),
           Row(
             children: [
+              Text(
+                l10n.settingsUserId,
+                style: PlayUi.captionStyle(),
+              ),
+              const SizedBox(width: 8),
               Expanded(
-                child: FitLabel(
+                child: Text(
                   settings.userId.isEmpty ? '—' : settings.userId,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
                     letterSpacing: 0.3,
                   ),
@@ -140,6 +100,30 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: _openPrivacy,
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    l10n.settingsPrivacyPolicy,
+                    maxLines: 2,
+                    style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                      decoration: TextDecoration.underline,
+                      decorationColor: PlayUi.ink,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                const Icon(
+                  Icons.open_in_new,
+                  size: 16,
+                  color: PlayUi.muted,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 12),
           ParchmentModalButton(
