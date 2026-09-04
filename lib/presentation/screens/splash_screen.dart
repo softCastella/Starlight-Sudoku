@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
+import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/exit_game_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
@@ -120,10 +122,11 @@ class _SplashScreenState extends State<SplashScreen>
     GameBgm.playTitle();
   }
 
-  void _startWebAudio() {
+  Future<void> _startWebAudio() async {
     if (!_showWebAudioGate) return;
     setState(() => _showWebAudioGate = false);
-    _playTitleIfCurrent();
+    await context.read<AppSettings>().setBgmEnabled(true);
+    if (mounted) _playTitleIfCurrent();
   }
 
   void _maybeShowTrialEnd() {
