@@ -7,7 +7,7 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 /// Local audio prefs and an anonymous device id. Not an account.
 class AppSettings extends ChangeNotifier {
   static const privacyPolicyUrl =
-      'https://softcastella.github.io/Starlight-Sudoku/privacy/';
+      'https://spark.tycheworks.com/starlight-sudoku/privacy/';
 
   static const _bgmKey = 'settings_bgm_on';
   static const _sfxKey = 'settings_sfx_on';

@@ -113,24 +113,31 @@ class _MapHotspot extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: 4),
                   child: Icon(Icons.auto_awesome, color: Color(0xFFF5CC3D), size: 16),
                 ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: pill,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: glow.withValues(alpha: restored ? 0.9 : 0.55),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: landmark.width),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: pill,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: glow.withValues(alpha: restored ? 0.9 : 0.55),
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Text(
-                    l10n.buildingLevelLabel(name, building.level),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: labelColor,
-                      height: 1.1,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        l10n.buildingLevelLabel(name, building.level),
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: labelColor,
+                          height: 1.1,
+                        ),
+                      ),
                     ),
                   ),
                 ),

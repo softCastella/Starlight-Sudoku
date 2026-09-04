@@ -22,11 +22,13 @@ class GameBgm {
   static String? _wanted;
   static double _volume = 0;
   static bool _enabled = true;
+  static bool _silencedForBackground = false;
   static Future<void> _chain = Future.value();
 
   static Future<void> setEnabled(bool on) {
     _enabled = on;
     if (!on) return _enqueue(_killAll);
+    if (_silencedForBackground) return Future<void>.value();
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
     return _enqueue(() => _play(wanted));
@@ -40,11 +42,54 @@ class GameBgm {
     return _enqueue(_killAll);
   }
 
+  static Future<void> silenceForBackground() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) {
+      return Future<void>.value();
+    }
+    if (_silencedForBackground) return Future<void>.value();
+    _silencedForBackground = true;
+    return _enqueue(() async {
+      _fadeTimer?.cancel();
+      _fadeTimer = null;
+      final player = _player;
+      if (player == null) return;
+      try {
+        await player.setVolume(0);
+        await player.pause();
+      } catch (_) {
+        await _killAll();
+      }
+    });
+  }
+
+  static Future<void> restoreFromBackground() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) {
+      return Future<void>.value();
+    }
+    if (!_silencedForBackground) return Future<void>.value();
+    _silencedForBackground = false;
+    if (!_enabled) return Future<void>.value();
+    final wanted = _wanted;
+    if (wanted == null) return Future<void>.value();
+    return _enqueue(() async {
+      final player = _player;
+      if (player != null && _current == wanted) {
+        try {
+          await player.resume();
+          await player.setVolume(_volume.clamp(0.2, 1));
+          return;
+        } catch (_) {}
+      }
+      await _play(wanted);
+    });
+  }
+
   static Future<void> unlock() {
     if (const bool.fromEnvironment('FLUTTER_TEST')) {
       return Future<void>.value();
     }
     if (!_enabled) return Future<void>.value();
+    if (_silencedForBackground) return Future<void>.value();
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
     if (_isHolding(wanted)) return Future<void>.value();
@@ -76,6 +121,7 @@ class GameBgm {
       await _killAll();
       return;
     }
+    if (_silencedForBackground) return;
     if (_isHolding(asset)) return;
 
     await _killAll();

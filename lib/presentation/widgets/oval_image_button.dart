@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 
 /// Small horizontal oval button with the cream modal-button art.
 class OvalImageButton extends StatefulWidget {
@@ -6,17 +7,18 @@ class OvalImageButton extends StatefulWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.width = 168,
+    this.width = PlayUi.buttonMaxWidth,
     this.height = 40,
-    this.fontSize = 14,
+    this.fontSize = PlayUi.button,
   });
 
   static const asset =
       'assets/images/SystemUI/button_modal_default_starlight_sudoku.png';
-  static const imageAspectRatio = 551 / 176;
+  static const imageAspectRatio = PlayUi.ovalAspect;
 
   final String label;
   final VoidCallback onPressed;
+  /// Max width. Actual size follows the label.
   final double width;
   final double height;
   final double fontSize;
@@ -26,60 +28,68 @@ class OvalImageButton extends StatefulWidget {
 }
 
 class _OvalImageButtonState extends State<OvalImageButton> {
-  static const _ink = Color(0xFF24452D);
-
   bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: widget.label,
-      child: GestureDetector(
-        onTap: widget.onPressed,
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapUp: (_) => setState(() => _pressed = false),
-        onTapCancel: () => setState(() => _pressed = false),
-        child: AnimatedScale(
-          duration: const Duration(milliseconds: 90),
-          scale: _pressed ? 0.97 : 1,
-          child: SizedBox(
-            width: widget.width,
-            height: widget.width / OvalImageButton.imageAspectRatio,
-            child: Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.hardEdge,
-              children: [
-                Positioned.fill(
-                  child: Image.asset(
-                    OvalImageButton.asset,
-                    fit: BoxFit.contain,
-                    filterQuality: FilterQuality.medium,
-                  ),
-                ),
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cap = constraints.maxWidth.isFinite
+            ? constraints.maxWidth.clamp(1.0, widget.width)
+            : widget.width;
+        final layout = OvalButtonLayout.forLabel(
+          widget.label,
+          direction: Directionality.of(context),
+          preferredFontSize: widget.fontSize,
+          maxWidth: cap,
+        );
+
+        return Semantics(
+          button: true,
+          label: widget.label,
+          child: GestureDetector(
+            onTap: widget.onPressed,
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapUp: (_) => setState(() => _pressed = false),
+            onTapCancel: () => setState(() => _pressed = false),
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 90),
+              scale: _pressed ? 0.97 : 1,
+              child: SizedBox(
+                width: layout.width,
+                height: layout.height,
+                child: Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.hardEdge,
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(
+                        OvalImageButton.asset,
+                        fit: BoxFit.fill,
+                        filterQuality: FilterQuality.medium,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: layout.sideInset,
+                      ),
                       child: Text(
                         widget.label,
                         maxLines: 1,
-                        style: TextStyle(
-                          fontSize: widget.fontSize,
-                          fontWeight: FontWeight.w800,
-                          color: _ink,
-                          height: 1,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.visible,
+                        style: PlayUi.buttonStyle().copyWith(
+                          fontSize: layout.fontSize,
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

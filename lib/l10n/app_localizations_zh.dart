@@ -10,7 +10,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '星光数独';
+  String get appTitle => '星光数独 试玩';
 
   @override
   String get startNewPuzzle => '新的谜题';
@@ -58,10 +58,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trialEndTitle => '试玩到此结束。';
 
   @override
-  String get trialEndMessage => '如果愿意支持我们，留下评价会是很大的鼓励。';
+  String get trialEndMessage => '如果愿意留下评价，会是很大的鼓励。';
 
   @override
-  String get sendReview => '发送';
+  String get sendReview => '前往';
 
   @override
   String get close => '关闭';
@@ -89,6 +89,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get autoCompleteTooltip => '自动完成';
+
+  @override
+  String get skipTrialTooltip => '测试：通关10关';
 
   @override
   String get memoInput => '笔记输入';
@@ -363,7 +366,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   AppLocalizationsZhTw() : super('zh_TW');
 
   @override
-  String get appTitle => '星光數獨';
+  String get appTitle => '星光數獨 試玩';
 
   @override
   String get startNewPuzzle => '新的謎題';
@@ -411,10 +414,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get trialEndTitle => '試玩到此結束。';
 
   @override
-  String get trialEndMessage => '如果願意支持我們，留下評價會是很大的鼓勵。';
+  String get trialEndMessage => '如果願意留下評價，會是很大的鼓勵。';
 
   @override
-  String get sendReview => '傳送';
+  String get sendReview => '前往';
 
   @override
   String get close => '關閉';
@@ -442,6 +445,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get autoCompleteTooltip => '自動完成';
+
+  @override
+  String get skipTrialTooltip => '測試：通關10關';
 
   @override
   String get memoInput => '筆記輸入';

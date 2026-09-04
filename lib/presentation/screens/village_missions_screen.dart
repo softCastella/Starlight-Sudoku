@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/core/village/building_progress.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
@@ -95,10 +96,10 @@ class VillageMissionsScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         l10n.currentStarlight(gameNotifier.starLightBalance),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
-                          color: _gold,
+                          color: dawn < 1 ? PlayUi.gold : PlayUi.goldOnLight,
                         ),
                       ),
                       const SizedBox(height: 20),

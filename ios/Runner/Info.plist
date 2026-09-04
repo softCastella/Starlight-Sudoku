@@ -15,7 +15,7 @@
 		<string>zh_TW</string>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>Sudoku Game</string>
+	<string>별빛 스도쿠 체험판</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

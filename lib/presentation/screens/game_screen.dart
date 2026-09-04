@@ -83,6 +83,11 @@ class _GameScreenState extends State<GameScreen> {
               },
             ),
             IconButton(
+              tooltip: l10n.skipTrialTooltip,
+              icon: const Icon(Icons.bug_report),
+              onPressed: _skipTrialStages,
+            ),
+            IconButton(
               key: const Key('game-settings'),
               tooltip: l10n.settingsTooltip,
               icon: const Icon(Icons.settings),
@@ -266,6 +271,12 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     boardState.clearSelection();
+  }
+
+  Future<void> _skipTrialStages() async {
+    await context.read<GameNotifier>().debugClearTrialStages();
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 
   void _showHint() {

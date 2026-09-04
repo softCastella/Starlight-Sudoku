@@ -3,11 +3,18 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TrialEndDialog extends StatefulWidget {
   const TrialEndDialog({super.key});
+
+  static const playStorePackage = 'com.tychespark.starlightsudoku';
+  static const _market = 'market://details?id=$playStorePackage';
+  static const _webStore =
+      'https://play.google.com/store/apps/details?id=$playStorePackage';
 
   static bool _showing = false;
 
@@ -30,30 +37,26 @@ class TrialEndDialog extends StatefulWidget {
     }
   }
 
-  static const _ink = Color(0xFF24452D);
-  static const _muted = Color(0xFF4D6554);
-  static const _cream = Color(0xFFFBF7EC);
-  static const _gold = Color(0xFFF5CC3D);
-
   @override
   State<TrialEndDialog> createState() => _TrialEndDialogState();
 }
 
 class _TrialEndDialogState extends State<TrialEndDialog> {
-  int _rating = 0;
-  bool _sending = false;
-
-  Future<void> _send() async {
-    if (_rating < 1 || _sending) return;
-    setState(() => _sending = true);
+  /// Play Store only after 「이동하기」. Do not open on show. Back from Store returns here.
+  Future<void> _openPlayStore() async {
     try {
-      final review = InAppReview.instance;
-      if (await review.isAvailable()) {
-        await review.requestReview();
-      }
+      await InAppReview.instance.openStoreListing();
+      return;
     } catch (_) {}
-    if (!mounted) return;
-    Navigator.pop(context);
+    final market = Uri.parse(TrialEndDialog._market);
+    if (await canLaunchUrl(market)) {
+      await launchUrl(market, mode: LaunchMode.externalApplication);
+      return;
+    }
+    await launchUrl(
+      Uri.parse(TrialEndDialog._webStore),
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   @override
@@ -67,55 +70,23 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
           Text(
             l10n.trialEndTitle,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: TrialEndDialog._ink,
-            ),
+            style: PlayUi.titleStyle(),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text(
             l10n.trialEndMessage,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: TrialEndDialog._muted,
-            ),
+            style: PlayUi.captionStyle().copyWith(fontSize: PlayUi.body, height: 1.4),
           ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (var i = 1; i <= 5; i++)
-                IconButton(
-                  onPressed: () => setState(() => _rating = i),
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-                  icon: Icon(
-                    i <= _rating ? Icons.star_rounded : Icons.star_outline_rounded,
-                    color: TrialEndDialog._gold,
-                    size: 32,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
-                child: Opacity(
-                  opacity: _rating < 1 || _sending ? 0.45 : 1,
-                  child: IgnorePointer(
-                    ignoring: _rating < 1 || _sending,
-                    child: ParchmentModalButton(
-                      asset: ParchmentModal.exitAsset,
-                      label: l10n.sendReview,
-                      color: TrialEndDialog._cream,
-                      onPressed: _send,
-                    ),
-                  ),
+                child: ParchmentModalButton(
+                  asset: ParchmentModal.exitAsset,
+                  label: l10n.sendReview,
+                  color: PlayUi.cream,
+                  onPressed: _openPlayStore,
                 ),
               ),
               const SizedBox(width: 8),
@@ -123,7 +94,7 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
                 child: ParchmentModalButton(
                   asset: ParchmentModal.continueAsset,
                   label: l10n.close,
-                  color: TrialEndDialog._ink,
+                  color: PlayUi.ink,
                   onPressed: () => Navigator.pop(context),
                 ),
               ),

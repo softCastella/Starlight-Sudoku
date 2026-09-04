@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
+import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
@@ -63,7 +64,7 @@ class SudokuApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: locales.override ?? locale,
             onGenerateTitle: (context) =>
-                AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠',
+                AppLocalizations.of(context)?.appTitle ?? '별빛 스도쿠 체험판',
             localeResolutionCallback: _resolveLocale,
             localizationsDelegates: const [
               AppLocalizations.delegate,
@@ -73,10 +74,12 @@ class SudokuApp extends StatelessWidget {
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
-              return Listener(
-                behavior: HitTestBehavior.translucent,
-                onPointerDown: (_) => GameBgm.unlock(),
-                child: child ?? const SizedBox.shrink(),
+              return _AppAudioLifecycle(
+                child: Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerDown: (_) => GameBgm.unlock(),
+                  child: child ?? const SizedBox.shrink(),
+                ),
               );
             },
             theme: ThemeData(
@@ -126,4 +129,46 @@ class SudokuApp extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Stops BGM/SFX when the game is still running but not on screen.
+class _AppAudioLifecycle extends StatefulWidget {
+  const _AppAudioLifecycle({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_AppAudioLifecycle> createState() => _AppAudioLifecycleState();
+}
+
+class _AppAudioLifecycleState extends State<_AppAudioLifecycle>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        TitleButtonChime.stop();
+        GameBgm.silenceForBackground();
+      case AppLifecycleState.resumed:
+        GameBgm.restoreFromBackground();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

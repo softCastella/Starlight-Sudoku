@@ -11,4 +11,4 @@ alwaysApply: true
 
 브라우저 주소창의 별은 북마크다. PWA/APK 상태바 별과 섞지 않는다. `theme-color`는 `#0E2040`을 유지한다.
 
-최신 기록: `Docs/Meeting/2026-09-03_오후_작업.md`. Play 입점: `Docs/Deployment/2026-09-04_Play_디자인검토.md`.
+최신 기록: `Docs/Meeting/2026-09-04_작업.md`. Play 입점: `Docs/Deployment/2026-09-04_Play_디자인검토.md`.

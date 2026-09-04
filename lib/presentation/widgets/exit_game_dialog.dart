@@ -7,7 +7,6 @@ class ExitGameDialog extends StatelessWidget {
   const ExitGameDialog({super.key});
 
   static const _ink = Color(0xFF24452D);
-  static const _muted = Color(0xFF4D6554);
   static const _cream = Color(0xFFFBF7EC);
 
   static Future<bool> confirm(BuildContext context) async {
@@ -27,26 +26,19 @@ class ExitGameDialog extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            l10n.exitGameTitle,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: _ink,
+          SizedBox(
+            width: double.infinity,
+            child: Text(
+              l10n.exitGameTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: _ink,
+              ),
             ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            l10n.exitGameMessage,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: _muted,
-            ),
-          ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(

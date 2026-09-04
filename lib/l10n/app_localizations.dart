@@ -106,7 +106,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Starlight Sudoku'**
+  /// **'Starlight Sudoku Trial'**
   String get appTitle;
 
   /// No description provided for @startNewPuzzle.
@@ -190,13 +190,13 @@ abstract class AppLocalizations {
   /// No description provided for @trialEndMessage.
   ///
   /// In en, this message translates to:
-  /// **'If you\'d like to support us, a review would mean a lot.'**
+  /// **'A review would mean a lot.'**
   String get trialEndMessage;
 
   /// No description provided for @sendReview.
   ///
   /// In en, this message translates to:
-  /// **'Send'**
+  /// **'Go'**
   String get sendReview;
 
   /// No description provided for @close.
@@ -252,6 +252,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto complete'**
   String get autoCompleteTooltip;
+
+  /// No description provided for @skipTrialTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Test: clear 10 stages'**
+  String get skipTrialTooltip;
 
   /// No description provided for @memoInput.
   ///

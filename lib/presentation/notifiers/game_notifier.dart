@@ -362,6 +362,29 @@ class GameNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Test-only: mark Easy 1–10 cleared so trial dawn and the end modal can be checked.
+  Future<void> debugClearTrialStages() async {
+    final config = DifficultyConfig.getConfig(SudokuDifficulty.easy);
+    final payout = config.remainingStarLight(hintsUsed: 0, mistakesUsed: 0);
+    var progress = _stageProgress;
+    var added = 0;
+    for (var level = 1; level <= GameBalance.trialStageCount; level++) {
+      if (progress.isCompleted(SudokuDifficulty.easy, level)) continue;
+      progress = progress.markCompleted(SudokuDifficulty.easy, level);
+      added += payout;
+    }
+    _stageProgress = progress;
+    _starLightBalance += added;
+    _activeGame = null;
+    await _progressStore.clearActiveGame();
+    await _progressStore.save(
+      starLightBalance: _starLightBalance,
+      statistics: _statistics,
+      stageProgress: _stageProgress,
+    );
+    notifyListeners();
+  }
+
   /// 게임 상태 리셋
   void reset() {
     _elapsedSeconds = 0;

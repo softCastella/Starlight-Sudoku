@@ -5,6 +5,7 @@ import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/trial_end_dialog.dart';
@@ -54,56 +55,13 @@ class VillageScreen extends StatelessWidget {
             scrolledUnderElevation: 0,
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 8),
                 child: Center(
-                  child: GestureDetector(
-                    onTap: () => _openMissions(context),
-                    child: SizedBox(
-                      width: 96,
-                      height: 32,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        clipBehavior: Clip.hardEdge,
-                        children: [
-                          Positioned.fill(
-                            child: Image.asset(
-                              OvalImageButton.asset,
-                              fit: BoxFit.fill,
-                              filterQuality: FilterQuality.medium,
-                            ),
-                          ),
-                          Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.auto_awesome,
-                                    color: Color(0xFFC49612),
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        l10n.mission,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                          color: Color(0xFF24452D),
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: OvalImageButton(
+                    label: l10n.mission,
+                    width: 112,
+                    fontSize: PlayUi.label,
+                    onPressed: () => _openMissions(context),
                   ),
                 ),
               ),
@@ -143,23 +101,36 @@ class VillageScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            l10n.restoredCount(completedCount, buildings.length),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: header,
-                              shadows: headerShadow,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              l10n.restoredCount(completedCount, buildings.length),
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: header,
+                                shadows: headerShadow,
+                              ),
                             ),
                           ),
                         ),
-                        Text(
-                          l10n.ownedStarlight(gameNotifier.starLightBalance),
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFFF5CC3D),
-                            shadows: headerShadow,
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              l10n.ownedStarlight(gameNotifier.starLightBalance),
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                                color: nightSky ? PlayUi.gold : PlayUi.goldOnLight,
+                                shadows: headerShadow,
+                              ),
+                            ),
                           ),
                         ),
                       ],

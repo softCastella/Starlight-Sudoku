@@ -10,7 +10,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => '별빛 스도쿠';
+  String get appTitle => '별빛 스도쿠 체험판';
 
   @override
   String get startNewPuzzle => '새 퍼즐 시작';
@@ -58,10 +58,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get trialEndTitle => '체험판은 여기까지입니다.';
 
   @override
-  String get trialEndMessage => '응원해주신다면 리뷰를 남겨주시면 큰 힘이 됩니다.';
+  String get trialEndMessage => '리뷰를 남겨주시면 큰 힘이 됩니다.';
 
   @override
-  String get sendReview => '전송';
+  String get sendReview => '이동하기';
 
   @override
   String get close => '닫기';
@@ -89,6 +89,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get autoCompleteTooltip => '자동 완성';
+
+  @override
+  String get skipTrialTooltip => '테스트: 10판 클리어';
 
   @override
   String get memoInput => '메모 입력';

@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Starlight Sudoku';
+  String get appTitle => 'Starlight Sudoku Trial';
 
   @override
   String get startNewPuzzle => 'New puzzle';
@@ -58,11 +58,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trialEndTitle => 'That\'s all for the trial.';
 
   @override
-  String get trialEndMessage =>
-      'If you\'d like to support us, a review would mean a lot.';
+  String get trialEndMessage => 'A review would mean a lot.';
 
   @override
-  String get sendReview => 'Send';
+  String get sendReview => 'Go';
 
   @override
   String get close => 'Close';
@@ -90,6 +89,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoCompleteTooltip => 'Auto complete';
+
+  @override
+  String get skipTrialTooltip => 'Test: clear 10 stages';
 
   @override
   String get memoInput => 'Memo input';

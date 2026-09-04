@@ -87,25 +87,47 @@ class SudokuCellWidget extends StatelessWidget {
   }
 
   Widget _buildMemoGrid() {
-    return GridView.count(
-      crossAxisCount: 3,
-      padding: EdgeInsets.all(2),
-      mainAxisSpacing: 1,
-      crossAxisSpacing: 1,
-      children: List.generate(9, (index) {
-        final number = index + 1;
-        final hasMemo = memos.contains(number);
-        return Center(
-          child: Text(
-            hasMemo ? '$number' : '',
-            style: TextStyle(
-              fontSize: 10,
-              color: const Color(0xFF69766D),
-              fontWeight: FontWeight.w500,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final fontSize = (constraints.maxHeight / 6).clamp(9.0, 14.0);
+        const style = TextStyle(
+          color: Color(0xFF69766D),
+          fontWeight: FontWeight.w700,
+          height: 1,
+        );
+        Widget column(List<int?> numbers) {
+          return Expanded(
+            child: Column(
+              children: [
+                for (final number in numbers)
+                  Expanded(
+                    child: Center(
+                      child: number != null && memos.contains(number)
+                          ? FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                '$number',
+                                style: style.copyWith(fontSize: fontSize),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
+              ],
             ),
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+          child: Row(
+            children: [
+              column(const [1, 2, 3, 4, 5]),
+              column(const [6, 7, 8, 9, null]),
+            ],
           ),
         );
-      }),
+      },
     );
   }
 }

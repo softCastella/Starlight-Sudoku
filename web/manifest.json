@@ -1,6 +1,6 @@
 {
-    "name": "별빛 스도쿠",
-    "short_name": "별빛 스도쿠",
+    "name": "별빛 스도쿠 체험판",
+    "short_name": "별빛 체험판",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0E2040",

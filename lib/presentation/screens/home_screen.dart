@@ -123,17 +123,21 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            titleAsset,
-            fit: BoxFit.cover,
-            alignment: const Alignment(0, -0.12),
-            semanticLabel: l10n.appTitle,
-            filterQuality: FilterQuality.medium,
-            cacheWidth:
-                (MediaQuery.sizeOf(context).width *
-                        MediaQuery.devicePixelRatioOf(context))
-                    .round()
-                    .clamp(480, 1440),
+          const ColoredBox(color: TwinklingStarField.nightSky),
+          const Positioned.fill(child: TwinklingStarField()),
+          Positioned.fill(
+            child: Image.asset(
+              titleAsset,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.topCenter,
+              semanticLabel: l10n.appTitle,
+              filterQuality: FilterQuality.medium,
+              cacheWidth:
+                  (MediaQuery.sizeOf(context).width *
+                          MediaQuery.devicePixelRatioOf(context))
+                      .round()
+                      .clamp(480, 1440),
+            ),
           ),
           const DecoratedBox(
             decoration: BoxDecoration(
@@ -150,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const Positioned.fill(child: TwinklingStarField()),
           Positioned(
             right: 4,
             top: MediaQuery.paddingOf(context).top + 4,

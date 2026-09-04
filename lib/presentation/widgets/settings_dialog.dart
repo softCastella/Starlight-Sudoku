@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
+import 'package:sudoku_game/presentation/config/play_ui.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
-
-  static const _ink = Color(0xFF24452D);
-  static const _muted = Color(0xFF4D6554);
-  static const _gold = Color(0xFFF5CC3D);
 
   static Future<void> show(BuildContext context) {
     return showDialog<void>(
@@ -50,98 +47,105 @@ class _SettingsDialogState extends State<SettingsDialog> {
     final settings = context.watch<AppSettings>();
 
     return ParchmentModal(
+      aspectRatio: 1.18,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          FitLabel(
             l10n.settingsTitle,
+            style: PlayUi.titleStyle(),
+            alignment: Alignment.center,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: SettingsDialog._ink,
-            ),
           ),
-          const SizedBox(height: 8),
-          _SettingsSwitchRow(
-            label: l10n.settingsBgm,
-            value: settings.bgmEnabled,
-            onChanged: settings.setBgmEnabled,
-          ),
-          _SettingsSwitchRow(
-            label: l10n.settingsSfx,
-            value: settings.sfxEnabled,
-            onChanged: settings.setSfxEnabled,
-          ),
-          _SettingsLine(
-            label: l10n.settingsUserId,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    settings.userId.isEmpty ? '—' : settings.userId,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: SettingsDialog._ink,
-                      letterSpacing: 0.4,
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    _SettingsSwitchRow(
+                      label: l10n.settingsBgm,
+                      value: settings.bgmEnabled,
+                      onChanged: settings.setBgmEnabled,
                     ),
+                    _SettingsSwitchRow(
+                      label: l10n.settingsSfx,
+                      value: settings.sfxEnabled,
+                      onChanged: settings.setSfxEnabled,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _openPrivacy,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FitLabel(
+                          l10n.settingsPrivacyPolicy,
+                          style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                            decoration: TextDecoration.underline,
+                            decorationColor: PlayUi.ink,
+                          ),
+                          maxLines: 2,
+                          alignment: Alignment.centerRight,
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.open_in_new,
+                        size: 16,
+                        color: PlayUi.muted,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 4),
-                GestureDetector(
-                  onTap: settings.userId.isEmpty
-                      ? null
-                      : () => _copyUserId(settings.userId),
-                  child: Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Icon(
-                      _copied ? Icons.check : Icons.copy,
-                      size: 16,
-                      color: _copied
-                          ? SettingsDialog._gold
-                          : SettingsDialog._muted,
-                    ),
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.settingsUserId,
+              style: PlayUi.captionStyle(),
             ),
           ),
           const SizedBox(height: 4),
-          GestureDetector(
-            onTap: _openPrivacy,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.settingsPrivacyPolicy,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: SettingsDialog._ink,
-                        decoration: TextDecoration.underline,
-                        decorationColor: SettingsDialog._ink,
-                      ),
-                    ),
+          Row(
+            children: [
+              Expanded(
+                child: FitLabel(
+                  settings.userId.isEmpty ? '—' : settings.userId,
+                  style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                    letterSpacing: 0.3,
                   ),
-                  const Icon(
-                    Icons.open_in_new,
-                    size: 16,
-                    color: SettingsDialog._muted,
-                  ),
-                ],
+                ),
               ),
-            ),
+              GestureDetector(
+                onTap: settings.userId.isEmpty
+                    ? null
+                    : () => _copyUserId(settings.userId),
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Icon(
+                    _copied ? Icons.check : Icons.copy,
+                    size: 18,
+                    color: _copied ? PlayUi.gold : PlayUi.muted,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           ParchmentModalButton(
             asset: ParchmentModal.continueAsset,
             label: l10n.close,
-            color: SettingsDialog._ink,
+            color: PlayUi.ink,
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -163,45 +167,22 @@ class _SettingsSwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _SettingsLine(
-      label: label,
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Switch.adaptive(
-          value: value,
-          onChanged: onChanged,
-          activeThumbColor: SettingsDialog._gold,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingsLine extends StatelessWidget {
-  const _SettingsLine({required this.label, required this.child});
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          SizedBox(
-            width: 72,
-            child: Text(
+          Expanded(
+            child: FitLabel(
               label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: SettingsDialog._muted,
-              ),
+              style: PlayUi.labelStyle(),
             ),
           ),
-          Expanded(child: child),
+          Switch.adaptive(
+            value: value,
+            onChanged: onChanged,
+            activeThumbColor: PlayUi.gold,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
         ],
       ),
     );

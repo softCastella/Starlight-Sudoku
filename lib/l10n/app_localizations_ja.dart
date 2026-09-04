@@ -10,7 +10,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => 'スターライト数独';
+  String get appTitle => 'スターライト数独 体験版';
 
   @override
   String get startNewPuzzle => '新しいパズル';
@@ -58,10 +58,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get trialEndTitle => '体験版はここまでです。';
 
   @override
-  String get trialEndMessage => '応援していただけるなら、レビューを残していただけると大きな力になります。';
+  String get trialEndMessage => 'レビューを残していただけると大きな力になります。';
 
   @override
-  String get sendReview => '送信';
+  String get sendReview => '移動';
 
   @override
   String get close => '閉じる';
@@ -89,6 +89,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get autoCompleteTooltip => '自動完成';
+
+  @override
+  String get skipTrialTooltip => 'テスト: 10面クリア';
 
   @override
   String get memoInput => 'メモ入力';

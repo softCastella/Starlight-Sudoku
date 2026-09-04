@@ -46,4 +46,15 @@ class TitleButtonChime {
       player.setVolume(volume.clamp(0, 1));
     });
   }
+
+  static Future<void> stop() async {
+    _generation++;
+    await _positionSub?.cancel();
+    await _durationSub?.cancel();
+    _positionSub = null;
+    _durationSub = null;
+    try {
+      await _player?.stop();
+    } catch (_) {}
+  }
 }
