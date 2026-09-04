@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/presentation/audio/web_html_bgm.dart';
 
 /// Title gets one track. Difficulty through stage select share one other track.
 /// Switching scenes kills every live player so old audio cannot linger.
@@ -43,8 +44,15 @@ class GameBgm {
     _wanted = titleAsset;
   }
 
+  /// Point the HTML element at the title file before the ON tap.
+  static Future<void> preloadTitleForWeb() async {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (!kIsWeb) return;
+    WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(titleAsset));
+  }
+
   /// Starts title BGM in the same tap as the web BGM ON button.
-  /// Do not await prefs or enqueue first — browsers drop the gesture.
+  /// Do not await prefs, asset fetch, or enqueue first — browsers drop the gesture.
   static Future<void> startTitleFromGesture() {
     if (const bool.fromEnvironment('FLUTTER_TEST')) {
       return Future<void>.value();
@@ -52,6 +60,13 @@ class GameBgm {
     _enabled = true;
     _silencedForBackground = false;
     _wanted = titleAsset;
+    if (kIsWeb) {
+      WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(titleAsset));
+      WebHtmlBgm.play();
+      _current = titleAsset;
+      _volume = 1;
+      return Future<void>.value();
+    }
     return _playNow(titleAsset);
   }
 
@@ -66,6 +81,10 @@ class GameBgm {
     }
     if (_silencedForBackground) return Future<void>.value();
     _silencedForBackground = true;
+    if (kIsWeb) {
+      WebHtmlBgm.pause();
+      return Future<void>.value();
+    }
     return _enqueue(() async {
       _fadeTimer?.cancel();
       _fadeTimer = null;
@@ -89,6 +108,10 @@ class GameBgm {
     if (!_enabled) return Future<void>.value();
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
+    if (kIsWeb) {
+      WebHtmlBgm.play();
+      return Future<void>.value();
+    }
     return _enqueue(() async {
       final player = _player;
       if (player != null && _current == wanted) {
@@ -111,6 +134,10 @@ class GameBgm {
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
     if (_isHolding(wanted)) return Future<void>.value();
+    if (kIsWeb) {
+      WebHtmlBgm.play();
+      return Future<void>.value();
+    }
     return _enqueue(() => _play(wanted));
   }
 
@@ -140,12 +167,24 @@ class GameBgm {
       return;
     }
     if (_silencedForBackground) return;
+    if (kIsWeb) {
+      await _playWeb(asset);
+      return;
+    }
     if (_isHolding(asset)) return;
 
     await _killAll();
     if (_wanted != asset) return;
 
     await _playNow(asset);
+  }
+
+  static Future<void> _playWeb(String asset) async {
+    WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(asset));
+    if (_wanted != asset || !_enabled || _silencedForBackground) return;
+    WebHtmlBgm.play();
+    _current = asset;
+    _volume = 1;
   }
 
   /// Call [AudioPlayer.play] before other awaits when this is a user tap.
@@ -192,6 +231,9 @@ class GameBgm {
   }
 
   static Future<void> _killAll() async {
+    if (kIsWeb) {
+      WebHtmlBgm.stop();
+    }
     _fadeTimer?.cancel();
     _fadeTimer = null;
     _current = null;
