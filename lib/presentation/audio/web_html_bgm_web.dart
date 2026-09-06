@@ -41,12 +41,19 @@ class WebHtmlBgm {
     audio.load();
   }
 
-  static void play() {
+  static Future<bool> play() async {
     final audio = _element();
     audio.loop = true;
     audio.volume = 1;
     audio.muted = false;
-    audio.play();
+    try {
+      // Start play() before the first await so a user-triggered call keeps
+      // the browser's gesture permission for autoplay.
+      await audio.play().toDart;
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   static void pause() {

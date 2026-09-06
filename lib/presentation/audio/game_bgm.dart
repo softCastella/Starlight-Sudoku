@@ -62,7 +62,8 @@ class GameBgm {
     _wanted = titleAsset;
     if (kIsWeb) {
       WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(titleAsset));
-      WebHtmlBgm.play();
+      final started = await WebHtmlBgm.play();
+      if (!started) return Future<void>.value();
       _current = titleAsset;
       _volume = 1;
       return Future<void>.value();
@@ -109,7 +110,7 @@ class GameBgm {
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
     if (kIsWeb) {
-      WebHtmlBgm.play();
+      unawaited(WebHtmlBgm.play());
       return Future<void>.value();
     }
     return _enqueue(() async {
@@ -135,7 +136,7 @@ class GameBgm {
     if (wanted == null) return Future<void>.value();
     if (_isHolding(wanted)) return Future<void>.value();
     if (kIsWeb) {
-      WebHtmlBgm.play();
+      unawaited(WebHtmlBgm.play());
       return Future<void>.value();
     }
     return _enqueue(() => _play(wanted));
@@ -182,7 +183,8 @@ class GameBgm {
   static Future<void> _playWeb(String asset) async {
     WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(asset));
     if (_wanted != asset || !_enabled || _silencedForBackground) return;
-    WebHtmlBgm.play();
+    final started = await WebHtmlBgm.play();
+    if (!started) return;
     _current = asset;
     _volume = 1;
   }
