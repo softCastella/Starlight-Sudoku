@@ -1,13 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_board.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
+import 'package:sudoku_game/data/local/game_progress_store.dart';
 
 void main() {
   test('active game snapshot restores player values and memo candidates', () {
     final puzzle = List.generate(9, (_) => List.filled(9, 0));
     puzzle[0][0] = 4;
-    final solution = List.generate(9, (row) => List.generate(9, (col) => (row + col) % 9 + 1));
+    final solution = List.generate(
+      9,
+      (row) => List.generate(9, (col) => (row + col) % 9 + 1),
+    );
     final board = SudokuBoard(solution: solution, puzzle: puzzle)
       ..setValue(0, 1, 7)
       ..addMemo(0, 2, 2);
@@ -37,8 +42,10 @@ void main() {
   test('active game snapshot without levelNumber defaults to stage 1', () {
     final puzzle = List.generate(9, (_) => List.filled(9, 0));
     puzzle[0][0] = 4;
-    final solution =
-        List.generate(9, (row) => List.generate(9, (col) => (row + col) % 9 + 1));
+    final solution = List.generate(
+      9,
+      (row) => List.generate(9, (col) => (row + col) % 9 + 1),
+    );
     final json = {
       'solution': solution,
       'puzzle': puzzle,
@@ -58,4 +65,17 @@ void main() {
     expect(restored.levelNumber, 1);
     expect(restored.difficulty, SudokuDifficulty.easy);
   });
+
+  test(
+    'corrupt active game data is discarded instead of breaking startup',
+    () async {
+      SharedPreferences.setMockInitialValues({'active_game': '[]'});
+
+      final restored = await GameProgressStore().loadActiveGame();
+
+      expect(restored, isNull);
+      final preferences = await SharedPreferences.getInstance();
+      expect(preferences.getString('active_game'), isNull);
+    },
+  );
 }

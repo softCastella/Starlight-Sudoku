@@ -4,7 +4,10 @@ import 'package:sudoku_game/presentation/config/web_locale.dart';
 
 void main() {
   test('landing lang query picks the game locale', () {
-    expect(localeFromQuery(Uri.parse('https://example/Starlight-Sudoku/')), isNull);
+    expect(
+      localeFromQuery(Uri.parse('https://example/Starlight-Sudoku/')),
+      isNull,
+    );
     expect(
       localeFromQuery(Uri.parse('https://example/Starlight-Sudoku/?lang=ko')),
       const Locale('ko'),
@@ -22,11 +25,21 @@ void main() {
       const Locale('zh'),
     );
     expect(
-      localeFromQuery(Uri.parse('https://example/Starlight-Sudoku/?lang=zh-TW')),
+      localeFromQuery(
+        Uri.parse('https://example/Starlight-Sudoku/?lang=zh-CN'),
+      ),
+      const Locale('zh'),
+    );
+    expect(
+      localeFromQuery(
+        Uri.parse('https://example/Starlight-Sudoku/?lang=zh-TW'),
+      ),
       const Locale('zh', 'TW'),
     );
     expect(
-      localeFromQuery(Uri.parse('https://example/Starlight-Sudoku/?lang=zh_TW')),
+      localeFromQuery(
+        Uri.parse('https://example/Starlight-Sudoku/?lang=zh_TW'),
+      ),
       const Locale('zh', 'TW'),
     );
     expect(

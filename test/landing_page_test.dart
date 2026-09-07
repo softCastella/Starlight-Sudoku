@@ -25,7 +25,18 @@ void main() {
     expect(source, isNot(contains('doubleclick')));
     expect(flutterBootstrap, contains('flutter_bootstrap.js'));
     expect(flutterBootstrap, contains('1_Title_Lamplight%2520Grid.ogg'));
-    expect(flutterBootstrap, contains("sessionStorage.setItem('starlight_lang'"));
+    expect(
+      flutterBootstrap,
+      contains("sessionStorage.setItem('starlight_lang'"),
+    );
+    expect(
+      flutterBootstrap,
+      contains('<meta name="robots" content="noindex,nofollow">'),
+    );
+    expect(
+      flutterBootstrap,
+      contains('href="https://starlight-sudoku.tycheworks.com/"'),
+    );
     expect(flutterBootstrap, contains('background: #0E2040'));
     expect(flutterBootstrap, isNot(contains('background: #ffffff')));
     expect(flutterBootstrap, isNot(contains('멈춰버린 밤에')));

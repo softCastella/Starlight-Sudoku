@@ -4,6 +4,7 @@ class SudokuSolver {
   /// Find a single solution to the puzzle
   /// Returns null if no solution exists
   static List<List<int>>? solve(List<List<int>> puzzle) {
+    if (!_isValidPuzzleState(puzzle)) return null;
     List<List<int>> board = puzzle.map((row) => [...row]).toList();
     if (_solveBT(board)) {
       return board;
@@ -14,8 +15,48 @@ class SudokuSolver {
   /// Count the number of solutions (with early termination if > 1)
   /// Used to verify puzzle has unique solution
   static int countSolutions(List<List<int>> puzzle) {
+    if (!_isValidPuzzleState(puzzle)) return 0;
     List<List<int>> board = puzzle.map((row) => [...row]).toList();
     return _countSolutionsBT(board, 0, 0);
+  }
+
+  static bool _isValidPuzzleState(List<List<int>> board) {
+    if (board.length != 9 || board.any((row) => row.length != 9)) {
+      return false;
+    }
+
+    for (int row = 0; row < 9; row++) {
+      for (int col = 0; col < 9; col++) {
+        final value = board[row][col];
+        if (value < 0 || value > 9) return false;
+        if (value == 0) continue;
+
+        for (int peer = 0; peer < 9; peer++) {
+          if (peer != col && board[row][peer] == value) return false;
+          if (peer != row && board[peer][col] == value) return false;
+        }
+
+        final blockRow = (row ~/ 3) * 3;
+        final blockCol = (col ~/ 3) * 3;
+        for (
+          int blockPeerRow = blockRow;
+          blockPeerRow < blockRow + 3;
+          blockPeerRow++
+        ) {
+          for (
+            int blockPeerCol = blockCol;
+            blockPeerCol < blockCol + 3;
+            blockPeerCol++
+          ) {
+            if ((blockPeerRow != row || blockPeerCol != col) &&
+                board[blockPeerRow][blockPeerCol] == value) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
   }
 
   /// Backtracking solver helper - finds one solution

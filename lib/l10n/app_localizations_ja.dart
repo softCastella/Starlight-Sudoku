@@ -10,7 +10,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => 'スターライト数独 体験版';
+  String get appTitle => '星明かりの数独 体験版';
 
   @override
   String get startNewPuzzle => '新しいパズル';
@@ -362,10 +362,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get creditsBody =>
-      'スターライト数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\n© Tyche Spark. All rights reserved';
+      '星明かりの数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\n© Tyche Spark. All rights reserved';
 
   @override
-  String get exitGameTitle => 'スターライト数独を終了しますか？';
+  String get exitGameTitle => '星明かりの数独を終了しますか？';
 
   @override
   String get exitGameMessage => '進行状況はこの端末に保存されています。';

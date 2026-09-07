@@ -19,13 +19,15 @@ class GameProgressStore {
   static const _seenTrialEndKey = 'has_seen_trial_end';
 
   Future<
-      ({
-        int starLightBalance,
-        PlayerStatistics statistics,
-        StageProgress stageProgress,
-        bool hasSeenOpeningStory,
-        bool hasSeenTrialEnd,
-      })> load() async {
+    ({
+      int starLightBalance,
+      PlayerStatistics statistics,
+      StageProgress stageProgress,
+      bool hasSeenOpeningStory,
+      bool hasSeenTrialEnd,
+    })
+  >
+  load() async {
     final preferences = await SharedPreferences.getInstance();
     return (
       starLightBalance: preferences.getInt(_starLightKey) ?? 0,
@@ -91,10 +93,12 @@ class GameProgressStore {
     if (encodedSnapshot == null) return null;
 
     try {
-      return ActiveGameSnapshot.fromJson(
-        jsonDecode(encodedSnapshot) as Map<String, dynamic>,
-      );
-    } on FormatException {
+      final decoded = jsonDecode(encodedSnapshot);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException('Active game must be a JSON object.');
+      }
+      return ActiveGameSnapshot.fromJson(decoded);
+    } on Object {
       await preferences.remove(_activeGameKey);
       return null;
     }

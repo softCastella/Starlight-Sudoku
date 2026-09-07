@@ -1,6 +1,6 @@
 {
   "@@locale": "ja",
-  "appTitle": "スターライト数独 体験版",
+  "appTitle": "星明かりの数独 体験版",
   "startNewPuzzle": "新しいパズル",
   "continueGame": "つづきから",
   "viewVillage": "村を見る",
@@ -107,8 +107,8 @@
   "settingsPrivacyOpenError": "ページを開けませんでした",
   "settingsCredits": "クレジット",
   "creditsTitle": "クレジット",
-  "creditsBody": "スターライト数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\n© Tyche Spark. All rights reserved",
-  "exitGameTitle": "スターライト数独を終了しますか？",
+  "creditsBody": "星明かりの数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\n© Tyche Spark. All rights reserved",
+  "exitGameTitle": "星明かりの数独を終了しますか？",
   "exitGameMessage": "進行状況はこの端末に保存されています。",
   "stayInGame": "続ける",
   "quitGame": "終了"
