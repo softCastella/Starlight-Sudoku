@@ -11,8 +11,8 @@ import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
 import 'package:sudoku_game/presentation/widgets/exit_game_dialog.dart';
-import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/village_scene_backdrop.dart';
+import 'package:sudoku_game/presentation/widgets/web_audio_gate.dart';
 
 /// APK: white logo splash. Web skips this and starts at the BGM ON/OFF gate.
 class SplashScreen extends StatefulWidget {
@@ -230,34 +230,13 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _webAudioGate() {
     final l10n = l10nOf(context);
-    return ColoredBox(
-      color: const Color(0xFF07152F),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerDown: (_) => unawaited(GameBgm.startTitleFromGesture()),
-              child: OvalImageButton(
-                key: const Key('web-audio-start'),
-                label: l10n.webBgmOn,
-                onPressed: () => _finishWebAudioGate(bgmOn: true),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerDown: (_) => unawaited(GameBgm.setEnabled(false)),
-              child: OvalImageButton(
-                key: const Key('web-audio-off'),
-                label: l10n.webBgmOff,
-                onPressed: () => _finishWebAudioGate(bgmOn: false),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return WebAudioGate(
+      bgmOnLabel: l10n.webBgmOn,
+      bgmOffLabel: l10n.webBgmOff,
+      onBgmOnPointerDown: () => unawaited(GameBgm.startTitleFromGesture()),
+      onBgmOnPressed: () => _finishWebAudioGate(bgmOn: true),
+      onBgmOffPointerDown: () => unawaited(GameBgm.setEnabled(false)),
+      onBgmOffPressed: () => _finishWebAudioGate(bgmOn: false),
     );
   }
 }

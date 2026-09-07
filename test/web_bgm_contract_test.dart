@@ -7,13 +7,18 @@ void main() {
     final app = File('lib/presentation/app.dart').readAsStringSync();
     final splash = File('lib/presentation/screens/splash_screen.dart')
         .readAsStringSync();
+    final gate = File('lib/presentation/widgets/web_audio_gate.dart')
+        .readAsStringSync();
     final webEntry = File('web/index.html').readAsStringSync();
 
     expect(app, contains('if (!kIsWeb) GameBgm.unlock();'));
-    expect(splash, contains('onPointerDown: (_) =>'));
     expect(splash, contains('GameBgm.startTitleFromGesture()'));
     expect(splash, contains('GameBgm.setEnabled(false)'));
-    expect(splash, contains('Color(0xFF07152F)'));
+    expect(splash, contains('_finishWebAudioGate(bgmOn: true)'));
+    expect(splash, contains('_finishWebAudioGate(bgmOn: false)'));
+    expect(gate, contains('backgroundColor = Color(0xFF07152F)'));
+    expect(gate, contains('behavior: HitTestBehavior.opaque'));
+    expect(gate, contains('decoration: TextDecoration.none'));
     expect(webEntry, contains('1_Title_Lamplight%2520Grid.ogg'));
   });
 }

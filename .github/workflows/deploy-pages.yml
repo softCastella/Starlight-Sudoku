@@ -1,8 +1,6 @@
 name: Deploy Flutter web to GitHub Pages
 
 on:
-  push:
-    branches: [pages]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +27,9 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Verify web demo harnesses
+        run: flutter test --dart-define=WEB_DEMO=true test/web_bgm_contract_test.dart test/web_audio_gate_harness_test.dart test/trial_end_modal_harness_test.dart
 
       - name: Build web release
         run: flutter build web --release --base-href "/Starlight-Sudoku/" --dart-define=WEB_DEMO=true

@@ -13,7 +13,7 @@ class TrialEndDialog extends StatefulWidget {
 
   static const playStorePackage = 'com.tychespark.starlightsudoku';
   static const _market = 'market://details?id=$playStorePackage';
-  static const _webStore =
+  static const playStoreWebUrl =
       'https://play.google.com/store/apps/details?id=$playStorePackage';
 
   static bool _showing = false;
@@ -54,7 +54,7 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
       return;
     }
     await launchUrl(
-      Uri.parse(TrialEndDialog._webStore),
+      Uri.parse(TrialEndDialog.playStoreWebUrl),
       mode: LaunchMode.externalApplication,
     );
   }
@@ -76,13 +76,17 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
           Text(
             l10n.trialEndMessage,
             textAlign: TextAlign.center,
-            style: PlayUi.captionStyle().copyWith(fontSize: PlayUi.body, height: 1.4),
+            style: PlayUi.captionStyle().copyWith(
+              fontSize: PlayUi.body,
+              height: 1.4,
+            ),
           ),
           const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
                 child: ParchmentModalButton(
+                  key: const Key('trial-end-store'),
                   asset: ParchmentModal.exitAsset,
                   label: l10n.sendReview,
                   color: PlayUi.cream,
@@ -92,6 +96,7 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
               const SizedBox(width: 8),
               Expanded(
                 child: ParchmentModalButton(
+                  key: const Key('trial-end-close'),
                   asset: ParchmentModal.continueAsset,
                   label: l10n.close,
                   color: PlayUi.ink,
