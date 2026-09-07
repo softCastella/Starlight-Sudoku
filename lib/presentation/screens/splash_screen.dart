@@ -231,7 +231,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget _webAudioGate() {
     final l10n = l10nOf(context);
     return ColoredBox(
-      color: const Color(0xD907152F),
+      color: const Color(0xFF07152F),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -246,10 +246,14 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             const SizedBox(height: 12),
-            OvalImageButton(
-              key: const Key('web-audio-off'),
-              label: l10n.webBgmOff,
-              onPressed: () => _finishWebAudioGate(bgmOn: false),
+            Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (_) => unawaited(GameBgm.setEnabled(false)),
+              child: OvalImageButton(
+                key: const Key('web-audio-off'),
+                label: l10n.webBgmOff,
+                onPressed: () => _finishWebAudioGate(bgmOn: false),
+              ),
             ),
           ],
         ),

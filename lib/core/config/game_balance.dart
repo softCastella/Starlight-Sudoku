@@ -16,15 +16,22 @@ class GameBalance {
   static const int normalMistakePenalty = 2;
   static const int hardMistakePenalty = 5;
 
-  /// Play Store trial: Easy 1–10 only. Set false for the full 20/40/50 game.
+  /// Play Store trial: Easy 1–10. GitHub Pages demo: Easy 1–5.
+  /// Set [isTrial] false for the full 20/40/50 game.
   static const bool isTrial = true;
-  static const int trialStageCount = 10;
+  static const bool isWebDemo = bool.fromEnvironment('WEB_DEMO');
+  static const int playStoreTrialStageCount = 10;
+  static const int webDemoStageCount = 5;
+  static const int trialStageCount = isWebDemo
+      ? webDemoStageCount
+      : playStoreTrialStageCount;
 
   static const int fullEasyStageCount = 20;
   static const int fullNormalStageCount = 40;
   static const int fullHardStageCount = 50;
 
-  static int get easyStageCount => isTrial ? trialStageCount : fullEasyStageCount;
+  static int get easyStageCount =>
+      isTrial ? trialStageCount : fullEasyStageCount;
   static int get normalStageCount => isTrial ? 0 : fullNormalStageCount;
   static int get hardStageCount => isTrial ? 0 : fullHardStageCount;
 

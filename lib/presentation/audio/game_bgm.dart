@@ -25,6 +25,7 @@ class GameBgm {
   static double _volume = 0;
   static bool _enabled = true;
   static bool _silencedForBackground = false;
+  static bool _webPlayPending = false;
   static Future<void> _chain = Future.value();
 
   static Future<void> setEnabled(bool on) {
@@ -33,6 +34,18 @@ class GameBgm {
     if (_silencedForBackground) return Future<void>.value();
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
+    return _enqueue(() => _play(wanted));
+  }
+
+  /// Applies a user-triggered setting change before the browser loses the
+  /// gesture. Web must not enqueue the play call behind preference writes.
+  static Future<void> setEnabledFromGesture(bool on) {
+    if (!on) return setEnabled(false);
+    _enabled = true;
+    if (_silencedForBackground) return Future<void>.value();
+    final wanted = _wanted;
+    if (wanted == null) return Future<void>.value();
+    if (kIsWeb) return _playWeb(wanted);
     return _enqueue(() => _play(wanted));
   }
 
@@ -53,22 +66,17 @@ class GameBgm {
 
   /// Starts title BGM in the same tap as the web BGM ON button.
   /// Do not await prefs, asset fetch, or enqueue first — browsers drop the gesture.
-  static Future<void> startTitleFromGesture() async {
+  static Future<void> startTitleFromGesture() {
     if (const bool.fromEnvironment('FLUTTER_TEST')) {
-      return;
+      return Future<void>.value();
     }
     _enabled = true;
     _silencedForBackground = false;
     _wanted = titleAsset;
     if (kIsWeb) {
-      WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(titleAsset));
-      final started = await WebHtmlBgm.play();
-      if (!started) return;
-      _current = titleAsset;
-      _volume = 1;
-      return;
+      return _playWeb(titleAsset);
     }
-    await _playNow(titleAsset);
+    return _playNow(titleAsset);
   }
 
   static Future<void> fadeOut() {
@@ -110,7 +118,7 @@ class GameBgm {
     final wanted = _wanted;
     if (wanted == null) return Future<void>.value();
     if (kIsWeb) {
-      unawaited(WebHtmlBgm.play());
+      unawaited(_playWeb(wanted));
       return Future<void>.value();
     }
     return _enqueue(() async {
@@ -136,7 +144,7 @@ class GameBgm {
     if (wanted == null) return Future<void>.value();
     if (_isHolding(wanted)) return Future<void>.value();
     if (kIsWeb) {
-      unawaited(WebHtmlBgm.play());
+      unawaited(_playWeb(wanted));
       return Future<void>.value();
     }
     return _enqueue(() => _play(wanted));
@@ -183,10 +191,19 @@ class GameBgm {
   static Future<void> _playWeb(String asset) async {
     WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(asset));
     if (_wanted != asset || !_enabled || _silencedForBackground) return;
-    final started = await WebHtmlBgm.play();
-    if (!started) return;
-    _current = asset;
-    _volume = 1;
+    if (_webPlayPending) return;
+    _webPlayPending = true;
+    try {
+      final started = await WebHtmlBgm.play();
+      if (!started || _wanted != asset || !_enabled || _silencedForBackground) {
+        if (!_enabled || _silencedForBackground) WebHtmlBgm.stop();
+        return;
+      }
+      _current = asset;
+      _volume = 1;
+    } finally {
+      _webPlayPending = false;
+    }
   }
 
   /// Call [AudioPlayer.play] before other awaits when this is a user tap.

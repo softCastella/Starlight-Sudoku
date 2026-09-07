@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -90,7 +91,12 @@ class SudokuApp extends StatelessWidget {
                         child: _AppAudioLifecycle(
                           child: Listener(
                             behavior: HitTestBehavior.translucent,
-                            onPointerDown: (_) => GameBgm.unlock(),
+                            onPointerDown: (_) {
+                              // Web audio starts only from explicit BGM ON
+                              // controls. A global unlock made BGM OFF clicks
+                              // start playback before the OFF handler ran.
+                              if (!kIsWeb) GameBgm.unlock();
+                            },
                             child: child ?? const SizedBox.shrink(),
                           ),
                         ),

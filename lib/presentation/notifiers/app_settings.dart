@@ -19,14 +19,16 @@ class AppSettings extends ChangeNotifier {
   bool _bgmOn = true;
   bool _sfxOn = true;
   String _userId = '';
+  int _bgmSelectionRevision = 0;
 
   bool get bgmEnabled => _bgmOn;
   bool get sfxEnabled => _sfxOn;
   String get userId => _userId;
 
   Future<void> load() async {
+    final bgmRevision = _bgmSelectionRevision;
     final preferences = await SharedPreferences.getInstance();
-    _bgmOn = preferences.getBool(_bgmKey) ?? true;
+    final storedBgmOn = preferences.getBool(_bgmKey) ?? true;
     _sfxOn = preferences.getBool(_sfxKey) ?? true;
     sfxOn = _sfxOn;
     var id = preferences.getString(_userIdKey) ?? '';
@@ -35,11 +37,17 @@ class AppSettings extends ChangeNotifier {
       await preferences.setString(_userIdKey, id);
     }
     _userId = id;
-    await GameBgm.setEnabled(_bgmOn);
+    if (_bgmSelectionRevision == bgmRevision) {
+      _bgmOn = storedBgmOn;
+      // Web always asks at the startup gate. A late preference load must not
+      // override the explicit ON/OFF choice or replay outside a user gesture.
+      if (!kIsWeb) await GameBgm.setEnabled(_bgmOn);
+    }
     notifyListeners();
   }
 
   Future<void> persistBgmEnabled(bool value) async {
+    _bgmSelectionRevision++;
     _bgmOn = value;
     notifyListeners();
     final preferences = await SharedPreferences.getInstance();
@@ -48,10 +56,18 @@ class AppSettings extends ChangeNotifier {
 
   Future<void> setBgmEnabled(bool value) async {
     if (_bgmOn == value) return;
+    _bgmSelectionRevision++;
     _bgmOn = value;
+    final webAudioChange = kIsWeb
+        ? GameBgm.setEnabledFromGesture(value)
+        : Future<void>.value();
     final preferences = await SharedPreferences.getInstance();
     await preferences.setBool(_bgmKey, value);
-    await GameBgm.setEnabled(value);
+    if (kIsWeb) {
+      await webAudioChange;
+    } else {
+      await GameBgm.setEnabled(value);
+    }
     notifyListeners();
   }
 

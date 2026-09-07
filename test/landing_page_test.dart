@@ -24,6 +24,7 @@ void main() {
     expect(source, isNot(contains('googleads')));
     expect(source, isNot(contains('doubleclick')));
     expect(flutterBootstrap, contains('flutter_bootstrap.js'));
+    expect(flutterBootstrap, contains('1_Title_Lamplight%2520Grid.ogg'));
     expect(flutterBootstrap, contains("sessionStorage.setItem('starlight_lang'"));
     expect(flutterBootstrap, contains('background: #0E2040'));
     expect(flutterBootstrap, isNot(contains('background: #ffffff')));

@@ -6,7 +6,7 @@
 - 개발사: Tyche works
 - 앱 ID: `com.tychespark.starlightsudoku`
 - 웹 플레이: https://softcastella.github.io/Starlight-Sudoku/
-- 지금은 Play 체험판이다. Easy 10판만 있고, Normal / Hard는 숨긴다.
+- Google Play 체험판은 Easy 10판, GitHub Pages 웹 데모는 Easy 5판입니다. Normal / Hard는 숨깁니다.
 
 ## 프로젝트 개요
 
@@ -16,13 +16,13 @@
 
 ## 현재 기능
 
-- 체험판: Easy 10스테이지. 정식은 Easy 20 / Normal 40 / Hard 50 (`GameBalance.isTrial`)
+- 체험판: Play Easy 10스테이지 / 웹 Easy 5스테이지. 정식은 Easy 20 / Normal 40 / Hard 50 (`GameBalance.isTrial`)
 - 난이도별 유일해 퍼즐 생성 (같은 스테이지는 같은 퍼즐)
 - 앞 스테이지를 완료해야 다음 스테이지 해금, 클리어한 스테이지는 다시 플레이 가능
 - 메모, 힌트 3회, 힌트당 StarLight 감점, 실행 취소, 틀린 숫자 StarLight 감점
 - 첫 클리어 StarLight 보상, 마을 복원, 건물 스토리
 - 진행 중 퍼즐 이어하기, 플레이 통계, 마을 진행도 로컬 저장
-- 체험판 10판 클리어 후 인앱 리뷰 안내 (앱 안에 머무름)
+- 체험판 마지막 판 클리어 후 안내 (Play 10판 / 웹 5판, 앱 안에 머무름)
 - GitHub Pages 웹 배포
 
 난이도별 StarLight 보상은 Easy 10, Normal 20, Hard 30이다. 실수·힌트에 따라 줄어들며 난이도별 최솟값이 있다.

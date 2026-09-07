@@ -6,10 +6,16 @@ import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 void main() {
   group('StageProgress', () {
     test('difficulty stage counts match the requested layout', () {
-      expect(DifficultyConfig.getConfig(SudokuDifficulty.easy).stageCount, 10);
+      final expectedTrialStages = GameBalance.isWebDemo ? 5 : 10;
+      expect(
+        DifficultyConfig.getConfig(SudokuDifficulty.easy).stageCount,
+        expectedTrialStages,
+      );
       expect(DifficultyConfig.getConfig(SudokuDifficulty.normal).stageCount, 0);
       expect(DifficultyConfig.getConfig(SudokuDifficulty.hard).stageCount, 0);
-      expect(GameBalance.easyStageCount, 10);
+      expect(GameBalance.easyStageCount, expectedTrialStages);
+      expect(GameBalance.playStoreTrialStageCount, 10);
+      expect(GameBalance.webDemoStageCount, 5);
       expect(GameBalance.isTrial, isTrue);
     });
 
@@ -24,7 +30,10 @@ void main() {
     });
 
     test('clearing a stage unlocks the next one in that difficulty only', () {
-      final progress = const StageProgress().markCompleted(SudokuDifficulty.easy, 1);
+      final progress = const StageProgress().markCompleted(
+        SudokuDifficulty.easy,
+        1,
+      );
 
       expect(progress.isCompleted(SudokuDifficulty.easy, 1), isTrue);
       expect(progress.isUnlocked(SudokuDifficulty.easy, 2), isTrue);
