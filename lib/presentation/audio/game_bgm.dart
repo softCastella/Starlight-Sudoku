@@ -53,9 +53,9 @@ class GameBgm {
 
   /// Starts title BGM in the same tap as the web BGM ON button.
   /// Do not await prefs, asset fetch, or enqueue first — browsers drop the gesture.
-  static Future<void> startTitleFromGesture() {
+  static Future<void> startTitleFromGesture() async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) {
-      return Future<void>.value();
+      return;
     }
     _enabled = true;
     _silencedForBackground = false;
@@ -63,12 +63,12 @@ class GameBgm {
     if (kIsWeb) {
       WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(titleAsset));
       final started = await WebHtmlBgm.play();
-      if (!started) return Future<void>.value();
+      if (!started) return;
       _current = titleAsset;
       _volume = 1;
-      return Future<void>.value();
+      return;
     }
-    return _playNow(titleAsset);
+    await _playNow(titleAsset);
   }
 
   static Future<void> fadeOut() {
@@ -291,11 +291,7 @@ enum BgmCue { title, level, silence }
 
 /// Applies a BGM cue while this route is on top.
 class BgmScope extends StatefulWidget {
-  const BgmScope({
-    super.key,
-    required this.cue,
-    required this.child,
-  });
+  const BgmScope({super.key, required this.cue, required this.child});
 
   final BgmCue cue;
   final Widget child;

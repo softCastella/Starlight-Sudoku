@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/audio/splash_voice.dart';
-import 'package:sudoku_game/presentation/audio/web_html_bgm.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
@@ -108,19 +107,6 @@ class _SplashScreenState extends State<SplashScreen>
     if (kIsWeb) {
       unawaited(_precacheGameArt());
       unawaited(GameBgm.preloadTitleForWeb());
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || !_showWebAudioGate) return;
-        final l10n = l10nOf(context);
-        WebHtmlBgm.mountGate(
-          onLabel: l10n.webBgmOn,
-          offLabel: l10n.webBgmOff,
-          buttonImageUrl: WebHtmlBgm.assetUrl(
-            'images/SystemUI/button_modal_default_starlight_sudoku.png',
-          ),
-          onStart: () => _finishWebAudioGate(bgmOn: true),
-          onSkip: () => _finishWebAudioGate(bgmOn: false),
-        );
-      });
       return;
     }
     _startSplash();
@@ -142,11 +128,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _finishWebAudioGate({required bool bgmOn}) {
     if (!_showWebAudioGate) return;
-    WebHtmlBgm.unmountGate();
     setState(() => _showWebAudioGate = false);
-    if (bgmOn) {
-      unawaited(GameBgm.startTitleFromGesture());
-    } else {
+    if (!bgmOn) {
       GameBgm.rememberTitle();
       unawaited(GameBgm.setEnabled(false));
     }
@@ -178,7 +161,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     GameBgm.routeObserver.unsubscribe(this);
-    WebHtmlBgm.unmountGate();
     unawaited(SplashVoice.stop());
     _controller.dispose();
     super.dispose();

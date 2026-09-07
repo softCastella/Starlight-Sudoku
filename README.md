@@ -58,7 +58,7 @@ flutter test
 flutter run -d <device-id>
 ```
 
-`main` 브랜치에 푸시하면 GitHub Actions가 Flutter 웹 릴리스를 빌드하고 GitHub Pages에 배포합니다.
+웹 데모 스냅샷을 `pages` 브랜치에 푸시하면 GitHub Actions가 Flutter 웹 릴리스를 빌드하고 GitHub Pages에 배포합니다. `main` 푸시만으로는 공개 웹이 갱신되지 않습니다.
 
 ## Android 출시 준비
 
