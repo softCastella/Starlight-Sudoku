@@ -20,6 +20,7 @@ class AppSettings extends ChangeNotifier {
   bool _sfxOn = true;
   String _userId = '';
   int _bgmSelectionRevision = 0;
+  int _sfxSelectionRevision = 0;
 
   bool get bgmEnabled => _bgmOn;
   bool get sfxEnabled => _sfxOn;
@@ -27,10 +28,10 @@ class AppSettings extends ChangeNotifier {
 
   Future<void> load() async {
     final bgmRevision = _bgmSelectionRevision;
+    final sfxRevision = _sfxSelectionRevision;
     final preferences = await SharedPreferences.getInstance();
     final storedBgmOn = preferences.getBool(_bgmKey) ?? true;
-    _sfxOn = preferences.getBool(_sfxKey) ?? true;
-    sfxOn = _sfxOn;
+    final storedSfxOn = preferences.getBool(_sfxKey) ?? true;
     var id = preferences.getString(_userIdKey) ?? '';
     if (id.isEmpty) {
       id = _createUserId();
@@ -42,6 +43,10 @@ class AppSettings extends ChangeNotifier {
       // Web always asks at the startup gate. A late preference load must not
       // override the explicit ON/OFF choice or replay outside a user gesture.
       if (!kIsWeb) await GameBgm.setEnabled(_bgmOn);
+    }
+    if (_sfxSelectionRevision == sfxRevision) {
+      _sfxOn = storedSfxOn;
+      sfxOn = _sfxOn;
     }
     notifyListeners();
   }
@@ -73,6 +78,7 @@ class AppSettings extends ChangeNotifier {
 
   Future<void> setSfxEnabled(bool value) async {
     if (_sfxOn == value) return;
+    _sfxSelectionRevision++;
     _sfxOn = value;
     sfxOn = value;
     final preferences = await SharedPreferences.getInstance();

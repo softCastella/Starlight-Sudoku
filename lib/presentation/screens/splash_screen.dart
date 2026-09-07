@@ -235,7 +235,10 @@ class _SplashScreenState extends State<SplashScreen>
       bgmOffLabel: l10n.webBgmOff,
       onBgmOnPointerDown: () => unawaited(GameBgm.startTitleFromGesture()),
       onBgmOnPressed: () => _finishWebAudioGate(bgmOn: true),
-      onBgmOffPointerDown: () => unawaited(GameBgm.setEnabled(false)),
+      onBgmOffPointerDown: () {
+        unawaited(GameBgm.setEnabled(false));
+        unawaited(context.read<AppSettings>().setSfxEnabled(false));
+      },
       onBgmOffPressed: () => _finishWebAudioGate(bgmOn: false),
     );
   }

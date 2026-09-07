@@ -9,16 +9,20 @@ void main() {
         .readAsStringSync();
     final gate = File('lib/presentation/widgets/web_audio_gate.dart')
         .readAsStringSync();
+    final appSettings = File('lib/presentation/notifiers/app_settings.dart')
+        .readAsStringSync();
     final webEntry = File('web/index.html').readAsStringSync();
 
     expect(app, contains('if (!kIsWeb) GameBgm.unlock();'));
     expect(splash, contains('GameBgm.startTitleFromGesture()'));
     expect(splash, contains('GameBgm.setEnabled(false)'));
+    expect(splash, contains('setSfxEnabled(false)'));
     expect(splash, contains('_finishWebAudioGate(bgmOn: true)'));
     expect(splash, contains('_finishWebAudioGate(bgmOn: false)'));
-    expect(gate, contains('backgroundColor = Color(0xFF07152F)'));
+    expect(gate, contains('backgroundColor = Color(0x9907152F)'));
     expect(gate, contains('behavior: HitTestBehavior.opaque'));
     expect(gate, contains('decoration: TextDecoration.none'));
+    expect(appSettings, contains('if (_sfxSelectionRevision == sfxRevision)'));
     expect(webEntry, contains('1_Title_Lamplight%2520Grid.ogg'));
   });
 }

@@ -26,18 +26,34 @@ void main() {
     );
   }
 
-  testWidgets('opaque background covers the complete viewport', (tester) async {
-    await tester.pumpWidget(host(gate()));
+  testWidgets('translucent background covers the complete viewport', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        Stack(
+          fit: StackFit.expand,
+          children: [
+            const ColoredBox(color: Colors.red),
+            gate(),
+          ],
+        ),
+      ),
+    );
 
     final background = tester.widget<ColoredBox>(
       find.byKey(const Key('web-audio-gate-background')),
     );
     expect(background.color, WebAudioGate.backgroundColor);
-    expect(background.color.a, 1);
+    expect(background.color.a, closeTo(0.6, 0.01));
     expect(
       tester.getSize(find.byKey(const Key('web-audio-gate'))),
       tester.getSize(find.byType(Scaffold)),
     );
+
+    final blended = Color.alphaBlend(background.color, Colors.red);
+    expect(blended, isNot(background.color));
+    expect(blended, isNot(Colors.red));
   });
 
   testWidgets('gate blocks pointer input from reaching content behind it', (

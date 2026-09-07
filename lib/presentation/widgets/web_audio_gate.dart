@@ -16,7 +16,7 @@ class WebAudioGate extends StatelessWidget {
     required this.onBgmOffPressed,
   });
 
-  static const backgroundColor = Color(0xFF07152F);
+  static const backgroundColor = Color(0x9907152F);
   static const labelDecoration = TextStyle(
     decoration: TextDecoration.none,
     decorationColor: Colors.transparent,
