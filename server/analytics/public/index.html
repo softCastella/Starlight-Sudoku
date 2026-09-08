@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0E2040">
+  <title>별빛 스도쿠 · 시드 대시보드</title>
+  <style>
+    body { margin: 0; background: #0E2040; color: #FBF7EC; font-family: "Malgun Gothic", sans-serif; }
+    main { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
+    h1 { font-size: 1.5rem; margin: 0 0 6px; }
+    .meta { color: #C9D4E0; font-size: 0.85rem; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 24px 0; }
+    .card { background: #152a4d; padding: 14px 16px; border-radius: 8px; }
+    .card b { display: block; font-size: 1.35rem; color: #F5CC3D; }
+    .card span { font-size: 0.8rem; color: #C9D4E0; }
+    h2 { font-size: 1.05rem; margin: 28px 0 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid #2a446c; }
+    .bar { height: 8px; background: #F5CC3D; border-radius: 4px; }
+    .row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+    .label { width: 140px; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">티케웍스 · 별빛 스도쿠 · 익명 설치 ID · 가입 없음</p>
+    <h1>초기 테스트 데이터</h1>
+    <p class="meta" id="range"></p>
+    <div class="kpis" id="kpis"></div>
+    <h2>일자별 DAU</h2>
+    <div id="daily"></div>
+    <h2>퍼널</h2>
+    <div id="funnel"></div>
+    <h2>Easy 스테이지</h2>
+    <table id="stages"></table>
+  </main>
+  <script>
+    const DATA = {"meta": {"product": "starlight-sudoku", "package": "com.tychespark.starlightsudoku", "source": "seed", "identity": "anonymous_app_instance", "google_sign_in": false, "host": "vultr", "from": "2026-08-15", "to": "2026-09-04", "generated_at": "2026-09-04T02:00:00Z", "note": "Internal QA seed. Swap source to ga4 when the app sends Analytics."}, "overview": {"unique_instances": 191, "dau_last": 37, "dau_avg": 23.2, "app_open": 488, "puzzle_start": 313, "puzzle_clear": 209, "trial_end_shown": 21, "trial_end_send": 13, "start_rate": 0.641, "clear_rate": 0.668, "trial_finish_rate": 0.067, "review_send_rate": 0.619}, "daily": [{"date": "2026-08-15", "dau": 4, "new_instances": 4, "app_open": 4, "puzzle_start": 2, "puzzle_clear": 2, "puzzle_give_up": 0, "village_open": 0, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 2}, {"date": "2026-08-16", "dau": 12, "new_instances": 8, "app_open": 12, "puzzle_start": 9, "puzzle_clear": 5, "puzzle_give_up": 2, "village_open": 1, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 10}, {"date": "2026-08-17", "dau": 12, "new_instances": 6, "app_open": 12, "puzzle_start": 6, "puzzle_clear": 4, "puzzle_give_up": 1, "village_open": 2, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 11}, {"date": "2026-08-18", "dau": 16, "new_instances": 8, "app_open": 16, "puzzle_start": 9, "puzzle_clear": 5, "puzzle_give_up": 1, "village_open": 1, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 15}, {"date": "2026-08-19", "dau": 12, "new_instances": 6, "app_open": 12, "puzzle_start": 9, "puzzle_clear": 6, "puzzle_give_up": 0, "village_open": 4, "trial_end_shown": 1, "trial_end_send": 1, "settings_open": 9}, {"date": "2026-08-20", "dau": 15, "new_instances": 7, "app_open": 15, "puzzle_start": 10, "puzzle_clear": 7, "puzzle_give_up": 2, "village_open": 1, "trial_end_shown": 1, "trial_end_send": 1, "settings_open": 13}, {"date": "2026-08-21", "dau": 16, "new_instances": 7, "app_open": 16, "puzzle_start": 13, "puzzle_clear": 11, "puzzle_give_up": 2, "village_open": 4, "trial_end_shown": 1, "trial_end_send": 0, "settings_open": 14}, {"date": "2026-08-22", "dau": 22, "new_instances": 10, "app_open": 22, "puzzle_start": 10, "puzzle_clear": 7, "puzzle_give_up": 1, "village_open": 2, "trial_end_shown": 1, "trial_end_send": 0, "settings_open": 19}, {"date": "2026-08-23", "dau": 26, "new_instances": 11, "app_open": 26, "puzzle_start": 19, "puzzle_clear": 18, "puzzle_give_up": 1, "village_open": 7, "trial_end_shown": 2, "trial_end_send": 1, "settings_open": 18}, {"date": "2026-08-24", "dau": 22, "new_instances": 9, "app_open": 22, "puzzle_start": 14, "puzzle_clear": 8, "puzzle_give_up": 4, "village_open": 4, "trial_end_shown": 1, "trial_end_send": 1, "settings_open": 19}, {"date": "2026-08-25", "dau": 25, "new_instances": 10, "app_open": 25, "puzzle_start": 16, "puzzle_clear": 10, "puzzle_give_up": 2, "village_open": 2, "trial_end_shown": 3, "trial_end_send": 1, "settings_open": 19}, {"date": "2026-08-26", "dau": 26, "new_instances": 10, "app_open": 26, "puzzle_start": 16, "puzzle_clear": 11, "puzzle_give_up": 2, "village_open": 4, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 23}, {"date": "2026-08-27", "dau": 25, "new_instances": 10, "app_open": 25, "puzzle_start": 18, "puzzle_clear": 12, "puzzle_give_up": 2, "village_open": 6, "trial_end_shown": 1, "trial_end_send": 0, "settings_open": 22}, {"date": "2026-08-28", "dau": 25, "new_instances": 9, "app_open": 25, "puzzle_start": 17, "puzzle_clear": 12, "puzzle_give_up": 2, "village_open": 5, "trial_end_shown": 1, "trial_end_send": 1, "settings_open": 20}, {"date": "2026-08-29", "dau": 30, "new_instances": 11, "app_open": 30, "puzzle_start": 20, "puzzle_clear": 12, "puzzle_give_up": 5, "village_open": 4, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 28}, {"date": "2026-08-30", "dau": 36, "new_instances": 13, "app_open": 36, "puzzle_start": 22, "puzzle_clear": 16, "puzzle_give_up": 4, "village_open": 5, "trial_end_shown": 2, "trial_end_send": 1, "settings_open": 29}, {"date": "2026-08-31", "dau": 30, "new_instances": 10, "app_open": 30, "puzzle_start": 19, "puzzle_clear": 13, "puzzle_give_up": 4, "village_open": 4, "trial_end_shown": 0, "trial_end_send": 0, "settings_open": 24}, {"date": "2026-09-01", "dau": 30, "new_instances": 10, "app_open": 30, "puzzle_start": 23, "puzzle_clear": 17, "puzzle_give_up": 3, "village_open": 9, "trial_end_shown": 3, "trial_end_send": 2, "settings_open": 26}, {"date": "2026-09-02", "dau": 35, "new_instances": 11, "app_open": 35, "puzzle_start": 16, "puzzle_clear": 8, "puzzle_give_up": 3, "village_open": 3, "trial_end_shown": 2, "trial_end_send": 2, "settings_open": 29}, {"date": "2026-09-03", "dau": 32, "new_instances": 10, "app_open": 32, "puzzle_start": 21, "puzzle_clear": 12, "puzzle_give_up": 5, "village_open": 4, "trial_end_shown": 1, "trial_end_send": 1, "settings_open": 27}, {"date": "2026-09-04", "dau": 37, "new_instances": 11, "app_open": 37, "puzzle_start": 24, "puzzle_clear": 13, "puzzle_give_up": 9, "village_open": 6, "trial_end_shown": 1, "trial_end_send": 1, "settings_open": 30}], "funnel": [{"step": "app_open", "count": 488}, {"step": "puzzle_start", "count": 313}, {"step": "puzzle_clear", "count": 209}, {"step": "village_open", "count": 78}, {"step": "trial_end_shown", "count": 21}, {"step": "trial_end_send", "count": 13}], "stages": [{"stage": 1, "difficulty": "easy", "starts": 51, "clears": 45, "give_ups": 6}, {"stage": 2, "difficulty": "easy", "starts": 42, "clears": 31, "give_ups": 11}, {"stage": 3, "difficulty": "easy", "starts": 32, "clears": 27, "give_ups": 4}, {"stage": 4, "difficulty": "easy", "starts": 21, "clears": 15, "give_ups": 5}, {"stage": 5, "difficulty": "easy", "starts": 27, "clears": 23, "give_ups": 3}, {"stage": 6, "difficulty": "easy", "starts": 19, "clears": 14, "give_ups": 3}, {"stage": 7, "difficulty": "easy", "starts": 23, "clears": 13, "give_ups": 3}, {"stage": 8, "difficulty": "easy", "starts": 24, "clears": 12, "give_ups": 5}, {"stage": 9, "difficulty": "easy", "starts": 22, "clears": 8, "give_ups": 6}, {"stage": 10, "difficulty": "easy", "starts": 52, "clears": 21, "give_ups": 9}], "platforms": [{"platform": "android", "dau": 21, "opens": 431}, {"platform": "web", "dau": 19, "opens": 57}], "locales": [{"locale": "ko", "dau": 21, "opens": 284}, {"locale": "en", "dau": 17, "opens": 81}, {"locale": "ja", "dau": 16, "opens": 40}, {"locale": "zh", "dau": 20, "opens": 55}, {"locale": "zh_TW", "dau": 17, "opens": 28}]};
+    document.getElementById('range').textContent =
+      DATA.meta.from + ' ~ ' + DATA.meta.to + ' · source=' + DATA.meta.source;
+    const o = DATA.overview;
+    const kpis = [
+      ['고유 설치', o.unique_instances],
+      ['최근 DAU', o.dau_last],
+      ['평균 DAU', o.dau_avg],
+      ['퍼즐 시작률', Math.round(o.start_rate * 100) + '%'],
+      ['클리어율', Math.round(o.clear_rate * 100) + '%'],
+      ['10판 도달', Math.round(o.trial_finish_rate * 100) + '%'],
+    ];
+    document.getElementById('kpis').innerHTML = kpis.map(([k, v]) =>
+      '<div class="card"><b>' + v + '</b><span>' + k + '</span></div>'
+    ).join('');
+    const maxDau = Math.max(...DATA.daily.map(d => d.dau));
+    document.getElementById('daily').innerHTML = DATA.daily.map(d =>
+      '<div class="row"><div class="label">' + d.date.slice(5) + ' · ' + d.dau +
+      '</div><div class="bar" style="width:' + (d.dau / maxDau * 100) + '%"></div></div>'
+    ).join('');
+    const maxFunnel = DATA.funnel[0].count;
+    document.getElementById('funnel').innerHTML = DATA.funnel.map(s =>
+      '<div class="row"><div class="label">' + s.step + ' · ' + s.count +
+      '</div><div class="bar" style="width:' + (s.count / maxFunnel * 100) + '%"></div></div>'
+    ).join('');
+    document.getElementById('stages').innerHTML =
+      '<tr><th>스테이지</th><th>시작</th><th>클리어</th><th>포기</th></tr>' +
+      DATA.stages.map(s => '<tr><td>Easy ' + s.stage + '</td><td>' + s.starts +
+      '</td><td>' + s.clears + '</td><td>' + s.give_ups + '</td></tr>').join('');
+  </script>
+</body>
+</html>

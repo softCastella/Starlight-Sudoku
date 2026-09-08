@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "product": "starlight-sudoku",
+    "package": "com.tychespark.starlightsudoku",
+    "source": "seed",
+    "identity": "anonymous_app_instance",
+    "google_sign_in": false,
+    "host": "vultr",
+    "from": "2026-08-15",
+    "to": "2026-09-04",
+    "generated_at": "2026-09-04T02:00:00Z",
+    "note": "Internal QA seed. Swap source to ga4 when the app sends Analytics."
+  },
+  "unique_instances": 191,
+  "dau_last": 37,
+  "dau_avg": 23.2,
+  "app_open": 488,
+  "puzzle_start": 313,
+  "puzzle_clear": 209,
+  "trial_end_shown": 21,
+  "trial_end_send": 13,
+  "start_rate": 0.641,
+  "clear_rate": 0.668,
+  "trial_finish_rate": 0.067,
+  "review_send_rate": 0.619
+}
