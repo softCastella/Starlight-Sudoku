@@ -107,7 +107,6 @@ class _SplashScreenState extends State<SplashScreen>
     _started = true;
     if (kIsWeb) {
       unawaited(_precacheGameArt());
-      unawaited(GameBgm.preloadTitleForWeb());
       TitleButtonChime.prepareForWeb();
       return;
     }
