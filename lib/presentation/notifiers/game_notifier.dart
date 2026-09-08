@@ -84,8 +84,10 @@ class GameNotifier extends ChangeNotifier {
         _stageProgress.isUnlocked(_difficulty, _levelNumber + 1);
   }
 
-  int completedStageCount(SudokuDifficulty difficulty) =>
-      _stageProgress.completedCount(difficulty);
+  int completedStageCount(SudokuDifficulty difficulty) {
+    final stageCount = DifficultyConfig.getConfig(difficulty).stageCount;
+    return _stageProgress.completedCount(difficulty).clamp(0, stageCount);
+  }
 
   bool isStageUnlocked(SudokuDifficulty difficulty, int level) =>
       _stageProgress.isUnlocked(difficulty, level);

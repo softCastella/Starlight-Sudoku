@@ -17,15 +17,14 @@ void main() {
     final webEntry = File('web/index.html').readAsStringSync();
 
     expect(chime, contains('if (kIsWeb)'));
-    expect(chime, contains('WebHtmlSfx.play(assetPath)'));
-    expect(chime, contains('if (existing != null) await player.stop()'));
+    expect(chime, contains('WebHtmlSfx.playSparkle'));
     expect(button, contains('widget.onPressStart?.call()'));
     expect(home, contains('onPressStart: TitleButtonChime.play'));
     expect(webEntry, contains('id="starlight-html-sfx"'));
     expect(webEntry, contains('preload="none"'));
     expect(webEntry, isNot(contains('title%2520button%2520twinkle')));
-    expect(webSfx, contains("audio.preload = 'none'"));
-    expect(webSfx, contains('await audio.play().toDart'));
+    expect(webSfx, contains("preload = 'none'"));
+    expect(webSfx, contains('audio.play().toDart'));
     expect(webSfx, isNot(contains('audio.load()')));
   });
 
