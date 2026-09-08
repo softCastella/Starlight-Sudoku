@@ -193,6 +193,18 @@ abstract class AppLocalizations {
   /// **'A review would mean a lot.'**
   String get trialEndMessage;
 
+  /// No description provided for @trialEndTitleWebDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s all for the demo play.'**
+  String get trialEndTitleWebDemo;
+
+  /// No description provided for @trialEndMessageWebDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Play the full trial on Google Play!'**
+  String get trialEndMessageWebDemo;
+
   /// No description provided for @sendReview.
   ///
   /// In en, this message translates to:
@@ -216,6 +228,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your progress will be saved for Continue.'**
   String get giveUpMessage;
+
+  /// No description provided for @giveUpTitleWebDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave this puzzle?'**
+  String get giveUpTitleWebDemo;
+
+  /// No description provided for @giveUpMessageWebDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress is not saved.'**
+  String get giveUpMessageWebDemo;
 
   /// No description provided for @keepPlaying.
   ///
@@ -748,7 +772,7 @@ abstract class AppLocalizations {
   /// No description provided for @creditsBody.
   ///
   /// In en, this message translates to:
-  /// **'Starlight Sudoku\n\nDeveloped by Tyche Works\nLine: Tyche Spark\n\n© Tyche Spark. All rights reserved'**
+  /// **'Starlight Sudoku\n\nDeveloped by Tyche Works\nLine: Tyche Spark\n\nSplash Voice\nVREW - VOICEVOX: 小夜/SAYO\n\n© Tyche Spark. All rights reserved'**
   String get creditsBody;
 
   /// No description provided for @exitGameTitle.

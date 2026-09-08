@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
 /// Title-screen confirm before leaving the Android task.
@@ -21,6 +22,7 @@ class ExitGameDialog extends StatelessWidget {
     final l10n = l10nOf(context);
 
     return ParchmentModal(
+      target: PlayUiTarget.exitGame,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

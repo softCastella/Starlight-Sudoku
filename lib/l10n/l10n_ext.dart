@@ -1,10 +1,23 @@
 import 'package:flutter/widgets.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/core/sudoku/sudoku_difficulty.dart';
 import 'package:sudoku_game/l10n/app_localizations.dart';
 
 AppLocalizations l10nOf(BuildContext context) => AppLocalizations.of(context)!;
 
 extension StarlightL10n on AppLocalizations {
+  String get puzzleGiveUpTitle =>
+      GameBalance.isWebDemo ? giveUpTitleWebDemo : giveUpTitle;
+
+  String get puzzleGiveUpMessage =>
+      GameBalance.isWebDemo ? giveUpMessageWebDemo : giveUpMessage;
+
+  String get trialEndTitleForBuild =>
+      GameBalance.isWebDemo ? trialEndTitleWebDemo : trialEndTitle;
+
+  String get trialEndMessageForBuild =>
+      GameBalance.isWebDemo ? trialEndMessageWebDemo : trialEndMessage;
+
   String difficultyName(SudokuDifficulty difficulty) {
     return switch (difficulty) {
       SudokuDifficulty.easy => difficultyEasy,

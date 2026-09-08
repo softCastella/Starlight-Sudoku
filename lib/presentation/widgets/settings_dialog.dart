@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/widgets/credits_dialog.dart';
@@ -49,6 +50,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
     final settings = context.watch<AppSettings>();
 
     return ParchmentModal(
+      target: PlayUiTarget.settings,
       aspectRatio: 1.18,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -130,7 +132,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
           const SizedBox(height: 8),
           GestureDetector(
             onTap: () => CreditsDialog.show(context),
-            onLongPress: () => PlayUiTune.instance.setPanelOpen(true),
+            onLongPress: PlayUiTune.isEditorEnabled
+                ? () => PlayUiTune.instance.setPanelOpen(true)
+                : null,
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -142,6 +146,22 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ),
             ),
           ),
+          if (PlayUiTune.isEditorEnabled) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: () => PlayUiTune.instance.setPanelOpen(true),
+                child: Text(
+                  'UI 편집',
+                  style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                    decoration: TextDecoration.underline,
+                    decorationColor: PlayUi.ink,
+                  ),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           ParchmentModalButton(
             asset: ParchmentModal.continueAsset,

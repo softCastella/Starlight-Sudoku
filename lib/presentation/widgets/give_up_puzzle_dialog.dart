@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
 /// Exit confirmation used only on the puzzle screen.
@@ -12,17 +13,18 @@ class GiveUpPuzzleDialog extends StatelessWidget {
     final l10n = l10nOf(context);
 
     return ParchmentModal(
+      target: PlayUiTarget.giveUp,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            l10n.giveUpTitle,
+            l10n.puzzleGiveUpTitle,
             textAlign: TextAlign.center,
             style: PlayUi.titleStyle(),
           ),
           SizedBox(height: PlayUi.rowGap),
           Text(
-            l10n.giveUpMessage,
+            l10n.puzzleGiveUpMessage,
             textAlign: TextAlign.center,
             style: PlayUi.bodyStyle(),
           ),

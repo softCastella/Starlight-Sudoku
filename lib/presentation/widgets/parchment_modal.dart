@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 
 /// Parchment window that keeps copy and buttons inside the art.
@@ -11,6 +12,7 @@ class ParchmentModal extends StatelessWidget {
     required this.child,
     this.shrinkContent = true,
     this.aspectRatio = windowAspectRatio,
+    this.target = PlayUiTarget.common,
   });
 
   static const windowAsset =
@@ -25,12 +27,13 @@ class ParchmentModal extends StatelessWidget {
   final Widget child;
   final bool shrinkContent;
   final double aspectRatio;
+  final PlayUiTarget target;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: PlayUiTune.instance,
-      builder: (context, _) => _buildDialog(context),
+      builder: (context, _) => PlayUi.using(target, () => _buildDialog(context)),
     );
   }
 
@@ -96,6 +99,12 @@ class _ParchmentFrame extends StatelessWidget {
             filterQuality: FilterQuality.medium,
           ),
         ),
+        if (PlayUi.overlayOpacity > 0)
+          Positioned.fill(
+            child: ColoredBox(
+              color: Color.fromRGBO(0, 0, 0, PlayUi.overlayOpacity),
+            ),
+          ),
         child,
       ],
     );

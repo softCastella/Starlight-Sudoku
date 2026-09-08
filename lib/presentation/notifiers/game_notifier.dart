@@ -84,10 +84,8 @@ class GameNotifier extends ChangeNotifier {
         _stageProgress.isUnlocked(_difficulty, _levelNumber + 1);
   }
 
-  int completedStageCount(SudokuDifficulty difficulty) {
-    final stageCount = DifficultyConfig.getConfig(difficulty).stageCount;
-    return _stageProgress.completedCount(difficulty).clamp(0, stageCount);
-  }
+  int completedStageCount(SudokuDifficulty difficulty) =>
+      _stageProgress.completedCount(difficulty);
 
   bool isStageUnlocked(SudokuDifficulty difficulty, int level) =>
       _stageProgress.isUnlocked(difficulty, level);
@@ -104,6 +102,10 @@ class GameNotifier extends ChangeNotifier {
     _hasSeenOpeningStory = progress.hasSeenOpeningStory;
     _hasSeenTrialEnd = progress.hasSeenTrialEnd;
     _activeGame = await _progressStore.loadActiveGame();
+    if (GameBalance.isWebDemo) {
+      _activeGame = null;
+      unawaited(_progressStore.clearActiveGame());
+    }
     notifyListeners();
   }
 
@@ -119,6 +121,12 @@ class GameNotifier extends ChangeNotifier {
     _hasSeenTrialEnd = true;
     notifyListeners();
     await _progressStore.saveHasSeenTrialEnd();
+  }
+
+  void discardActiveGame() {
+    _activeGame = null;
+    unawaited(_progressStore.clearActiveGame());
+    notifyListeners();
   }
 
   List<BuildingProgress> get buildings {
@@ -404,6 +412,7 @@ class GameNotifier extends ChangeNotifier {
       mistakesUsed: _mistakesUsed,
       levelNumber: _levelNumber,
     );
+    if (GameBalance.isWebDemo) return;
     unawaited(_progressStore.saveActiveGame(_activeGame!));
   }
 

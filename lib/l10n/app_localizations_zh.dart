@@ -61,6 +61,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trialEndMessage => '如果愿意留下评价，会是很大的鼓励。';
 
   @override
+  String get trialEndTitleWebDemo => '演示到此结束。';
+
+  @override
+  String get trialEndMessageWebDemo => '请到 Google Play 体验完整试玩版。';
+
+  @override
   String get sendReview => '前往';
 
   @override
@@ -71,6 +77,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get giveUpMessage => '当前进度会保存在“继续游戏”里。';
+
+  @override
+  String get giveUpTitleWebDemo => '要离开这道谜题吗？';
+
+  @override
+  String get giveUpMessageWebDemo => '进度不会保存。';
 
   @override
   String get keepPlaying => '继续解';
@@ -362,7 +374,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get creditsBody =>
-      '星光数独\n\n开发  Tyche Works\n产品线  Tyche Spark\n\n© Tyche Spark. All rights reserved';
+      '星光数独\n\n开发  Tyche Works\n产品线  Tyche Spark\n\nSplash Voice\nVREW - VOICEVOX: 小夜/SAYO\n\n© Tyche Spark. All rights reserved';
 
   @override
   String get exitGameTitle => '要退出星光数独吗？';
@@ -433,6 +445,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get trialEndMessage => '如果願意留下評價，會是很大的鼓勵。';
 
   @override
+  String get trialEndTitleWebDemo => '演示到此結束。';
+
+  @override
+  String get trialEndMessageWebDemo => '請到 Google Play 體驗完整試玩版。';
+
+  @override
   String get sendReview => '前往';
 
   @override
@@ -443,6 +461,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get giveUpMessage => '目前進度會保存在「繼續遊戲」裡。';
+
+  @override
+  String get giveUpTitleWebDemo => '要離開這道謎題嗎？';
+
+  @override
+  String get giveUpMessageWebDemo => '進度不會儲存。';
 
   @override
   String get keepPlaying => '繼續解';
@@ -734,7 +758,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get creditsBody =>
-      '星光數獨\n\n開發  Tyche Works\n產品線  Tyche Spark\n\n© Tyche Spark. All rights reserved';
+      '星光數獨\n\n開發  Tyche Works\n產品線  Tyche Spark\n\nSplash Voice\nVREW - VOICEVOX: 小夜/SAYO\n\n© Tyche Spark. All rights reserved';
 
   @override
   String get exitGameTitle => '要結束星光數獨嗎？';

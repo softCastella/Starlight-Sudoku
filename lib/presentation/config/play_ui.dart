@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 
 /// Layout and type tokens. Use these instead of one-off font sizes and padding.
@@ -31,34 +32,57 @@ class PlayUi {
   static const double kButtonTextOffsetX = 0;
   static const double kButtonTextOffsetY = 0;
   static const double kParchmentTextPad = 36;
+  static const double kButtonHeightScale = 1.0;
+  static const double kTitleLineHeight = 1.2;
+  static const double kBodyLineHeight = 1.4;
+  static const double kOverlayOpacity = 0;
   static const double ovalAspect = 551 / 176;
   static const double ovalSideInset = 22;
 
   static PlayUiTune get _tune => PlayUiTune.instance;
+  static PlayUiTarget _target = PlayUiTarget.common;
 
-  static double get caption => _tune.caption;
-  static double get body => _tune.body;
-  static double get label => _tune.label;
-  static double get button => _tune.button;
-  static double get title => _tune.title;
-  static double get modalInset => _tune.modalInset;
-  static double get modalPadX => _tune.modalPadX;
-  static double get modalPadY => _tune.modalPadY;
+  static PlayUiTarget get currentTarget => _target;
+
+  static T using<T>(PlayUiTarget target, T Function() build) {
+    final previous = _target;
+    _target = target;
+    try {
+      return build();
+    } finally {
+      _target = previous;
+    }
+  }
+
+  static double _v(String key) => _tune.read(key, _target);
+
+  static double get caption => _v('caption');
+  static double get body => _v('body');
+  static double get label => _v('label');
+  static double get button => _v('button');
+  static double get title => _v('title');
+  static double get modalInset => _v('modalInset');
+  static double get modalPadX => _v('modalPadX');
+  static double get modalPadY => _v('modalPadY');
   static double get modalPadTop => modalPadY;
   static double get modalPadBottom => modalPadY;
-  static double get modalMinWidth => _tune.modalMinWidth;
-  static double get modalMaxWidth => _tune.modalMaxWidth;
-  static double get rowGap => _tune.rowGap;
-  static double get buttonMaxWidth => _tune.buttonMaxWidth;
-  static double get buttonMinWidth => _tune.buttonMinWidth;
-  static double get ovalEndFraction => _tune.ovalEndFraction;
-  static double get screenPad => _tune.screenPad;
-  static double get modalInsetY => _tune.modalInsetY;
-  static double get modalOffsetX => _tune.modalOffsetX;
-  static double get modalOffsetY => _tune.modalOffsetY;
-  static double get buttonTextOffsetX => _tune.buttonTextOffsetX;
-  static double get buttonTextOffsetY => _tune.buttonTextOffsetY;
-  static double get parchmentTextPad => _tune.parchmentTextPad;
+  static double get modalMinWidth => _v('modalMinWidth');
+  static double get modalMaxWidth => _v('modalMaxWidth');
+  static double get rowGap => _v('rowGap');
+  static double get buttonMaxWidth => _v('buttonMaxWidth');
+  static double get buttonMinWidth => _v('buttonMinWidth');
+  static double get ovalEndFraction => _v('ovalEndFraction');
+  static double get screenPad => _v('screenPad');
+  static double get modalInsetY => _v('modalInsetY');
+  static double get modalOffsetX => _v('modalOffsetX');
+  static double get modalOffsetY => _v('modalOffsetY');
+  static double get buttonTextOffsetX => _v('buttonTextOffsetX');
+  static double get buttonTextOffsetY => _v('buttonTextOffsetY');
+  static double get parchmentTextPad => _v('parchmentTextPad');
+  static double get buttonHeightScale => _v('buttonHeightScale');
+  static double get titleLineHeight => _v('titleLineHeight');
+  static double get bodyLineHeight => _v('bodyLineHeight');
+  static double get overlayOpacity => _v('overlayOpacity');
 
   static const Color ink = Color(0xFF24452D);
   static const Color muted = Color(0xFF4D6554);
@@ -71,7 +95,7 @@ class PlayUi {
         fontSize: title,
         fontWeight: FontWeight.w800,
         color: color,
-        height: 1.2,
+        height: titleLineHeight,
       );
 
   static TextStyle labelStyle({Color color = muted, FontWeight weight = FontWeight.w700}) =>
@@ -93,7 +117,7 @@ class PlayUi {
         fontSize: body,
         fontWeight: FontWeight.w500,
         color: color,
-        height: 1.4,
+        height: bodyLineHeight,
       );
 
   static TextStyle captionStyle({Color color = muted}) => TextStyle(
@@ -232,7 +256,7 @@ class OvalButtonLayout {
 
     return OvalButtonLayout(
       width: width,
-      height: width / PlayUi.ovalAspect,
+      height: (width / PlayUi.ovalAspect) * PlayUi.buttonHeightScale,
       fontSize: fontSize,
       sideInset: sideInset,
     );

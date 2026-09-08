@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/audio/web_html_sfx.dart';
+import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 
 /// Title parchment tap chime. Sparkle, then fade — do not play the whole tail.
 class TitleButtonChime {
@@ -17,43 +17,39 @@ class TitleButtonChime {
   static Timer? _fadeTimer;
   static int _generation = 0;
 
+  /// Point the HTML element at the chime URL so BGM ON can stream it.
+  static void prepareForWeb() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (!kIsWeb) return;
+    WebHtmlSfx.prepare(WebHtmlSfx.assetUrl(assetPath));
+  }
+
+  /// Same pointer-down as web BGM ON. Unlocks streaming SFX without a download.
+  static void unlockForWeb() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (!kIsWeb) return;
+    prepareForWeb();
+    WebHtmlSfx.unlock();
+  }
+
   static Future<void> play() async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
     if (!AppSettings.sfxOn) return;
 
-    final generation = ++_generation;
-    _fadeTimer?.cancel();
-
     if (kIsWeb) {
-      final started = await WebHtmlSfx.play(assetPath);
-      if (!started || generation != _generation) return;
-      _startFade(
-        generation: generation,
-        setVolume: WebHtmlSfx.setVolume,
-        stop: WebHtmlSfx.stop,
-      );
+      prepareForWeb();
+      WebHtmlSfx.playSparkle(hold: holdDuration, fade: fadeDuration);
       return;
     }
 
-    final existing = _player;
-    final player = existing ?? AudioPlayer();
-    _player = player;
-    if (existing != null) await player.stop();
-    await player.play(AssetSource(assetPath), volume: 1);
+    final generation = ++_generation;
+    final player = _player ??= AudioPlayer();
+    _fadeTimer?.cancel();
+    await player.stop();
+    await player.setVolume(1);
+    await player.play(AssetSource(assetPath));
     if (generation != _generation) return;
 
-    _startFade(
-      generation: generation,
-      setVolume: (volume) => unawaited(player.setVolume(volume)),
-      stop: () => unawaited(player.stop()),
-    );
-  }
-
-  static void _startFade({
-    required int generation,
-    required void Function(double) setVolume,
-    required void Function() stop,
-  }) {
     final started = DateTime.now();
     _fadeTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (generation != _generation) {
@@ -66,12 +62,12 @@ class TitleButtonChime {
       final intoFade = elapsed - holdDuration;
       if (intoFade >= fadeDuration) {
         timer.cancel();
-        setVolume(0);
-        stop();
+        player.setVolume(0);
+        player.stop();
         return;
       }
       final t = intoFade.inMilliseconds / fadeDuration.inMilliseconds;
-      setVolume((1 - t).clamp(0.0, 1.0));
+      player.setVolume((1 - t).clamp(0.0, 1.0));
     });
   }
 

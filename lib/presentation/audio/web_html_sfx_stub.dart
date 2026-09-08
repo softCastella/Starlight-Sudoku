@@ -1,8 +1,17 @@
-/// VM / APK stub. Web SFX uses an HTMLAudioElement instead.
+/// VM / APK stub. Web SFX streams from an HTMLAudioElement instead.
 class WebHtmlSfx {
-  static Future<bool> play(String pathUnderAssets) async => false;
+  static void prepare(String url) {}
+
+  static void unlock() {}
+
+  static void playSparkle({
+    required Duration hold,
+    required Duration fade,
+  }) {}
+
+  static void stop() {}
 
   static void setVolume(double volume) {}
 
-  static void stop() {}
+  static String assetUrl(String pathUnderAssets) => '';
 }

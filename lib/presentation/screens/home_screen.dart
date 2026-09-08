@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/icon_baker.dart';
@@ -199,15 +200,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ParchmentButton(
                                       label: l10n.startNewPuzzle,
                                       fontSize: _fontSize,
-                                      onPressStart: TitleButtonChime.play,
                                       onPressed: () {
+                                        TitleButtonChime.play();
                                         _startNewPuzzle(context);
                                       },
                                     ),
                                     SizedBox(height: _gap),
                                     Consumer<GameNotifier>(
                                       builder: (context, gameNotifier, _) {
-                                        if (!gameNotifier.hasActiveGame) {
+                                        if (GameBalance.isWebDemo ||
+                                            !gameNotifier.hasActiveGame) {
                                           return const SizedBox.shrink();
                                         }
                                         return Padding(
@@ -215,8 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: ParchmentButton(
                                             label: l10n.continueGame,
                                             fontSize: (_fontSize - 1).clamp(12, 18),
-                                            onPressStart: TitleButtonChime.play,
                                             onPressed: () {
+                                              TitleButtonChime.play();
                                               if (gameNotifier.continueGame()) {
                                                 Navigator.push(
                                                   context,
@@ -234,8 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ParchmentButton(
                                       label: l10n.viewVillage,
                                       fontSize: (_fontSize - 1).clamp(12, 18),
-                                      onPressStart: TitleButtonChime.play,
                                       onPressed: () {
+                                        TitleButtonChime.play();
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

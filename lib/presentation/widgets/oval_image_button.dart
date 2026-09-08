@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 
 /// Small horizontal oval button with the cream modal-button art.
@@ -36,6 +37,10 @@ class _OvalImageButtonState extends State<OvalImageButton> {
     return ListenableBuilder(
       listenable: PlayUiTune.instance,
       builder: (context, _) {
+        final target = PlayUi.currentTarget == PlayUiTarget.common
+            ? PlayUiTarget.ovalButton
+            : PlayUi.currentTarget;
+        return PlayUi.using(target, () {
         return LayoutBuilder(
           builder: (context, constraints) {
             final cap = constraints.maxWidth.isFinite
@@ -101,6 +106,7 @@ class _OvalImageButtonState extends State<OvalImageButton> {
             );
           },
         );
+        });
       },
     );
   }

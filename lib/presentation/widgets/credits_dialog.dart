@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
@@ -19,11 +20,14 @@ class CreditsDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = l10nOf(context);
     return ParchmentModal(
+      target: PlayUiTarget.credits,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-            onLongPress: () => PlayUiTune.instance.setPanelOpen(true),
+            onLongPress: PlayUiTune.isEditorEnabled
+                ? () => PlayUiTune.instance.setPanelOpen(true)
+                : null,
             child: FitLabel(
               l10n.creditsTitle,
               style: PlayUi.titleStyle(),

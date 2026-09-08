@@ -61,6 +61,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trialEndMessage => 'A review would mean a lot.';
 
   @override
+  String get trialEndTitleWebDemo => 'That\'s all for the demo play.';
+
+  @override
+  String get trialEndMessageWebDemo => 'Play the full trial on Google Play!';
+
+  @override
   String get sendReview => 'Go';
 
   @override
@@ -71,6 +77,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get giveUpMessage => 'Your progress will be saved for Continue.';
+
+  @override
+  String get giveUpTitleWebDemo => 'Leave this puzzle?';
+
+  @override
+  String get giveUpMessageWebDemo => 'Progress is not saved.';
 
   @override
   String get keepPlaying => 'Keep playing';
@@ -377,7 +389,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get creditsBody =>
-      'Starlight Sudoku\n\nDeveloped by Tyche Works\nLine: Tyche Spark\n\n© Tyche Spark. All rights reserved';
+      'Starlight Sudoku\n\nDeveloped by Tyche Works\nLine: Tyche Spark\n\nSplash Voice\nVREW - VOICEVOX: 小夜/SAYO\n\n© Tyche Spark. All rights reserved';
 
   @override
   String get exitGameTitle => 'Leave Starlight Sudoku?';

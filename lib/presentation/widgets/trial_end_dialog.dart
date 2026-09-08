@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -64,17 +65,18 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
     final l10n = l10nOf(context);
 
     return ParchmentModal(
+      target: PlayUiTarget.trialEnd,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            l10n.trialEndTitle,
+            l10n.trialEndTitleForBuild,
             textAlign: TextAlign.center,
             style: PlayUi.titleStyle(),
           ),
           const SizedBox(height: 8),
           Text(
-            l10n.trialEndMessage,
+            l10n.trialEndMessageForBuild,
             textAlign: TextAlign.center,
             style: PlayUi.captionStyle().copyWith(
               fontSize: PlayUi.body,
