@@ -61,6 +61,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get trialEndMessage => '리뷰를 남겨주시면 큰 힘이 됩니다.';
 
   @override
+  String get trialEndTitleWebDemo => '데모플레이는 여기까지입니다.';
+
+  @override
+  String get trialEndMessageWebDemo => '정식 체험판을 구글스토어에서 만나보세요!';
+
+  @override
   String get sendReview => '이동하기';
 
   @override
@@ -71,6 +77,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get giveUpMessage => '현재 진행 상황은 이어하기에 저장됩니다.';
+
+  @override
+  String get giveUpTitleWebDemo => '퍼즐을 나가시나요?';
+
+  @override
+  String get giveUpMessageWebDemo => '저장은 되지 않습니다.';
 
   @override
   String get keepPlaying => '계속 풀기';
@@ -363,7 +375,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get creditsBody =>
-      '별빛 스도쿠\n\n개발  티케웍스 (Tyche Works)\n라인  티케스파크 (Tyche Spark)\n\n© Tyche Spark. All rights reserved';
+      '별빛 스도쿠\n\n개발  티케웍스 (Tyche Works)\n라인  티케스파크 (Tyche Spark)\n\nSplash Voice\nVREW - VOICEVOX: 小夜/SAYO\n\n© Tyche Spark. All rights reserved';
 
   @override
   String get exitGameTitle => '별빛 스도쿠를 종료할까요?';

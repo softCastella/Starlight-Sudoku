@@ -61,6 +61,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get trialEndMessage => 'レビューを残していただけると大きな力になります。';
 
   @override
+  String get trialEndTitleWebDemo => 'デモプレイはここまでです。';
+
+  @override
+  String get trialEndMessageWebDemo => '本番の体験版は Google Play でどうぞ。';
+
+  @override
   String get sendReview => '移動';
 
   @override
@@ -71,6 +77,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get giveUpMessage => 'いまの進行は「つづきから」に保存されます。';
+
+  @override
+  String get giveUpTitleWebDemo => 'パズルを終了しますか？';
+
+  @override
+  String get giveUpMessageWebDemo => '進行は保存されません。';
 
   @override
   String get keepPlaying => '続ける';
@@ -362,7 +374,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get creditsBody =>
-      '星明かりの数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\n© Tyche Spark. All rights reserved';
+      '星明かりの数独\n\n開発  ティケワークス (Tyche Works)\nライン  ティケスパーク (Tyche Spark)\n\nSplash Voice\nVREW - VOICEVOX: 小夜/SAYO\n\n© Tyche Spark. All rights reserved';
 
   @override
   String get exitGameTitle => '星明かりの数独を終了しますか？';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 
 /// Celebrates a completed puzzle and reveals the earned StarLight.
@@ -24,12 +25,16 @@ class CompletionRewardDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = l10nOf(context);
-    final primaryLabel = onNextLevel != null ? l10n.next : l10n.done;
-    final primaryAction = onNextLevel ?? onClose;
+    return PlayUiTokens(
+      target: PlayUiTarget.completionReward,
+      builder: (context) {
+        final l10n = l10nOf(context);
+        final primaryLabel = onNextLevel != null ? l10n.next : l10n.done;
+        final primaryAction = onNextLevel ?? onClose;
 
-    return ParchmentModal(
-      child: Column(
+        return ParchmentModal(
+          target: PlayUiTarget.completionReward,
+          child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
@@ -92,6 +97,8 @@ class CompletionRewardDialog extends StatelessWidget {
           ),
         ],
       ),
+    );
+      },
     );
   }
 }

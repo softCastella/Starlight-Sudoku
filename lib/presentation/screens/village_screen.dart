@@ -6,6 +6,7 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_missions_screen.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
 import 'package:sudoku_game/presentation/widgets/village_map_widget.dart';
@@ -57,8 +58,8 @@ class VillageScreen extends StatelessWidget {
                 child: Center(
                   child: OvalImageButton(
                     label: l10n.mission,
+                    target: PlayUiTarget.villageButton,
                     width: 112,
-                    fontSize: PlayUi.label,
                     onPressed: () => _openMissions(context),
                   ),
                 ),

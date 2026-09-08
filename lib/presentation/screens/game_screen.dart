@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
@@ -308,6 +309,9 @@ class _GameScreenState extends State<GameScreen> {
       builder: (context) => const GiveUpPuzzleDialog(),
     );
     if (shouldGiveUp == true && mounted) {
+      if (GameBalance.isWebDemo) {
+        context.read<GameNotifier>().discardActiveGame();
+      }
       Navigator.pop(context);
     }
   }

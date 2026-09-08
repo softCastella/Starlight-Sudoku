@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
+import 'package:sudoku_game/presentation/screens/play_ui_tune_screen.dart';
 import 'package:sudoku_game/presentation/widgets/credits_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/parchment_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,12 +47,16 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = l10nOf(context);
-    final settings = context.watch<AppSettings>();
+    return PlayUiTokens(
+      target: PlayUiTarget.settings,
+      builder: (context) {
+        final l10n = l10nOf(context);
+        final settings = context.watch<AppSettings>();
 
-    return ParchmentModal(
-      aspectRatio: 1.18,
-      child: Column(
+        return ParchmentModal(
+          target: PlayUiTarget.settings,
+          aspectRatio: 1.18,
+          child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           FitLabel(
@@ -130,7 +136,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
           const SizedBox(height: 8),
           GestureDetector(
             onTap: () => CreditsDialog.show(context),
-            onLongPress: () => PlayUiTune.instance.setPanelOpen(true),
+            onLongPress: PlayUiTune.isEditorEnabled
+                ? () => PlayUiTuneScreen.open(context)
+                : null,
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -142,6 +150,22 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ),
             ),
           ),
+          if (PlayUiTune.isEditorEnabled) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: () => PlayUiTuneScreen.open(context),
+                child: Text(
+                  'UI 편집',
+                  style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                    decoration: TextDecoration.underline,
+                    decorationColor: PlayUi.ink,
+                  ),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           ParchmentModalButton(
             asset: ParchmentModal.continueAsset,
@@ -150,7 +174,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
             onPressed: () => Navigator.pop(context),
           ),
         ],
-      ),
+          ),
+        );
+      },
     );
   }
 }

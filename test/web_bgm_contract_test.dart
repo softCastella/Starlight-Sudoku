@@ -16,7 +16,8 @@ void main() {
     expect(app, contains('if (!kIsWeb) GameBgm.unlock();'));
     expect(splash, contains('GameBgm.startTitleFromGesture()'));
     expect(splash, contains('GameBgm.setEnabled(false)'));
-    expect(splash, contains('setSfxEnabled(false)'));
+    expect(splash, contains('applyWebGateAudio(enabled: true)'));
+    expect(splash, contains('applyWebGateAudio(enabled: false)'));
     expect(splash, contains('_finishWebAudioGate(bgmOn: true)'));
     expect(splash, contains('_finishWebAudioGate(bgmOn: false)'));
     expect(gate, contains('backgroundColor = Color(0x9907152F)'));

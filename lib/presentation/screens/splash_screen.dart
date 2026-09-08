@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/audio/splash_voice.dart';
+import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/screens/home_screen.dart';
@@ -107,6 +108,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (kIsWeb) {
       unawaited(_precacheGameArt());
       unawaited(GameBgm.preloadTitleForWeb());
+      TitleButtonChime.prepareForWeb();
       return;
     }
     _startSplash();
@@ -133,7 +135,9 @@ class _SplashScreenState extends State<SplashScreen>
       GameBgm.rememberTitle();
       unawaited(GameBgm.setEnabled(false));
     }
-    unawaited(context.read<AppSettings>().persistBgmEnabled(bgmOn));
+    unawaited(
+      context.read<AppSettings>().applyWebGateAudio(enabled: bgmOn),
+    );
   }
 
   Future<void> _startSplash() async {
@@ -233,11 +237,19 @@ class _SplashScreenState extends State<SplashScreen>
     return WebAudioGate(
       bgmOnLabel: l10n.webBgmOn,
       bgmOffLabel: l10n.webBgmOff,
-      onBgmOnPointerDown: () => unawaited(GameBgm.startTitleFromGesture()),
+      onBgmOnPointerDown: () {
+        unawaited(GameBgm.startTitleFromGesture());
+        unawaited(
+          context.read<AppSettings>().applyWebGateAudio(enabled: true),
+        );
+        TitleButtonChime.unlockForWeb();
+      },
       onBgmOnPressed: () => _finishWebAudioGate(bgmOn: true),
       onBgmOffPointerDown: () {
         unawaited(GameBgm.setEnabled(false));
-        unawaited(context.read<AppSettings>().setSfxEnabled(false));
+        unawaited(
+          context.read<AppSettings>().applyWebGateAudio(enabled: false),
+        );
       },
       onBgmOffPressed: () => _finishWebAudioGate(bgmOn: false),
     );

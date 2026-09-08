@@ -7,12 +7,13 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/audio/splash_voice.dart';
 import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
+import 'package:sudoku_game/presentation/app_navigator.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/notifiers/locale_override.dart';
+import 'package:sudoku_game/presentation/screens/play_ui_tune_screen.dart';
 import 'package:sudoku_game/presentation/screens/splash_screen.dart';
-import 'package:sudoku_game/presentation/widgets/play_ui_tuner_panel.dart';
 import 'package:sudoku_game/presentation/widgets/web_phone_frame.dart';
 
 /// 메인 앱 위젯
@@ -22,7 +23,7 @@ class SudokuApp extends StatelessWidget {
   /// When set, skips device-language detection. Used by widget tests.
   final Locale? locale;
 
-  static final navigatorKey = GlobalKey<NavigatorState>();
+  static final navigatorKey = appNavigatorKey;
 
   static const _fallbackLocale = Locale('ko');
 
@@ -88,28 +89,25 @@ class SudokuApp extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       WebPhoneFrame(
-                        child: _AppAudioLifecycle(
-                          child: Listener(
-                            behavior: HitTestBehavior.translucent,
-                            onPointerDown: (_) {
-                              // Web audio starts only from explicit BGM ON
-                              // controls. A global unlock made BGM OFF clicks
-                              // start playback before the OFF handler ran.
-                              if (!kIsWeb) GameBgm.unlock();
-                            },
-                            child: child ?? const SizedBox.shrink(),
-                          ),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            _AppAudioLifecycle(
+                              child: Listener(
+                                behavior: HitTestBehavior.translucent,
+                                onPointerDown: (_) {
+                                  // Web audio starts only from explicit BGM ON
+                                  // controls. A global unlock made BGM OFF clicks
+                                  // start playback before the OFF handler ran.
+                                  if (!kIsWeb) GameBgm.unlock();
+                                },
+                                child: child ?? const SizedBox.shrink(),
+                              ),
+                            ),
+                            const PlayUiTuneHandle(),
+                          ],
                         ),
                       ),
-                      if (PlayUiTune.instance.panelOpen)
-                        const Align(
-                          alignment: Alignment.bottomCenter,
-                          child: FractionallySizedBox(
-                            heightFactor: 0.46,
-                            widthFactor: 1,
-                            child: PlayUiTunerPanel(),
-                          ),
-                        ),
                     ],
                   );
                 },

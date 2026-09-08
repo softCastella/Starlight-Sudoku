@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/title_button_chime.dart';
 import 'package:sudoku_game/presentation/config/icon_baker.dart';
@@ -198,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     ParchmentButton(
                                       label: l10n.startNewPuzzle,
-                                      fontSize: _fontSize,
                                       onPressed: () {
                                         TitleButtonChime.play();
                                         _startNewPuzzle(context);
@@ -207,14 +207,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     SizedBox(height: _gap),
                                     Consumer<GameNotifier>(
                                       builder: (context, gameNotifier, _) {
-                                        if (!gameNotifier.hasActiveGame) {
+                                        if (GameBalance.isWebDemo ||
+                                            !gameNotifier.hasActiveGame) {
                                           return const SizedBox.shrink();
                                         }
                                         return Padding(
                                           padding: EdgeInsets.only(bottom: _gap),
                                           child: ParchmentButton(
                                             label: l10n.continueGame,
-                                            fontSize: (_fontSize - 1).clamp(12, 18),
                                             onPressed: () {
                                               TitleButtonChime.play();
                                               if (gameNotifier.continueGame()) {
@@ -233,7 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     ParchmentButton(
                                       label: l10n.viewVillage,
-                                      fontSize: (_fontSize - 1).clamp(12, 18),
                                       onPressed: () {
                                         TitleButtonChime.play();
                                         Navigator.push(
@@ -312,13 +311,11 @@ class _TitleLayoutPanel extends StatelessWidget {
     required this.alignY,
     required this.maxWidth,
     required this.gap,
-    required this.fontSize,
     required this.scale,
     required this.layoutJson,
     required this.onAlignY,
     required this.onMaxWidth,
     required this.onGap,
-    required this.onFontSize,
     required this.onScale,
     required this.onClose,
   });
@@ -326,13 +323,11 @@ class _TitleLayoutPanel extends StatelessWidget {
   final double alignY;
   final double maxWidth;
   final double gap;
-  final double fontSize;
   final double scale;
   final String layoutJson;
   final ValueChanged<double> onAlignY;
   final ValueChanged<double> onMaxWidth;
   final ValueChanged<double> onGap;
-  final ValueChanged<double> onFontSize;
   final ValueChanged<double> onScale;
   final VoidCallback onClose;
 
@@ -369,7 +364,6 @@ class _TitleLayoutPanel extends StatelessWidget {
             _slider('버튼 너비', maxWidth, 160, 360, onMaxWidth),
             _slider('버튼 크기', scale, 0.5, 1.3, onScale),
             _slider('버튼 간격', gap, 0, 24, onGap),
-            _slider('글자 크기', fontSize, 12, 18, onFontSize),
             SelectableText(
               layoutJson,
               style: const TextStyle(fontSize: 11, color: Color(0xFF24452D)),

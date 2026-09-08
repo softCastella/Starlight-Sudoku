@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 
 /// Layout and type tokens. Use these instead of one-off font sizes and padding.
@@ -31,34 +32,80 @@ class PlayUi {
   static const double kButtonTextOffsetX = 0;
   static const double kButtonTextOffsetY = 0;
   static const double kParchmentTextPad = 36;
+  static const double kButtonHeightScale = 1.0;
+  static const double kTitleLineHeight = 1.2;
+  static const double kBodyLineHeight = 1.4;
+  static const double kOverlayOpacity = 0;
   static const double ovalAspect = 551 / 176;
   static const double ovalSideInset = 22;
 
   static PlayUiTune get _tune => PlayUiTune.instance;
+  static PlayUiTarget _target = PlayUiTarget.common;
+  static String _localeId = 'ko';
 
-  static double get caption => _tune.caption;
-  static double get body => _tune.body;
-  static double get label => _tune.label;
-  static double get button => _tune.button;
-  static double get title => _tune.title;
-  static double get modalInset => _tune.modalInset;
-  static double get modalPadX => _tune.modalPadX;
-  static double get modalPadY => _tune.modalPadY;
+  static PlayUiTarget get currentTarget => _target;
+
+  static T using<T>(
+    PlayUiTarget target,
+    T Function() build, {
+    Locale? locale,
+  }) {
+    final previous = _target;
+    final previousLocale = _localeId;
+    _target = target;
+    if (locale != null) {
+      _localeId = PlayUiTune.localeIdFrom(locale);
+    }
+    try {
+      return build();
+    } finally {
+      _target = previous;
+      _localeId = previousLocale;
+    }
+  }
+
+  static double _v(String key) {
+    if (_tune.previewReads) {
+      return _tune.read(key, _tune.editingTarget, locale: _tune.editingLocale);
+    }
+    return _tune.read(key, _target, locale: _localeId);
+  }
+
+  /// Bind static reads to the nearest [PlayUiScope] (safe inside LayoutBuilder).
+  static void applyScope(BuildContext context) {
+    final scope = PlayUiScope.maybeOf(context);
+    if (scope == null) return;
+    _target = scope.target;
+    _localeId = scope.localeId;
+  }
+
+  static double get caption => _v('caption');
+  static double get body => _v('body');
+  static double get label => _v('label');
+  static double get button => _v('button');
+  static double get title => _v('title');
+  static double get modalInset => _v('modalInset');
+  static double get modalPadX => _v('modalPadX');
+  static double get modalPadY => _v('modalPadY');
   static double get modalPadTop => modalPadY;
   static double get modalPadBottom => modalPadY;
-  static double get modalMinWidth => _tune.modalMinWidth;
-  static double get modalMaxWidth => _tune.modalMaxWidth;
-  static double get rowGap => _tune.rowGap;
-  static double get buttonMaxWidth => _tune.buttonMaxWidth;
-  static double get buttonMinWidth => _tune.buttonMinWidth;
-  static double get ovalEndFraction => _tune.ovalEndFraction;
-  static double get screenPad => _tune.screenPad;
-  static double get modalInsetY => _tune.modalInsetY;
-  static double get modalOffsetX => _tune.modalOffsetX;
-  static double get modalOffsetY => _tune.modalOffsetY;
-  static double get buttonTextOffsetX => _tune.buttonTextOffsetX;
-  static double get buttonTextOffsetY => _tune.buttonTextOffsetY;
-  static double get parchmentTextPad => _tune.parchmentTextPad;
+  static double get modalMinWidth => _v('modalMinWidth');
+  static double get modalMaxWidth => _v('modalMaxWidth');
+  static double get rowGap => _v('rowGap');
+  static double get buttonMaxWidth => _v('buttonMaxWidth');
+  static double get buttonMinWidth => _v('buttonMinWidth');
+  static double get ovalEndFraction => _v('ovalEndFraction');
+  static double get screenPad => _v('screenPad');
+  static double get modalInsetY => _v('modalInsetY');
+  static double get modalOffsetX => _v('modalOffsetX');
+  static double get modalOffsetY => _v('modalOffsetY');
+  static double get buttonTextOffsetX => _v('buttonTextOffsetX');
+  static double get buttonTextOffsetY => _v('buttonTextOffsetY');
+  static double get parchmentTextPad => _v('parchmentTextPad');
+  static double get buttonHeightScale => _v('buttonHeightScale');
+  static double get titleLineHeight => _v('titleLineHeight');
+  static double get bodyLineHeight => _v('bodyLineHeight');
+  static double get overlayOpacity => _v('overlayOpacity');
 
   static const Color ink = Color(0xFF24452D);
   static const Color muted = Color(0xFF4D6554);
@@ -71,7 +118,7 @@ class PlayUi {
         fontSize: title,
         fontWeight: FontWeight.w800,
         color: color,
-        height: 1.2,
+        height: titleLineHeight,
       );
 
   static TextStyle labelStyle({Color color = muted, FontWeight weight = FontWeight.w700}) =>
@@ -93,7 +140,7 @@ class PlayUi {
         fontSize: body,
         fontWeight: FontWeight.w500,
         color: color,
-        height: 1.4,
+        height: bodyLineHeight,
       );
 
   static TextStyle captionStyle({Color color = muted}) => TextStyle(
@@ -102,6 +149,92 @@ class PlayUi {
         color: color,
         height: 1.2,
       );
+}
+
+/// Binds the in-app editor to the screen or modal that is actually visible.
+class PlayUiBind extends StatefulWidget {
+  const PlayUiBind({
+    super.key,
+    required this.target,
+    required this.child,
+  });
+
+  final PlayUiTarget target;
+  final Widget child;
+
+  @override
+  State<PlayUiBind> createState() => _PlayUiBindState();
+}
+
+class _PlayUiBindState extends State<PlayUiBind> {
+  @override
+  void initState() {
+    super.initState();
+    PlayUiTune.instance.pushTarget(widget.target);
+  }
+
+  @override
+  void didUpdateWidget(PlayUiBind oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.target == widget.target) return;
+    PlayUiTune.instance.popTarget(oldWidget.target);
+    PlayUiTune.instance.pushTarget(widget.target);
+  }
+
+  @override
+  void dispose() {
+    PlayUiTune.instance.popTarget(widget.target);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+
+/// Builds while [PlayUi] getters read [target]. Use for modal titles/body.
+class PlayUiTokens extends StatelessWidget {
+  const PlayUiTokens({
+    super.key,
+    required this.target,
+    required this.builder,
+  });
+
+  final PlayUiTarget target;
+  final WidgetBuilder builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: PlayUiTune.instance,
+      builder: (context, _) {
+        return PlayUi.using(
+          target,
+          () => builder(context),
+          locale: Localizations.localeOf(context),
+        );
+      },
+    );
+  }
+}
+
+/// Lets parchment buttons read the wrapping modal's target after [using] returns.
+class PlayUiScope extends InheritedWidget {
+  const PlayUiScope({
+    required this.target,
+    required this.localeId,
+    required super.child,
+    super.key,
+  });
+
+  final PlayUiTarget target;
+  final String localeId;
+
+  static PlayUiScope? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<PlayUiScope>();
+
+  @override
+  bool updateShouldNotify(PlayUiScope oldWidget) =>
+      target != oldWidget.target || localeId != oldWidget.localeId;
 }
 
 /// Prefers [style] size, shrinks to [minFontSize], then wraps. Does not go below 11.
@@ -168,19 +301,21 @@ class FitLabel extends StatelessWidget {
   }
 }
 
-/// Oval button size from the label. Grow first, then shrink type to 11.
+/// Oval chrome from width sliders. Font does not grow the button.
 class OvalButtonLayout {
   const OvalButtonLayout({
     required this.width,
     required this.height,
     required this.fontSize,
     required this.sideInset,
+    this.maxLines = 2,
   });
 
   final double width;
   final double height;
   final double fontSize;
   final double sideInset;
+  final int maxLines;
 
   static OvalButtonLayout forLabel(
     String label, {
@@ -189,52 +324,15 @@ class OvalButtonLayout {
     double maxWidth = PlayUi.kButtonMaxWidth,
     Color color = PlayUi.ink,
   }) {
-    final cap = math.max(1.0, maxWidth);
-    final minWidth = math.min(PlayUi.buttonMinWidth, cap);
-    var fontSize = preferredFontSize;
-    final preferred = PlayUi.buttonStyle(color: color).copyWith(
-      fontSize: fontSize,
-      height: 1,
-    );
-    final painter = TextPainter(
-      text: TextSpan(text: label, style: preferred),
-      maxLines: 1,
-      textDirection: direction,
-    )..layout();
-
-    final usableFraction = 1 - 2 * PlayUi.ovalEndFraction;
-    var width = (painter.width / usableFraction).clamp(minWidth, cap);
-    var sideInset = width * PlayUi.ovalEndFraction;
-    var usable = width - sideInset * 2;
-
-    if (painter.width > usable + 0.5) {
-      fontSize = math.max(
-        PlayUi.minType,
-        preferredFontSize * usable / painter.width,
-      );
-      final shrunk = TextPainter(
-        text: TextSpan(
-          text: label,
-          style: preferred.copyWith(fontSize: fontSize),
-        ),
-        maxLines: 1,
-        textDirection: direction,
-      )..layout();
-      if (shrunk.width > usable + 0.5 && width < cap) {
-        width = (shrunk.width / usableFraction).clamp(minWidth, cap);
-        sideInset = width * PlayUi.ovalEndFraction;
-        usable = width - sideInset * 2;
-      }
-      if (shrunk.width > usable + 0.5) {
-        fontSize = math.max(PlayUi.minType, fontSize * usable / shrunk.width);
-      }
-    }
-
+    final width = math.max(1.0, maxWidth);
+    final sideInset = width * PlayUi.ovalEndFraction;
+    final height = (width / PlayUi.ovalAspect) * PlayUi.buttonHeightScale;
     return OvalButtonLayout(
       width: width,
-      height: width / PlayUi.ovalAspect,
-      fontSize: fontSize,
+      height: height,
+      fontSize: preferredFontSize,
       sideInset: sideInset,
+      maxLines: 2,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
 
 /// Web-only startup gate that owns the browser audio choice gesture.
@@ -49,6 +50,7 @@ class WebAudioGate extends StatelessWidget {
                   child: OvalImageButton(
                     key: const Key('web-audio-start'),
                     label: bgmOnLabel,
+                    target: PlayUiTarget.bgmGate,
                     onPressed: onBgmOnPressed,
                   ),
                 ),
@@ -59,6 +61,7 @@ class WebAudioGate extends StatelessWidget {
                   child: OvalImageButton(
                     key: const Key('web-audio-off'),
                     label: bgmOffLabel,
+                    target: PlayUiTarget.bgmGate,
                     onPressed: onBgmOffPressed,
                   ),
                 ),

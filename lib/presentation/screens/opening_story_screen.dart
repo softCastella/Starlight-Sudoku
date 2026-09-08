@@ -4,6 +4,7 @@ import 'package:sudoku_game/core/village/opening_story.dart';
 import 'package:sudoku_game/l10n/l10n_ext.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune.dart';
 import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/widgets/oval_image_button.dart';
@@ -149,6 +150,7 @@ class _OpeningStoryScreenState extends State<OpeningStoryScreen> {
                               alignment: Alignment.centerRight,
                               child: OvalImageButton(
                                 label: isLast ? l10n.lightFirstWindow : l10n.next,
+                                target: PlayUiTarget.openingButton,
                                 width: isLast ? 148 : 80,
                                 onPressed: _next,
                               ),

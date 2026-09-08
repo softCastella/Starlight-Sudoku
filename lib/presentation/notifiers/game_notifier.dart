@@ -102,6 +102,10 @@ class GameNotifier extends ChangeNotifier {
     _hasSeenOpeningStory = progress.hasSeenOpeningStory;
     _hasSeenTrialEnd = progress.hasSeenTrialEnd;
     _activeGame = await _progressStore.loadActiveGame();
+    if (GameBalance.isWebDemo) {
+      _activeGame = null;
+      unawaited(_progressStore.clearActiveGame());
+    }
     notifyListeners();
   }
 
@@ -117,6 +121,12 @@ class GameNotifier extends ChangeNotifier {
     _hasSeenTrialEnd = true;
     notifyListeners();
     await _progressStore.saveHasSeenTrialEnd();
+  }
+
+  void discardActiveGame() {
+    _activeGame = null;
+    unawaited(_progressStore.clearActiveGame());
+    notifyListeners();
   }
 
   List<BuildingProgress> get buildings {
@@ -402,6 +412,7 @@ class GameNotifier extends ChangeNotifier {
       mistakesUsed: _mistakesUsed,
       levelNumber: _levelNumber,
     );
+    if (GameBalance.isWebDemo) return;
     unawaited(_progressStore.saveActiveGame(_activeGame!));
   }
 

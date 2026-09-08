@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sudoku_game/presentation/audio/web_html_sfx.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
 
 /// Title parchment tap chime. Sparkle, then fade — do not play the whole tail.
@@ -15,9 +17,30 @@ class TitleButtonChime {
   static Timer? _fadeTimer;
   static int _generation = 0;
 
+  /// Point the HTML element at the chime URL so BGM ON can stream it.
+  static void prepareForWeb() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (!kIsWeb) return;
+    WebHtmlSfx.prepare(WebHtmlSfx.assetUrl(assetPath));
+  }
+
+  /// Same pointer-down as web BGM ON. Unlocks streaming SFX without a download.
+  static void unlockForWeb() {
+    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
+    if (!kIsWeb) return;
+    prepareForWeb();
+    WebHtmlSfx.unlock();
+  }
+
   static Future<void> play() async {
     if (const bool.fromEnvironment('FLUTTER_TEST')) return;
     if (!AppSettings.sfxOn) return;
+
+    if (kIsWeb) {
+      prepareForWeb();
+      WebHtmlSfx.playSparkle(hold: holdDuration, fade: fadeDuration);
+      return;
+    }
 
     final generation = ++_generation;
     final player = _player ??= AudioPlayer();
@@ -52,6 +75,10 @@ class TitleButtonChime {
     _generation++;
     _fadeTimer?.cancel();
     _fadeTimer = null;
+    if (kIsWeb) {
+      WebHtmlSfx.stop();
+      return;
+    }
     try {
       await _player?.stop();
     } catch (_) {}

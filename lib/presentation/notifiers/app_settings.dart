@@ -38,17 +38,33 @@ class AppSettings extends ChangeNotifier {
       await preferences.setString(_userIdKey, id);
     }
     _userId = id;
-    if (_bgmSelectionRevision == bgmRevision) {
-      _bgmOn = storedBgmOn;
-      // Web always asks at the startup gate. A late preference load must not
-      // override the explicit ON/OFF choice or replay outside a user gesture.
-      if (!kIsWeb) await GameBgm.setEnabled(_bgmOn);
+    if (!kIsWeb) {
+      if (_bgmSelectionRevision == bgmRevision) {
+        _bgmOn = storedBgmOn;
+        await GameBgm.setEnabled(_bgmOn);
+      }
+      if (_sfxSelectionRevision == sfxRevision) {
+        _sfxOn = storedSfxOn;
+        sfxOn = _sfxOn;
+      }
     }
-    if (_sfxSelectionRevision == sfxRevision) {
-      _sfxOn = storedSfxOn;
-      sfxOn = _sfxOn;
-    }
+    // Web: keep both ON until the gate writes an explicit choice. A previous
+    // BGM OFF session stored SFX off; importing that would show 효과음 off
+    // after the user just pressed BGM ON.
     notifyListeners();
+  }
+
+  /// Web gate: BGM ON → BGM+SFX on. BGM OFF → both off. Writes memory first.
+  Future<void> applyWebGateAudio({required bool enabled}) async {
+    _bgmSelectionRevision++;
+    _sfxSelectionRevision++;
+    _bgmOn = enabled;
+    _sfxOn = enabled;
+    sfxOn = enabled;
+    notifyListeners();
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setBool(_bgmKey, enabled);
+    await preferences.setBool(_sfxKey, enabled);
   }
 
   Future<void> persistBgmEnabled(bool value) async {
@@ -57,6 +73,16 @@ class AppSettings extends ChangeNotifier {
     notifyListeners();
     final preferences = await SharedPreferences.getInstance();
     await preferences.setBool(_bgmKey, value);
+  }
+
+  /// Gate / settings write SFX immediately so a late [load] cannot undo it.
+  Future<void> persistSfxEnabled(bool value) async {
+    _sfxSelectionRevision++;
+    _sfxOn = value;
+    sfxOn = value;
+    notifyListeners();
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setBool(_sfxKey, value);
   }
 
   Future<void> setBgmEnabled(bool value) async {
