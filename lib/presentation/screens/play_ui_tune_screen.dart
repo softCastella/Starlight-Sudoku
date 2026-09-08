@@ -370,12 +370,36 @@ class _SaveTuneButtonState extends State<_SaveTuneButton> {
     return TextButton(
       onPressed: () async {
         await PlayUiTune.instance.saveNow();
-        await Clipboard.setData(
-          ClipboardData(text: PlayUiTune.instance.layoutJson),
-        );
+        final json = PlayUiTune.instance.layoutJson;
+        await Clipboard.setData(ClipboardData(text: json));
         if (!mounted) return;
         setState(() => _saved = true);
-        await Future<void>.delayed(const Duration(seconds: 2));
+        await showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: const Color(0xFF1C2833),
+            title: const Text('저장', style: TextStyle(color: PlayUiTunerPanel.cream)),
+            content: SizedBox(
+              width: 360,
+              child: SingleChildScrollView(
+                child: SelectableText(
+                  json,
+                  style: const TextStyle(
+                    color: PlayUiTunerPanel.cream,
+                    fontSize: 12,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('닫기'),
+              ),
+            ],
+          ),
+        );
         if (mounted) setState(() => _saved = false);
       },
       child: Text(_saved ? '저장됨' : '저장'),

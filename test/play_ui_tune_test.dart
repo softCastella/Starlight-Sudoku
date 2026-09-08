@@ -119,4 +119,23 @@ void main() {
     expect(tune.read('buttonMaxWidth', PlayUiTarget.titleButton), 160);
     expect(tune.read('title', PlayUiTarget.giveUp), 26);
   });
+
+  test('schema 3 json applies to app and web common tokens', () {
+    final tune = PlayUiTune.instance;
+    expect(
+      tune.importJson(
+        '{"schema":3,"common":{"caption":11.0,"body":13.0,"label":14.0,'
+        '"button":15.0,"title":18.0,"modalInset":24.0,"modalInsetY":24.0,'
+        '"modalPadX":40.0,"modalPadY":40.0,"modalMinWidth":280.0,'
+        '"modalMaxWidth":420.0,"modalOffsetX":0.0,"modalOffsetY":0.0,'
+        '"rowGap":8.0,"buttonMaxWidth":200.0,"buttonMinWidth":112.0,'
+        '"ovalEndFraction":0.19,"screenPad":20.0,"buttonTextOffsetX":0.0,'
+        '"buttonTextOffsetY":0.0,"parchmentTextPad":36.0},'
+        '"targets":{}}',
+      ),
+      isTrue,
+    );
+    expect(tune.commonOf('buttonTextOffsetX'), 0);
+    expect(PlayUi.button, 15);
+  });
 }

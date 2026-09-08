@@ -142,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
             fit: StackFit.expand,
             children: [
               const ColoredBox(color: TwinklingStarField.nightSky),
-              const Positioned.fill(child: TwinklingStarField()),
               Center(
                 child: SizedBox(
                   width: frameW,
@@ -159,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         filterQuality: FilterQuality.medium,
                         cacheWidth: cacheW,
                       ),
+                      const Positioned.fill(child: TwinklingStarField()),
                       const DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
