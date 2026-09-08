@@ -191,9 +191,7 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             const HomeScreen(),
             if (_showOverlay)
-              Listener(
-                behavior: HitTestBehavior.opaque,
-                onPointerDown: (_) => unawaited(SplashVoice.play()),
+              AbsorbPointer(
                 child: Stack(
                   fit: StackFit.expand,
                   children: [

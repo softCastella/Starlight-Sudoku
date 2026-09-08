@@ -31,15 +31,62 @@ class PlayUiTunerPanel extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: tune.reset,
+                    onPressed: () async {
+                      final ok = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('초기화할까요?'),
+                          content: const Text('맞춘 값이 기본값으로 돌아갑니다.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('취소'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('초기화'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (ok == true) tune.reset();
+                    },
                     child: const Text('초기화'),
                   ),
-                  IconButton(
-                    tooltip: 'JSON 복사',
+                  TextButton(
                     onPressed: () async {
-                      await Clipboard.setData(ClipboardData(text: tune.layoutJson));
+                      await tune.saveNow();
+                      final json = tune.layoutJson;
+                      await Clipboard.setData(ClipboardData(text: json));
+                      if (!context.mounted) return;
+                      await showDialog<void>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: const Color(0xFF1C2833),
+                          title: const Text(
+                            '저장',
+                            style: TextStyle(color: Color(0xFFFBF7EC)),
+                          ),
+                          content: SingleChildScrollView(
+                            child: SelectableText(
+                              json,
+                              style: const TextStyle(
+                                color: Color(0xFFFBF7EC),
+                                fontSize: 12,
+                                height: 1.3,
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('닫기'),
+                            ),
+                          ],
+                        ),
+                      );
                     },
-                    icon: const Icon(Icons.copy, color: Color(0xFFFBF7EC), size: 18),
+                    child: const Text('저장'),
                   ),
                   IconButton(
                     onPressed: () => tune.setPanelOpen(false),

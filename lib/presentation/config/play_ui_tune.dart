@@ -13,7 +13,7 @@ class PlayUiTune extends ChangeNotifier {
 
   static final PlayUiTune instance = PlayUiTune._();
 
-  static const schemaVersion = 2;
+  static const schemaVersion = 3;
   static const _prefsKey = 'play_ui_tune_v2';
   static const _legacyPrefsKey = 'play_ui_tune_v1';
   static const _uiTuner = bool.fromEnvironment('UI_TUNER');

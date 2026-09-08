@@ -42,6 +42,10 @@ void main() {
     expect(find.byType(SplashScreen), findsOneWidget);
     expect(find.image(const AssetImage(SplashScreen.logoAsset)), findsOneWidget);
 
+    await tester.tapAt(tester.getCenter(find.byType(SplashScreen)));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.image(const AssetImage(SplashScreen.logoAsset)), findsOneWidget);
+
     await tester.pump(SplashScreen.displayDuration);
     await tester.pumpAndSettle();
 

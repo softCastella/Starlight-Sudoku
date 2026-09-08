@@ -21,6 +21,8 @@ class CreditsDialog extends StatelessWidget {
     final l10n = l10nOf(context);
     return ParchmentModal(
       target: PlayUiTarget.credits,
+      shrinkContent: false,
+      aspectRatio: 0.92,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -39,11 +41,7 @@ class CreditsDialog extends StatelessWidget {
           Text(
             l10n.creditsBody,
             textAlign: TextAlign.center,
-            style: PlayUi.captionStyle().copyWith(
-              fontSize: PlayUi.body,
-              height: 1.45,
-              color: PlayUi.muted,
-            ),
+            style: PlayUi.bodyStyle(color: PlayUi.ink),
           ),
           SizedBox(height: PlayUi.rowGap * 1.5),
           ParchmentModalButton(
