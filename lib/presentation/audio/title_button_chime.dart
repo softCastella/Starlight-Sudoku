@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sudoku_game/presentation/notifiers/app_settings.dart';
+import 'package:sudoku_game/presentation/audio/web_html_sfx.dart';
 
 /// Title parchment tap chime. Sparkle, then fade — do not play the whole tail.
 class TitleButtonChime {
@@ -20,13 +22,38 @@ class TitleButtonChime {
     if (!AppSettings.sfxOn) return;
 
     final generation = ++_generation;
-    final player = _player ??= AudioPlayer();
     _fadeTimer?.cancel();
-    await player.stop();
-    await player.setVolume(1);
-    await player.play(AssetSource(assetPath));
+
+    if (kIsWeb) {
+      final started = await WebHtmlSfx.play(assetPath);
+      if (!started || generation != _generation) return;
+      _startFade(
+        generation: generation,
+        setVolume: WebHtmlSfx.setVolume,
+        stop: WebHtmlSfx.stop,
+      );
+      return;
+    }
+
+    final existing = _player;
+    final player = existing ?? AudioPlayer();
+    _player = player;
+    if (existing != null) await player.stop();
+    await player.play(AssetSource(assetPath), volume: 1);
     if (generation != _generation) return;
 
+    _startFade(
+      generation: generation,
+      setVolume: (volume) => unawaited(player.setVolume(volume)),
+      stop: () => unawaited(player.stop()),
+    );
+  }
+
+  static void _startFade({
+    required int generation,
+    required void Function(double) setVolume,
+    required void Function() stop,
+  }) {
     final started = DateTime.now();
     _fadeTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (generation != _generation) {
@@ -39,12 +66,12 @@ class TitleButtonChime {
       final intoFade = elapsed - holdDuration;
       if (intoFade >= fadeDuration) {
         timer.cancel();
-        player.setVolume(0);
-        player.stop();
+        setVolume(0);
+        stop();
         return;
       }
       final t = intoFade.inMilliseconds / fadeDuration.inMilliseconds;
-      player.setVolume((1 - t).clamp(0.0, 1.0));
+      setVolume((1 - t).clamp(0.0, 1.0));
     });
   }
 
@@ -52,6 +79,10 @@ class TitleButtonChime {
     _generation++;
     _fadeTimer?.cancel();
     _fadeTimer = null;
+    if (kIsWeb) {
+      WebHtmlSfx.stop();
+      return;
+    }
     try {
       await _player?.stop();
     } catch (_) {}

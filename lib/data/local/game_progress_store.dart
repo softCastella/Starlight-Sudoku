@@ -1,12 +1,18 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/core/progress/active_game_snapshot.dart';
 import 'package:sudoku_game/core/progress/player_statistics.dart';
 import 'package:sudoku_game/core/progress/stage_progress.dart';
+import 'package:sudoku_game/data/local/web_demo_session.dart';
 
 /// Persists account-wide progress independently from the active puzzle.
 class GameProgressStore {
+  GameProgressStore({bool? isWebDemo, bool Function()? beginDemoSession})
+    : _isWebDemo = isWebDemo ?? GameBalance.isWebDemo,
+      _beginDemoSession = beginDemoSession ?? beginWebDemoSession;
+
   static const _starLightKey = 'star_light_balance';
   static const _completedPuzzlesKey = 'completed_puzzles';
   static const _totalPlaySecondsKey = 'total_play_seconds';
@@ -17,6 +23,22 @@ class GameProgressStore {
   static const _stageProgressKey = 'stage_progress';
   static const _seenIntroKey = 'has_seen_opening_story';
   static const _seenTrialEndKey = 'has_seen_trial_end';
+
+  static const _progressKeys = [
+    _starLightKey,
+    _completedPuzzlesKey,
+    _totalPlaySecondsKey,
+    _easyCompletionsKey,
+    _normalCompletionsKey,
+    _hardCompletionsKey,
+    _activeGameKey,
+    _stageProgressKey,
+    _seenIntroKey,
+    _seenTrialEndKey,
+  ];
+
+  final bool _isWebDemo;
+  final bool Function() _beginDemoSession;
 
   Future<
     ({
@@ -29,6 +51,7 @@ class GameProgressStore {
   >
   load() async {
     final preferences = await SharedPreferences.getInstance();
+    await _resetProgressForNewWebDemoSession(preferences);
     return (
       starLightBalance: preferences.getInt(_starLightKey) ?? 0,
       statistics: PlayerStatistics(
@@ -44,6 +67,13 @@ class GameProgressStore {
       hasSeenOpeningStory: preferences.getBool(_seenIntroKey) ?? false,
       hasSeenTrialEnd: preferences.getBool(_seenTrialEndKey) ?? false,
     );
+  }
+
+  Future<void> _resetProgressForNewWebDemoSession(
+    SharedPreferences preferences,
+  ) async {
+    if (!_isWebDemo || !_beginDemoSession()) return;
+    await Future.wait(_progressKeys.map(preferences.remove));
   }
 
   Future<void> save({

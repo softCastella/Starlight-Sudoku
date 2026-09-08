@@ -57,13 +57,6 @@ class GameBgm {
     _wanted = titleAsset;
   }
 
-  /// Point the HTML element at the title file before the ON tap.
-  static Future<void> preloadTitleForWeb() async {
-    if (const bool.fromEnvironment('FLUTTER_TEST')) return;
-    if (!kIsWeb) return;
-    WebHtmlBgm.prepare(WebHtmlBgm.assetUrl(titleAsset));
-  }
-
   /// Starts title BGM in the same tap as the web BGM ON button.
   /// Do not await prefs, asset fetch, or enqueue first — browsers drop the gesture.
   static Future<void> startTitleFromGesture() {

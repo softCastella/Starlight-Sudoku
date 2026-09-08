@@ -37,7 +37,6 @@
 
   <title>별빛 스도쿠 체험판</title>
   <link rel="manifest" href="manifest.json?v=20260904a">
-  <link rel="preload" as="audio" type="audio/ogg" href="assets/assets/audio/BGM/1_Title_Lamplight%2520Grid.ogg">
   <style>
     html, body {
       height: 100%;
@@ -56,6 +55,23 @@
 </head>
 <body>
   <div id="launch-splash"></div>
+  <!-- Do not fetch BGM before consent. WebHtmlBgm reuses this element and the
+       user's ON gesture starts native HTTP range streaming. -->
+  <audio
+    id="starlight-html-bgm"
+    preload="none"
+    loop
+    playsinline
+    aria-hidden="true"
+    style="display: none"
+  ></audio>
+  <audio
+    id="starlight-html-sfx"
+    preload="none"
+    playsinline
+    aria-hidden="true"
+    style="display: none"
+  ></audio>
   <script>
     (function () {
       var search = new URLSearchParams(window.location.search);

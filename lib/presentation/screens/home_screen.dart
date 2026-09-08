@@ -199,8 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ParchmentButton(
                                       label: l10n.startNewPuzzle,
                                       fontSize: _fontSize,
+                                      onPressStart: TitleButtonChime.play,
                                       onPressed: () {
-                                        TitleButtonChime.play();
                                         _startNewPuzzle(context);
                                       },
                                     ),
@@ -215,8 +215,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: ParchmentButton(
                                             label: l10n.continueGame,
                                             fontSize: (_fontSize - 1).clamp(12, 18),
+                                            onPressStart: TitleButtonChime.play,
                                             onPressed: () {
-                                              TitleButtonChime.play();
                                               if (gameNotifier.continueGame()) {
                                                 Navigator.push(
                                                   context,
@@ -234,8 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ParchmentButton(
                                       label: l10n.viewVillage,
                                       fontSize: (_fontSize - 1).clamp(12, 18),
+                                      onPressStart: TitleButtonChime.play,
                                       onPressed: () {
-                                        TitleButtonChime.play();
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

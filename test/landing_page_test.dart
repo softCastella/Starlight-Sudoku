@@ -24,7 +24,8 @@ void main() {
     expect(source, isNot(contains('googleads')));
     expect(source, isNot(contains('doubleclick')));
     expect(flutterBootstrap, contains('flutter_bootstrap.js'));
-    expect(flutterBootstrap, contains('1_Title_Lamplight%2520Grid.ogg'));
+    expect(flutterBootstrap, contains('preload="none"'));
+    expect(flutterBootstrap, isNot(contains('rel="preload" as="audio"')));
     expect(
       flutterBootstrap,
       contains("sessionStorage.setItem('starlight_lang'"),

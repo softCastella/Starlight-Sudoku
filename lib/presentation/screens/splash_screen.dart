@@ -35,6 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
   bool _showOverlay = !kIsWeb;
   bool _showWebAudioGate = kIsWeb;
   bool _started = false;
+  Future<void>? _webBgmStart;
 
   @override
   void initState() {
@@ -106,7 +107,6 @@ class _SplashScreenState extends State<SplashScreen>
     _started = true;
     if (kIsWeb) {
       unawaited(_precacheGameArt());
-      unawaited(GameBgm.preloadTitleForWeb());
       return;
     }
     _startSplash();
@@ -134,6 +134,12 @@ class _SplashScreenState extends State<SplashScreen>
       unawaited(GameBgm.setEnabled(false));
     }
     unawaited(context.read<AppSettings>().persistBgmEnabled(bgmOn));
+  }
+
+  Future<void> _finishWebAudioGateAfterBgmStarts() async {
+    await (_webBgmStart ??= GameBgm.startTitleFromGesture());
+    if (!mounted) return;
+    _finishWebAudioGate(bgmOn: true);
   }
 
   Future<void> _startSplash() async {
@@ -233,8 +239,10 @@ class _SplashScreenState extends State<SplashScreen>
     return WebAudioGate(
       bgmOnLabel: l10n.webBgmOn,
       bgmOffLabel: l10n.webBgmOff,
-      onBgmOnPointerDown: () => unawaited(GameBgm.startTitleFromGesture()),
-      onBgmOnPressed: () => _finishWebAudioGate(bgmOn: true),
+      onBgmOnPointerDown: () {
+        _webBgmStart ??= GameBgm.startTitleFromGesture();
+      },
+      onBgmOnPressed: () => unawaited(_finishWebAudioGateAfterBgmStarts()),
       onBgmOffPointerDown: () {
         unawaited(GameBgm.setEnabled(false));
         unawaited(context.read<AppSettings>().setSfxEnabled(false));

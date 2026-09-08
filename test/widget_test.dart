@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sudoku_game/core/config/game_balance.dart';
 import 'package:sudoku_game/presentation/app.dart';
 import 'package:sudoku_game/presentation/config/app_fonts.dart';
 import 'package:sudoku_game/presentation/config/title_art.dart';
@@ -64,7 +65,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('쉬움 스테이지'), findsOneWidget);
-    expect(find.text('0/10 클리어'), findsOneWidget);
+    expect(find.text('0/${GameBalance.easyStageCount} 클리어'), findsOneWidget);
   });
 
   testWidgets('English locale shows English title art and home buttons', (
