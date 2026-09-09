@@ -74,24 +74,19 @@ class CompletionRewardDialog extends StatelessWidget {
             style: PlayUi.captionStyle(),
           ),
           SizedBox(height: PlayUi.rowGap * 1.5),
-          Row(
+          ParchmentModalButtonRow(
             children: [
-              Expanded(
-                child: ParchmentModalButton(
-                  asset: ParchmentModal.continueAsset,
-                  label: l10n.viewVillage,
-                  color: PlayUi.ink,
-                  onPressed: onViewVillage,
-                ),
+              ParchmentModalButton(
+                asset: ParchmentModal.continueAsset,
+                label: l10n.viewVillage,
+                color: PlayUi.ink,
+                onPressed: onViewVillage,
               ),
-              SizedBox(width: PlayUi.rowGap),
-              Expanded(
-                child: ParchmentModalButton(
-                  asset: ParchmentModal.exitAsset,
-                  label: primaryLabel,
-                  color: PlayUi.cream,
-                  onPressed: primaryAction,
-                ),
+              ParchmentModalButton(
+                asset: ParchmentModal.exitAsset,
+                label: primaryLabel,
+                color: PlayUi.cream,
+                onPressed: primaryAction,
               ),
             ],
           ),

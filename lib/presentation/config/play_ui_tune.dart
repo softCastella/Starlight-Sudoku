@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudoku_game/presentation/config/play_ui.dart';
+import 'package:sudoku_game/presentation/config/play_ui_baked.dart';
 import 'package:sudoku_game/presentation/config/play_ui_target.dart';
 import 'package:sudoku_game/presentation/config/play_ui_tune_persist.dart';
 
@@ -159,13 +160,9 @@ class PlayUiTune extends ChangeNotifier {
 
   Map<String, Object> toJsonObject() => {
         'schema': schemaVersion,
-        'common': toMap(),
-        'targets': {
-          for (final entry in overlays.entries)
-            if (entry.value.isNotEmpty) entry.key: Map<String, double>.from(entry.value),
-        },
+        // Locales first: chat paste truncates the tail, and common is mostly defaults.
         'locales': {
-          for (final localeEntry in localeOverlays.entries)
+          for (final localeEntry in PlayUiBaked.merge(localeOverlays).entries)
             if (localeEntry.value.values.any((fields) => fields.isNotEmpty))
               localeEntry.key: {
                 for (final targetEntry in localeEntry.value.entries)
@@ -173,6 +170,11 @@ class PlayUiTune extends ChangeNotifier {
                     targetEntry.key: Map<String, double>.from(targetEntry.value),
               },
         },
+        'targets': {
+          for (final entry in overlays.entries)
+            if (entry.value.isNotEmpty) entry.key: Map<String, double>.from(entry.value),
+        },
+        'common': toMap(),
       };
 
   String get layoutJson =>
@@ -182,12 +184,18 @@ class PlayUiTune extends ChangeNotifier {
 
   double read(String key, PlayUiTarget target, {String? locale}) {
     _promoteOverlaysIntoLocales();
-    final base = commonOf(key);
     final loc = locale ?? editingLocale;
-    if (target == PlayUiTarget.common) {
-      return localeOverlays[loc]?[target.id]?[key] ?? base;
+    return localeOverlays[loc]?[target.id]?[key] ??
+        _bakedOrCommon(loc, target, key);
+  }
+
+  double _bakedOrCommon(String locale, PlayUiTarget target, String key) {
+    final baked = PlayUiBaked.value(locale, target.id, key);
+    if (baked != null) return baked;
+    if (target == PlayUiTarget.titleButton && key == 'button') {
+      return PlayUi.kTitleButton;
     }
-    return localeOverlays[loc]?[target.id]?[key] ?? base;
+    return commonOf(key);
   }
 
   double editorValue(String key) =>
@@ -256,7 +264,7 @@ class PlayUiTune extends ChangeNotifier {
     String key,
     double clamped,
   ) {
-    final fallback = commonOf(key);
+    final fallback = _bakedOrCommon(locale, target, key);
     final byLocale = Map<String, Map<String, double>>.from(
       localeOverlays[locale] ?? {},
     );
@@ -440,11 +448,38 @@ class PlayUiTune extends ChangeNotifier {
         }
       }
       _promoteOverlaysIntoLocales();
+      common['button'] = PlayUi.kButton;
+      _dropTitleButtonEleven();
       return;
     }
     overlays.clear();
     localeOverlays.clear();
     _applyCommon(map);
+    common['button'] = PlayUi.kButton;
+    _dropTitleButtonEleven();
+  }
+
+  /// Saved title `button: 11` was the shared default leak. Title is 15.
+  void _dropTitleButtonEleven() {
+    for (final locale in List<String>.from(localeOverlays.keys)) {
+      final byLocale = Map<String, Map<String, double>>.from(
+        localeOverlays[locale]!,
+      );
+      final title = byLocale['titleButton'];
+      if (title == null || title['button'] == null) continue;
+      if ((title['button']! - PlayUi.kButton).abs() >= 0.001) continue;
+      final next = Map<String, double>.from(title)..remove('button');
+      if (next.isEmpty) {
+        byLocale.remove('titleButton');
+      } else {
+        byLocale['titleButton'] = next;
+      }
+      if (byLocale.isEmpty) {
+        localeOverlays.remove(locale);
+      } else {
+        localeOverlays[locale] = byLocale;
+      }
+    }
   }
 
   Map<String, double> _overlayFrom(Object? value) {
@@ -534,10 +569,11 @@ class PlayUiTune extends ChangeNotifier {
     };
   }
 
-  Future<void> saveNow() {
+  Future<String?> saveNow() async {
     _epoch++;
     _checkpoint = _snapshot();
-    return _save();
+    await _save();
+    return savePlayUiLayout(layoutJson);
   }
 
   Future<void> _save() {
@@ -548,6 +584,5 @@ class PlayUiTune extends ChangeNotifier {
   Future<void> _writePrefs() async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setString(_prefsKey, jsonEncode(toJsonObject()));
-    savePlayUiLayout(layoutJson);
   }
 }

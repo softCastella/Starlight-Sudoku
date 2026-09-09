@@ -86,27 +86,22 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
               height: 1.4,
             ),
           ),
-          const SizedBox(height: 14),
-          Row(
+          SizedBox(height: PlayUi.rowGap * 1.75),
+          ParchmentModalButtonRow(
             children: [
-              Expanded(
-                child: ParchmentModalButton(
-                  key: const Key('trial-end-store'),
-                  asset: ParchmentModal.exitAsset,
-                  label: l10n.sendReview,
-                  color: PlayUi.cream,
-                  onPressed: _openPlayStore,
-                ),
+              ParchmentModalButton(
+                key: const Key('trial-end-store'),
+                asset: ParchmentModal.exitAsset,
+                label: l10n.sendReview,
+                color: PlayUi.cream,
+                onPressed: _openPlayStore,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ParchmentModalButton(
-                  key: const Key('trial-end-close'),
-                  asset: ParchmentModal.continueAsset,
-                  label: l10n.close,
-                  color: PlayUi.ink,
-                  onPressed: () => Navigator.pop(context),
-                ),
+              ParchmentModalButton(
+                key: const Key('trial-end-close'),
+                asset: ParchmentModal.continueAsset,
+                label: l10n.close,
+                color: PlayUi.ink,
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),

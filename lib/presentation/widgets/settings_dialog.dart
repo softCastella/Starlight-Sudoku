@@ -55,8 +55,17 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
         return ParchmentModal(
           target: PlayUiTarget.settings,
-          aspectRatio: 1.18,
-          child: Column(
+          shrinkContent: false,
+          aspectRatio: 0.98,
+          alignment: Alignment.topCenter,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final topAir = constraints.maxHeight.isFinite
+                  ? constraints.maxHeight * 0.12
+                  : PlayUi.modalPadY;
+              return Padding(
+                padding: EdgeInsets.only(top: topAir),
+                child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           FitLabel(
@@ -65,7 +74,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             alignment: Alignment.center,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: PlayUi.rowGap * 0.75),
           _SettingsSwitchRow(
             label: l10n.settingsBgm,
             value: settings.bgmEnabled,
@@ -76,7 +85,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             value: settings.sfxEnabled,
             onChanged: settings.setSfxEnabled,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: PlayUi.rowGap * 1.5),
           Row(
             children: [
               Text(
@@ -109,7 +118,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: PlayUi.rowGap),
           GestureDetector(
             onTap: _openPrivacy,
             child: Row(
@@ -133,7 +142,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ],
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: PlayUi.rowGap),
           GestureDetector(
             onTap: () => CreditsDialog.show(context),
             onLongPress: PlayUiTune.isEditorEnabled
@@ -151,7 +160,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             ),
           ),
           if (PlayUiTune.isEditorEnabled) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: PlayUi.rowGap),
             Align(
               alignment: Alignment.centerLeft,
               child: GestureDetector(
@@ -166,7 +175,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ),
             ),
           ],
-          const SizedBox(height: 12),
+          SizedBox(height: PlayUi.rowGap * 1.5),
           ParchmentModalButton(
             asset: ParchmentModal.continueAsset,
             label: l10n.close,
@@ -174,6 +183,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
             onPressed: () => Navigator.pop(context),
           ),
         ],
+                ),
+              );
+            },
           ),
         );
       },

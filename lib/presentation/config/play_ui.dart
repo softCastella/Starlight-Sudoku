@@ -14,7 +14,9 @@ class PlayUi {
   static const double kCaption = 11;
   static const double kBody = 13;
   static const double kLabel = 14;
-  static const double kButton = 15;
+  static const double kButton = 11;
+  /// Title parchment only. Other buttons stay [kButton].
+  static const double kTitleButton = 15;
   static const double kTitle = 18;
   static const double kModalInset = 24;
   static const double kModalPadX = 40;
@@ -25,6 +27,8 @@ class PlayUi {
   static const double kButtonMaxWidth = 200;
   static const double kButtonMinWidth = 112;
   static const double kOvalEndFraction = 0.19;
+  /// Intro / modal oval height source. Long labels grow the middle only.
+  static const double kOvalCompactWidth = 80;
   static const double kScreenPad = 20;
   static const double kModalInsetY = 24;
   static const double kModalOffsetX = 0;
@@ -322,11 +326,13 @@ class OvalButtonLayout {
     required TextDirection direction,
     double preferredFontSize = PlayUi.kButton,
     double maxWidth = PlayUi.kButtonMaxWidth,
+    double? heightScale,
     Color color = PlayUi.ink,
   }) {
     final width = math.max(1.0, maxWidth);
     final sideInset = width * PlayUi.ovalEndFraction;
-    final height = (width / PlayUi.ovalAspect) * PlayUi.buttonHeightScale;
+    final height =
+        (width / PlayUi.ovalAspect) * (heightScale ?? PlayUi.buttonHeightScale);
     return OvalButtonLayout(
       width: width,
       height: height,

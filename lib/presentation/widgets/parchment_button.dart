@@ -15,6 +15,12 @@ class ParchmentButton extends StatefulWidget {
 
   static const asset = 'assets/images/SystemUI/Button.png';
   static const imageAspectRatio = 2172 / 724;
+  /// Button.png has empty padding above/below the scroll.
+  static const cropHeightFactor = 0.686;
+
+  /// Layout height after cropping empty PNG padding.
+  static double visibleHeightFor(double width) =>
+      width / imageAspectRatio * cropHeightFactor;
 
   final String label;
   final VoidCallback? onPressed;
@@ -72,7 +78,7 @@ class _ParchmentButtonState extends State<ParchmentButton> {
                         child: ClipRect(
                           child: Align(
                             alignment: const Alignment(0, -0.23),
-                            heightFactor: 0.686,
+                            heightFactor: ParchmentButton.cropHeightFactor,
                             child: AspectRatio(
                               aspectRatio: ParchmentButton.imageAspectRatio,
                               child: Stack(

@@ -63,11 +63,11 @@ void main() {
     expect(tune.read('buttonMaxWidth', PlayUiTarget.titleButton, locale: 'en'), 160);
     expect(
       tune.read('buttonMaxWidth', PlayUiTarget.titleButton, locale: 'ko'),
-      PlayUi.kButtonMaxWidth,
+      208.86,
     );
     expect(
       tune.read('buttonMaxWidth', PlayUiTarget.villageButton, locale: 'en'),
-      PlayUi.kButtonMaxWidth,
+      113.22,
     );
 
     tune.setEditingLocale('ko');
@@ -75,6 +75,30 @@ void main() {
     tune.setField('buttonMaxWidth', 180);
     expect(
       tune.read('buttonMaxWidth', PlayUiTarget.titleButton, locale: 'ko'),
+      208.86,
+    );
+  });
+
+  test('baked sizes keep the same chip different per language', () {
+    final tune = PlayUiTune.instance;
+    expect(
+      tune.read('buttonMaxWidth', PlayUiTarget.openingButton, locale: 'ko'),
+      174.61,
+    );
+    expect(
+      tune.read('buttonMaxWidth', PlayUiTarget.openingButton, locale: 'en'),
+      180.48,
+    );
+    expect(
+      tune.read('buttonMaxWidth', PlayUiTarget.openingButton, locale: 'zh'),
+      151.12,
+    );
+    expect(
+      tune.read('buttonHeightScale', PlayUiTarget.openingButton, locale: 'ko'),
+      0.767,
+    );
+    expect(
+      tune.read('buttonMaxWidth', PlayUiTarget.exitGame, locale: 'ko'),
       PlayUi.kButtonMaxWidth,
     );
   });
@@ -120,12 +144,24 @@ void main() {
     expect(tune.read('title', PlayUiTarget.giveUp), 26);
   });
 
+  test('exported json puts locales before common so chat paste keeps tunings', () {
+    final tune = PlayUiTune.instance;
+    tune.setEditingLocale('ko');
+    tune.setEditingTarget(PlayUiTarget.titleButton);
+    tune.setField('buttonMaxWidth', 160);
+    tune.setField('ovalEndFraction', 0.22);
+    final json = tune.layoutJson;
+    expect(json.indexOf('"locales"'), lessThan(json.indexOf('"common"')));
+    expect(json.contains('"titleButton"'), isTrue);
+    expect(json.contains('160'), isTrue);
+  });
+
   test('schema 3 json applies to app and web common tokens', () {
     final tune = PlayUiTune.instance;
     expect(
       tune.importJson(
         '{"schema":3,"common":{"caption":11.0,"body":13.0,"label":14.0,'
-        '"button":15.0,"title":18.0,"modalInset":24.0,"modalInsetY":24.0,'
+        '"button":11.0,"title":18.0,"modalInset":24.0,"modalInsetY":24.0,'
         '"modalPadX":40.0,"modalPadY":40.0,"modalMinWidth":280.0,'
         '"modalMaxWidth":420.0,"modalOffsetX":0.0,"modalOffsetY":0.0,'
         '"rowGap":8.0,"buttonMaxWidth":200.0,"buttonMinWidth":112.0,'
@@ -136,6 +172,26 @@ void main() {
       isTrue,
     );
     expect(tune.commonOf('buttonTextOffsetX'), 0);
-    expect(PlayUi.button, 15);
+    expect(PlayUi.button, 11);
+    expect(
+      PlayUi.using(PlayUiTarget.titleButton, () => PlayUi.button),
+      15,
+    );
+    expect(
+      PlayUi.using(PlayUiTarget.credits, () => PlayUi.button),
+      11,
+    );
+  });
+
+  test('saved title button 11 does not keep the title at 11', () {
+    final tune = PlayUiTune.instance;
+    expect(
+      tune.importJson(
+        '{"schema":3,"common":{"button":11.0},"locales":{"ko":{"titleButton":{"button":11.0}}}}',
+      ),
+      isTrue,
+    );
+    expect(tune.read('button', PlayUiTarget.titleButton, locale: 'ko'), 15);
+    expect(tune.read('button', PlayUiTarget.credits, locale: 'ko'), 11);
   });
 }

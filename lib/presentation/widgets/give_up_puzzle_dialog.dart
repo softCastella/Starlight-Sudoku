@@ -32,24 +32,19 @@ class GiveUpPuzzleDialog extends StatelessWidget {
                 style: PlayUi.bodyStyle(),
               ),
               SizedBox(height: PlayUi.rowGap * 1.75),
-              Row(
+              ParchmentModalButtonRow(
                 children: [
-                  Expanded(
-                    child: ParchmentModalButton(
-                      asset: ParchmentModal.continueAsset,
-                      label: l10n.keepPlaying,
-                      color: PlayUi.ink,
-                      onPressed: () => Navigator.pop(context, false),
-                    ),
+                  ParchmentModalButton(
+                    asset: ParchmentModal.continueAsset,
+                    label: l10n.keepPlaying,
+                    color: PlayUi.ink,
+                    onPressed: () => Navigator.pop(context, false),
                   ),
-                  SizedBox(width: PlayUi.rowGap),
-                  Expanded(
-                    child: ParchmentModalButton(
-                      asset: ParchmentModal.exitAsset,
-                      label: l10n.exitPuzzle,
-                      color: PlayUi.cream,
-                      onPressed: () => Navigator.pop(context, true),
-                    ),
+                  ParchmentModalButton(
+                    asset: ParchmentModal.exitAsset,
+                    label: l10n.exitPuzzle,
+                    color: PlayUi.cream,
+                    onPressed: () => Navigator.pop(context, true),
                   ),
                 ],
               ),

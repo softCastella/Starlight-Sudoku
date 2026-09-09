@@ -38,24 +38,19 @@ class ExitGameDialog extends StatelessWidget {
                 ),
               ),
               SizedBox(height: PlayUi.rowGap * 2),
-              Row(
+              ParchmentModalButtonRow(
                 children: [
-                  Expanded(
-                    child: ParchmentModalButton(
-                      asset: ParchmentModal.continueAsset,
-                      label: l10n.stayInGame,
-                      color: PlayUi.ink,
-                      onPressed: () => Navigator.pop(context, false),
-                    ),
+                  ParchmentModalButton(
+                    asset: ParchmentModal.continueAsset,
+                    label: l10n.stayInGame,
+                    color: PlayUi.ink,
+                    onPressed: () => Navigator.pop(context, false),
                   ),
-                  SizedBox(width: PlayUi.rowGap),
-                  Expanded(
-                    child: ParchmentModalButton(
-                      asset: ParchmentModal.exitAsset,
-                      label: l10n.quitGame,
-                      color: PlayUi.cream,
-                      onPressed: () => Navigator.pop(context, true),
-                    ),
+                  ParchmentModalButton(
+                    asset: ParchmentModal.exitAsset,
+                    label: l10n.quitGame,
+                    color: PlayUi.cream,
+                    onPressed: () => Navigator.pop(context, true),
                   ),
                 ],
               ),

@@ -114,7 +114,7 @@ void main() {
     expect(label.bottom, lessThanOrEqualTo(chrome.bottom + 0.5));
   });
 
-  testWidgets('English intro button font follows the 15 slider', (tester) async {
+  testWidgets('English intro button font follows the 11 slider', (tester) async {
     tester.view.physicalSize = const Size(1080, 2340);
     tester.view.devicePixelRatio = 2.75;
     addTearDown(tester.view.resetPhysicalSize);
@@ -137,7 +137,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final atDefault = tester.widget<Text>(find.text('Light the first window'));
-    expect(atDefault.style?.fontSize, 15);
+    expect(atDefault.style?.fontSize, 11);
 
     PlayUiTune.instance.setField('button', 22);
     await tester.pumpAndSettle();

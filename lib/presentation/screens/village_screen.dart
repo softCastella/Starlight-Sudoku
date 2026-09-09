@@ -59,7 +59,8 @@ class VillageScreen extends StatelessWidget {
                   child: OvalImageButton(
                     label: l10n.mission,
                     target: PlayUiTarget.villageButton,
-                    width: 112,
+                    width: PlayUi.kOvalCompactWidth,
+                    expandToFitLabel: true,
                     onPressed: () => _openMissions(context),
                   ),
                 ),

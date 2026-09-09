@@ -107,6 +107,12 @@ class _PlayUiTuneScreenState extends State<PlayUiTuneScreen> {
                         selected: tune.editingLocale == locale,
                         onTap: () => _selectLocale(context, tune, locale),
                       ),
+                    _Chip(
+                      id: 'tune-import',
+                      label: '가져오기',
+                      selected: false,
+                      onTap: () => showPlayUiTuneImport(context),
+                    ),
                   ],
                 ),
               ),
@@ -203,6 +209,8 @@ class _PlayUiTuneScreenState extends State<PlayUiTuneScreen> {
           child: OvalImageButton(
             label: l10n.mission,
             target: PlayUiTarget.villageButton,
+            width: PlayUi.kOvalCompactWidth,
+            expandToFitLabel: true,
             onPressed: () {},
           ),
         ),
@@ -300,6 +308,51 @@ class _PlayUiTuneScreenState extends State<PlayUiTuneScreen> {
   }
 }
 
+Future<void> showPlayUiTuneImport(BuildContext context) async {
+  const cream = PlayUiTunerPanel.cream;
+  final controller = TextEditingController();
+  final raw = await showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: const Color(0xFF1C2833),
+      title: const Text('가져오기', style: TextStyle(color: cream)),
+      content: SizedBox(
+        width: 360,
+        child: TextField(
+          controller: controller,
+          maxLines: 12,
+          style: const TextStyle(
+            color: cream,
+            fontSize: 12,
+            fontFamily: 'monospace',
+          ),
+          decoration: const InputDecoration(
+            hintText: '저장 JSON 전체를 붙여 넣으세요. locales가 앞에 있으면 됩니다.',
+            hintStyle: TextStyle(color: PlayUiTunerPanel.muted, fontSize: 12),
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('닫기'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, controller.text),
+          child: const Text('적용'),
+        ),
+      ],
+    ),
+  );
+  controller.dispose();
+  if (!context.mounted || raw == null || raw.trim().isEmpty) return;
+  final ok = PlayUiTune.instance.importJson(raw);
+  if (!context.mounted) return;
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(ok ? 'JSON을 적용했습니다.' : 'JSON을 읽지 못했습니다.')),
+  );
+}
+
 class _SettingsPreview extends StatelessWidget {
   const _SettingsPreview();
 
@@ -369,7 +422,7 @@ class _SaveTuneButtonState extends State<_SaveTuneButton> {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () async {
-        await PlayUiTune.instance.saveNow();
+        final path = await PlayUiTune.instance.saveNow();
         final json = PlayUiTune.instance.layoutJson;
         await Clipboard.setData(ClipboardData(text: json));
         if (!mounted) return;
@@ -382,13 +435,37 @@ class _SaveTuneButtonState extends State<_SaveTuneButton> {
             content: SizedBox(
               width: 360,
               child: SingleChildScrollView(
-                child: SelectableText(
-                  json,
-                  style: const TextStyle(
-                    color: PlayUiTunerPanel.cream,
-                    fontSize: 12,
-                    fontFamily: 'monospace',
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '맞춘 값은 맨 앞 locales입니다. common은 코드 기본값이라 앞만 보면 안 바뀐 것처럼 보입니다. 채팅에 붙이지 말고 메모에 전체를 두세요.',
+                      style: TextStyle(
+                        color: PlayUiTunerPanel.muted,
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
+                    if (path != null) ...[
+                      const SizedBox(height: 8),
+                      SelectableText(
+                        '파일: $path',
+                        style: const TextStyle(
+                          color: PlayUiTunerPanel.cream,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    SelectableText(
+                      json,
+                      style: const TextStyle(
+                        color: PlayUiTunerPanel.cream,
+                        fontSize: 12,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

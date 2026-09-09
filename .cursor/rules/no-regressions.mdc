@@ -19,4 +19,6 @@ alwaysApply: true
 
 셀 십자·9칸·같은 숫자 강조는 **쉬움만**. 보통·어려움은 고른 칸 노랑만.
 
-최신 기록: `Docs/Meeting/2026-09-04_작업.md`. Play 입점: `Docs/Deployment/2026-09-04_Play_디자인검토.md`.
+긴 글로 타원 버튼을 늘릴 때 **가운데만** 늘린다. 그림 전체 stretch·`Image.centerSlice` 금지. 상세는 `Docs/Harness/검증.md` 확정 값.
+
+최신 기록: `Docs/Meeting/2026-09-09_작업.md`. Play 입점: `Docs/Deployment/2026-09-04_Play_디자인검토.md`.
