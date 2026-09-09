@@ -103,6 +103,26 @@ void main() {
     );
   });
 
+  test('baked settings and credits pads follow the 2026-09-09 locales JSON', () {
+    final tune = PlayUiTune.instance;
+    expect(tune.read('modalPadY', PlayUiTarget.settings, locale: 'ko'), 16);
+    expect(tune.read('modalPadX', PlayUiTarget.settings, locale: 'ko'), 45.76);
+    expect(tune.read('label', PlayUiTarget.settings, locale: 'ko'), 15.61);
+    expect(tune.read('rowGap', PlayUiTarget.settings, locale: 'en'), 4);
+    expect(tune.read('modalPadY', PlayUiTarget.credits, locale: 'ko'), 28.81);
+    expect(tune.read('modalInset', PlayUiTarget.credits, locale: 'zh'), 36.65);
+    expect(tune.read('modalInset', PlayUiTarget.exitGame, locale: 'ja'), 40.92);
+    expect(tune.read('modalPadX', PlayUiTarget.giveUp, locale: 'ja'), 44.31);
+    expect(
+      tune.read('modalPadY', PlayUiTarget.giveUp, locale: 'ko'),
+      PlayUi.kModalPadY,
+    );
+    expect(
+      tune.read('button', PlayUiTarget.bgmGate, locale: 'zh_TW'),
+      PlayUi.kButton,
+    );
+  });
+
   test('previewReads follows the selected screen without using()', () {
     final tune = PlayUiTune.instance;
     tune.setEditingTarget(PlayUiTarget.giveUp);

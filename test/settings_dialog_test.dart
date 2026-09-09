@@ -13,6 +13,7 @@ void main() {
     expect(settings, contains('PlayUi.titleStyle()'));
     expect(settings, contains('ParchmentModalButton('));
     expect(settings, isNot(contains('aspectRatio: 1.18')));
+    expect(settings, isNot(contains('UI 편집')));
   });
 
   test('modal ovals use the intro compact stretch', () {

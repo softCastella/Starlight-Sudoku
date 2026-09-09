@@ -159,22 +159,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ),
             ),
           ),
-          if (PlayUiTune.isEditorEnabled) ...[
-            SizedBox(height: PlayUi.rowGap),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: GestureDetector(
-                onTap: () => PlayUiTuneScreen.open(context),
-                child: Text(
-                  'UI 편집',
-                  style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
-                    decoration: TextDecoration.underline,
-                    decorationColor: PlayUi.ink,
-                  ),
-                ),
-              ),
-            ),
-          ],
           SizedBox(height: PlayUi.rowGap * 1.5),
           ParchmentModalButton(
             asset: ParchmentModal.continueAsset,
