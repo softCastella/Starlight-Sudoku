@@ -86,11 +86,12 @@ class _GameScreenState extends State<GameScreen> {
               icon: const Icon(Icons.refresh),
               onPressed: _confirmRetry,
             ),
-            IconButton(
-              tooltip: l10n.skipTrialTooltip,
-              icon: const Icon(Icons.bug_report),
-              onPressed: _skipTrialStages,
-            ),
+            if (GameBalance.showTrialSkipButton)
+              IconButton(
+                tooltip: l10n.skipTrialTooltip,
+                icon: const Icon(Icons.bug_report),
+                onPressed: _skipTrialStages,
+              ),
             IconButton(
               key: const Key('game-settings'),
               tooltip: l10n.settingsTooltip,

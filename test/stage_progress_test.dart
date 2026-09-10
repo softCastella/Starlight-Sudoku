@@ -17,6 +17,12 @@ void main() {
       expect(GameBalance.playStoreTrialStageCount, 10);
       expect(GameBalance.webDemoStageCount, 5);
       expect(GameBalance.isTrial, isTrue);
+      // Without STORE_BUILD / WEB_DEMO dart-defines, local debug skip stays on.
+      // WEB_DEMO=true CI/web builds expect false via showTrialSkipButton.
+      expect(
+        GameBalance.showTrialSkipButton,
+        !GameBalance.isStoreBuild && !GameBalance.isWebDemo,
+      );
     });
 
     test('only stage 1 starts unlocked', () {

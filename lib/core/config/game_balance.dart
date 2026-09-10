@@ -20,6 +20,11 @@ class GameBalance {
   /// Set [isTrial] false for the full 20/40/50 game.
   static const bool isTrial = true;
   static const bool isWebDemo = bool.fromEnvironment('WEB_DEMO');
+  static const bool isStoreBuild = bool.fromEnvironment('STORE_BUILD');
+
+  /// Local debug only. Hidden for Play AAB (`STORE_BUILD`) and public web (`WEB_DEMO`).
+  static bool get showTrialSkipButton => !isStoreBuild && !isWebDemo;
+
   static const int playStoreTrialStageCount = 10;
   static const int webDemoStageCount = 5;
   static const int trialStageCount = isWebDemo
