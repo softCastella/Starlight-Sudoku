@@ -5,7 +5,8 @@
 - 제품 라인: Tyche Spark
 - 개발사: Tyche works
 - 앱 ID: `com.tychespark.starlightsudoku`
-- 웹 플레이: https://softcastella.github.io/Starlight-Sudoku/
+- 웹 플레이: https://softcastella.github.io/Starlight-Sudoku-WebDemo/
+- 웹 데모 저장소: https://github.com/softCastella/Starlight-Sudoku-WebDemo
 - Google Play 체험판은 Easy 10판, GitHub Pages 웹 데모는 Easy 5판입니다. Normal / Hard는 숨깁니다.
 
 ## 프로젝트 개요
@@ -58,7 +59,7 @@ flutter test
 flutter run -d <device-id>
 ```
 
-웹 데모 스냅샷을 `pages` 브랜치에 푸시하면 GitHub Actions가 Flutter 웹 릴리스를 빌드하고 GitHub Pages에 배포합니다. `main` 푸시만으로는 공개 웹이 갱신되지 않습니다.
+웹 데모는 별도 저장소 `Starlight-Sudoku-WebDemo`에서 GitHub Pages로 배포합니다. 이 앱 리포의 `main`은 APK 작업용이며, 여기 푸시만으로는 공개 웹이 갱신되지 않습니다.
 
 ## Android 출시 준비
 

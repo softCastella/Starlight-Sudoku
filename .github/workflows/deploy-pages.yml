@@ -1,53 +1,26 @@
-name: Deploy Flutter web to GitHub Pages
+name: Deploy Flutter web to GitHub Pages (retired)
+
+# 웹 데모는 softCastella/Starlight-Sudoku-WebDemo 로 이전했다.
+# 이 워크플로는 앱 리포에서 더 이상 배포하지 않는다.
+# 공개 웹: https://softcastella.github.io/Starlight-Sudoku-WebDemo/
 
 on:
-  push:
-    branches: [pages]
   workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Do not use — web demo moved to Starlight-Sudoku-WebDemo'
+        required: true
+        default: 'retired'
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  build:
+  retired:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.2'
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Verify web demo harnesses
-        run: flutter test --dart-define=WEB_DEMO=true test/web_bgm_contract_test.dart test/web_audio_gate_harness_test.dart test/web_audio_preference_harness_test.dart test/trial_end_modal_harness_test.dart
-
-      - name: Build web release
-        run: flutter build web --release --base-href "/Starlight-Sudoku/" --dart-define=WEB_DEMO=true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/web
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Web demo moved
+        run: |
+          echo "Web demo lives at https://github.com/softCastella/Starlight-Sudoku-WebDemo"
+          echo "Public URL: https://softcastella.github.io/Starlight-Sudoku-WebDemo/"
+          exit 1
