@@ -10,22 +10,36 @@ class AppSettings extends ChangeNotifier {
   static const privacyPolicyUrl =
       'https://spark.tycheworks.com/starlight-sudoku/privacy/';
 
-  /// spark privacy page `privacy-i18n.js` keys: ko / en / ja / zh-CN / zh-TW.
+  /// spark `privacy-i18n.js` keys: ko / en / ja / zh-CN / zh-TW.
+  /// Always send `lang` (including ko) so localStorage from a prior visit
+  /// cannot win. Cache-buster forces a fresh load when switching app language.
   static String privacyPolicyUrlFor(Locale locale) {
     final lang = privacyLangCodeFromLocale(locale);
-    if (lang == 'ko') return privacyPolicyUrl;
-    return Uri.parse(privacyPolicyUrl).replace(
-      queryParameters: {'lang': lang},
+    return Uri(
+      scheme: 'https',
+      host: 'spark.tycheworks.com',
+      path: '/starlight-sudoku/privacy/',
+      queryParameters: {
+        'lang': lang,
+        '_': DateTime.now().millisecondsSinceEpoch.toString(),
+      },
     ).toString();
   }
 
   static String privacyLangCodeFromLocale(Locale locale) {
-    if (locale.languageCode == 'zh' && locale.countryCode == 'TW') {
+    final tag = locale.toLanguageTag().toLowerCase();
+    if (tag.startsWith('zh-tw') ||
+        tag.startsWith('zh-hant') ||
+        tag.contains('-hant') ||
+        tag.endsWith('-tw') ||
+        tag.endsWith('-hk') ||
+        tag.endsWith('-mo')) {
       return 'zh-TW';
     }
-    if (locale.languageCode == 'zh') return 'zh-CN';
-    if (locale.languageCode == 'ja') return 'ja';
-    if (locale.languageCode == 'en') return 'en';
+    if (tag.startsWith('zh')) return 'zh-CN';
+    if (tag.startsWith('ja')) return 'ja';
+    if (tag.startsWith('en')) return 'en';
+    if (tag.startsWith('ko')) return 'ko';
     return 'ko';
   }
 

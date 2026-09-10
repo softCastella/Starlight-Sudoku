@@ -37,10 +37,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   Future<void> _openPrivacy() async {
-    final uri = Uri.parse(
-      AppSettings.privacyPolicyUrlFor(Localizations.localeOf(context)),
+    final locale = Localizations.localeOf(context);
+    final uri = Uri.parse(AppSettings.privacyPolicyUrlFor(locale));
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+      webOnlyWindowName: '_blank',
     );
-    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10nOf(context).settingsPrivacyOpenError)),
