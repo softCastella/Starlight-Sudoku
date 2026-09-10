@@ -14,6 +14,8 @@ void main() {
     expect(settings, contains('ParchmentModalButton('));
     expect(settings, isNot(contains('aspectRatio: 1.18')));
     expect(settings, isNot(contains('UI 편집')));
+    expect(settings, contains('if (!kIsWeb)'));
+    expect(settings, contains('settingsUserId'));
   });
 
   test('modal ovals use the intro compact stretch', () {

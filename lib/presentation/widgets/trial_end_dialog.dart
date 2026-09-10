@@ -86,7 +86,7 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
               height: 1.4,
             ),
           ),
-          SizedBox(height: PlayUi.rowGap * 1.75),
+          SizedBox(height: PlayUi.rowGap * 1.5),
           ParchmentModalButtonRow(
             children: [
               ParchmentModalButton(

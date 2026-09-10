@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -86,39 +87,42 @@ class _SettingsDialogState extends State<SettingsDialog> {
             onChanged: settings.setSfxEnabled,
           ),
           SizedBox(height: PlayUi.rowGap * 1.5),
-          Row(
-            children: [
-              Text(
-                l10n.settingsUserId,
-                style: PlayUi.captionStyle(),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  settings.userId.isEmpty ? '—' : settings.userId,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
-                    letterSpacing: 0.3,
+          // Web demo is one-shot: no anonymous device id row.
+          if (!kIsWeb) ...[
+            Row(
+              children: [
+                Text(
+                  l10n.settingsUserId,
+                  style: PlayUi.captionStyle(),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    settings.userId.isEmpty ? '—' : settings.userId,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: PlayUi.labelStyle(color: PlayUi.ink).copyWith(
+                      letterSpacing: 0.3,
+                    ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: settings.userId.isEmpty
-                    ? null
-                    : () => _copyUserId(settings.userId),
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Icon(
-                    _copied ? Icons.check : Icons.copy,
-                    size: 18,
-                    color: _copied ? PlayUi.gold : PlayUi.muted,
+                GestureDetector(
+                  onTap: settings.userId.isEmpty
+                      ? null
+                      : () => _copyUserId(settings.userId),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      _copied ? Icons.check : Icons.copy,
+                      size: 18,
+                      color: _copied ? PlayUi.gold : PlayUi.muted,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: PlayUi.rowGap),
+              ],
+            ),
+            SizedBox(height: PlayUi.rowGap),
+          ],
           GestureDetector(
             onTap: _openPrivacy,
             child: Row(

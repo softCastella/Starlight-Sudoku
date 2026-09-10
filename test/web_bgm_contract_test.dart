@@ -24,6 +24,26 @@ void main() {
     expect(gate, contains('behavior: HitTestBehavior.opaque'));
     expect(gate, contains('decoration: TextDecoration.none'));
     expect(appSettings, contains('if (_sfxSelectionRevision == sfxRevision)'));
-    expect(webEntry, contains('1_Title_Lamplight%2520Grid.ogg'));
+    expect(webEntry, contains('id="starlight-html-bgm"'));
+    expect(webEntry, contains('id="starlight-html-sfx"'));
+    expect(webEntry, contains('preload="none"'));
+    expect(webEntry, isNot(contains('1_Title_Lamplight%2520Grid.ogg')));
+  });
+
+  test('web BGM and SFX stream without preload/load', () {
+    final bgm = File('lib/presentation/audio/web_html_bgm_web.dart')
+        .readAsStringSync();
+    final sfx = File('lib/presentation/audio/web_html_sfx_web.dart')
+        .readAsStringSync();
+    final main = File('lib/main.dart').readAsStringSync();
+    final splash = File('lib/presentation/screens/splash_screen.dart')
+        .readAsStringSync();
+
+    expect(bgm, contains("preload = 'none'"));
+    expect(sfx, contains("preload = 'none'"));
+    expect(bgm, isNot(contains('.load()')));
+    expect(sfx, isNot(contains('.load()')));
+    expect(main, isNot(contains('preloadTitleForWeb')));
+    expect(splash, isNot(contains('preloadTitleForWeb')));
   });
 }

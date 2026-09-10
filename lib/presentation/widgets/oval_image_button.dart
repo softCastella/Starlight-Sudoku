@@ -89,7 +89,6 @@ class _OvalImageButtonState extends State<OvalImageButton> {
                           text: widget.label,
                           style: PlayUi.buttonStyle().copyWith(
                             fontSize: PlayUi.button,
-                            height: 1.05,
                           ),
                         ),
                         textDirection: Directionality.of(context),
@@ -120,9 +119,9 @@ class _OvalImageButtonState extends State<OvalImageButton> {
                     PlayUi.buttonTextOffsetX,
                     PlayUi.buttonTextOffsetY,
                   );
+                  // Keep height: 1 from buttonStyle — 1.05 made glyphs sit low.
                   final textStyle = PlayUi.buttonStyle(color: widget.color).copyWith(
                     fontSize: layout.fontSize,
-                    height: 1.05,
                   );
 
                   return Semantics(

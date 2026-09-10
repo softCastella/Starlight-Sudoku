@@ -4,9 +4,8 @@ import 'package:web/web.dart' as web;
 
 /// Browser BGM that can start in the same click as the ON button.
 ///
-/// `audioplayers` awaits asset load before `HTMLAudioElement.play()`, so the
-/// browser drops the user gesture. This element is preloaded, then `play()`
-/// runs with no awaits.
+/// `preload` stays `none`: the user's ON gesture calls `play()` directly and
+/// lets the browser progressively stream the OGG with HTTP range requests.
 class WebHtmlBgm {
   static web.HTMLAudioElement? _audio;
 
@@ -21,10 +20,16 @@ class WebHtmlBgm {
   static web.HTMLAudioElement _element() {
     final existing = _audio;
     if (existing != null) return existing;
+    final preloaded = web.document.getElementById('starlight-html-bgm');
+    if (preloaded != null) {
+      // The element is owned by web/index.html, so its tag type is part of our
+      // bootstrap contract rather than untrusted DOM input.
+      return _audio = preloaded as web.HTMLAudioElement;
+    }
     final audio = web.HTMLAudioElement()
       ..id = 'starlight-html-bgm'
       ..loop = true
-      ..preload = 'auto'
+      ..preload = 'none'
       ..controls = false;
     audio.style.display = 'none';
     web.document.body?.append(audio);
@@ -34,8 +39,8 @@ class WebHtmlBgm {
   static void prepare(String url) {
     final audio = _element();
     if (audio.src == url) return;
+    audio.preload = 'none';
     audio.src = url;
-    audio.load();
   }
 
   static Future<bool> play() async {

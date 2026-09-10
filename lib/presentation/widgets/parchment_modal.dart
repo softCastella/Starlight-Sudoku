@@ -79,7 +79,8 @@ class ParchmentModal extends StatelessWidget {
       size.height - PlayUi.modalInsetY * 2 - panelHeight,
     );
     final padX = PlayUi.modalPadX;
-    final padY = PlayUi.modalPadY;
+    final padTop = PlayUi.modalPadTop;
+    final padBottom = PlayUi.modalPadBottom;
     final innerW = math.max(0.0, maxW - padX * 2);
 
     return Dialog(
@@ -99,7 +100,8 @@ class ParchmentModal extends StatelessWidget {
           child: aspectRatio == null
               ? _parchmentBody(
                   padX,
-                  padY,
+                  padTop,
+                  padBottom,
                   innerW,
                   shrinkContent,
                   hug: true,
@@ -108,7 +110,8 @@ class ParchmentModal extends StatelessWidget {
                   aspectRatio: aspectRatio!,
                   child: _parchmentBody(
                     padX,
-                    padY,
+                    padTop,
+                    padBottom,
                     innerW,
                     shrinkContent,
                     hug: false,
@@ -121,14 +124,15 @@ class ParchmentModal extends StatelessWidget {
 
   Widget _parchmentBody(
     double padX,
-    double padY,
+    double padTop,
+    double padBottom,
     double innerW,
     bool scaleContent, {
     required bool hug,
   }) {
     return _ParchmentFrame(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(padX, padY, padX, padY),
+        padding: EdgeInsets.fromLTRB(padX, padTop, padX, padBottom),
         child: Align(
           alignment: alignment,
           widthFactor: hug ? 1 : null,

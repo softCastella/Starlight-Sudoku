@@ -18,10 +18,13 @@ class WebHtmlSfx {
   static web.HTMLAudioElement _element() {
     final existing = _audio;
     if (existing != null) return existing;
+    final preloaded = web.document.getElementById('starlight-html-sfx');
+    if (preloaded != null) {
+      return _audio = preloaded as web.HTMLAudioElement;
+    }
     final audio = web.HTMLAudioElement()
       ..id = 'starlight-html-sfx'
-      // Browser HTTP stream. Not a full-file fetch into a blob.
-      ..preload = 'auto'
+      ..preload = 'none'
       ..controls = false
       ..loop = false;
     audio.style.display = 'none';
@@ -32,8 +35,8 @@ class WebHtmlSfx {
   static void prepare(String url) {
     final audio = _element();
     if (audio.src == url) return;
+    audio.preload = 'none';
     audio.src = url;
-    audio.load();
   }
 
   /// Same tap as BGM ON. Starts the stream muted so later chimes keep the
