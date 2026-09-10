@@ -9,7 +9,9 @@ import 'package:sudoku_game/presentation/notifiers/game_notifier.dart';
 import 'package:sudoku_game/presentation/screens/village_screen.dart';
 import 'package:sudoku_game/presentation/widgets/completion_reward_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/give_up_puzzle_dialog.dart';
+import 'package:sudoku_game/presentation/widgets/pause_puzzle_overlay.dart';
 import 'package:sudoku_game/presentation/widgets/play_viewport.dart';
+import 'package:sudoku_game/presentation/widgets/retry_puzzle_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/settings_dialog.dart';
 import 'package:sudoku_game/presentation/widgets/sudoku_board_widget.dart';
 import 'package:sudoku_game/presentation/widgets/timer_widget.dart';
@@ -69,19 +71,20 @@ class _GameScreenState extends State<GameScreen> {
             },
           ),
           actions: [
-            IconButton(
-              tooltip: l10n.pauseTooltip,
-              icon: const Icon(Icons.pause),
-              onPressed: () {
-                context.read<GameNotifier>().togglePause();
+            Consumer<GameNotifier>(
+              builder: (context, gameNotifier, _) {
+                final paused = gameNotifier.isPaused;
+                return IconButton(
+                  tooltip: l10n.pauseTooltip,
+                  icon: Icon(paused ? Icons.play_arrow : Icons.pause),
+                  onPressed: () => gameNotifier.togglePause(),
+                );
               },
             ),
             IconButton(
               tooltip: l10n.retryTooltip,
               icon: const Icon(Icons.refresh),
-              onPressed: () {
-                context.read<GameNotifier>().giveUp();
-              },
+              onPressed: _confirmRetry,
             ),
             IconButton(
               tooltip: l10n.skipTrialTooltip,
@@ -96,43 +99,63 @@ class _GameScreenState extends State<GameScreen> {
             ),
           ],
         ),
-        body: PlayViewport(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-              child: Column(
-                children: [
-                  const TimerWidget(),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final side = constraints.maxWidth < constraints.maxHeight
-                            ? constraints.maxWidth
-                            : constraints.maxHeight;
-                        return Center(
-                          child: SizedBox(
-                            width: side,
-                            height: side,
-                            child: SudokuBoardWidget(
-                              key: _boardKey,
-                              onCellSelected: () {
-                                setState(() {});
-                              },
+        body: Consumer<GameNotifier>(
+          builder: (context, gameNotifier, _) {
+            final paused = gameNotifier.isPaused;
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                AbsorbPointer(
+                  absorbing: paused,
+                  child: PlayViewport(
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                        child: Column(
+                          children: [
+                            const TimerWidget(),
+                            const SizedBox(height: 8),
+                            Expanded(
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final side =
+                                      constraints.maxWidth < constraints.maxHeight
+                                          ? constraints.maxWidth
+                                          : constraints.maxHeight;
+                                  return Center(
+                                    child: SizedBox(
+                                      width: side,
+                                      height: side,
+                                      child: SudokuBoardWidget(
+                                        key: _boardKey,
+                                        onCellSelected: () {
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                            const SizedBox(height: 8),
+                            _buildNumberRow(),
+                            const SizedBox(height: 8),
+                            _buildToolRow(),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  _buildNumberRow(),
-                  const SizedBox(height: 8),
-                  _buildToolRow(),
-                ],
-              ),
-            ),
-          ),
+                ),
+                if (paused)
+                  Positioned.fill(
+                    child: PausePuzzleOverlay(
+                      onResume: () => gameNotifier.togglePause(),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     ),
@@ -222,6 +245,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void _handleNumberInput(int number) {
     final gameNotifier = context.read<GameNotifier>();
+    if (gameNotifier.isPaused) return;
     final boardState = _boardKey.currentState;
 
     if (boardState == null) return;
@@ -300,6 +324,15 @@ class _GameScreenState extends State<GameScreen> {
     }
     HapticFeedback.selectionClick();
     boardState?.clearSelection();
+  }
+
+  Future<void> _confirmRetry() async {
+    final shouldRetry = await RetryPuzzleDialog.confirm(context);
+    if (shouldRetry && mounted) {
+      context.read<GameNotifier>().giveUp();
+      _boardKey.currentState?.clearSelection();
+      setState(() => _isMemoMode = false);
+    }
   }
 
   Future<void> _confirmGiveUp() async {

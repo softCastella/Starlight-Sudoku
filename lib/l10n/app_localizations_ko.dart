@@ -97,7 +97,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pauseTooltip => '일시 정지';
 
   @override
+  String get pauseTitle => '일시 정지';
+
+  @override
   String get retryTooltip => '다시 풀기';
+
+  @override
+  String get retryTitle => '처음부터 다시 풀까요?';
+
+  @override
+  String get retryMessage => '지금 판의 입력·타이머·실수는 지워집니다.';
+
+  @override
+  String get retryConfirm => '다시 풀기';
 
   @override
   String get autoCompleteTooltip => '자동 완성';

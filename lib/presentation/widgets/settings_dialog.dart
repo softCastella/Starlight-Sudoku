@@ -37,7 +37,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   Future<void> _openPrivacy() async {
-    final uri = Uri.parse(AppSettings.privacyPolicyUrl);
+    final uri = Uri.parse(
+      AppSettings.privacyPolicyUrlFor(Localizations.localeOf(context)),
+    );
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

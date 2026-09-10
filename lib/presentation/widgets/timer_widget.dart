@@ -21,9 +21,12 @@ class _TimerWidgetState extends State<TimerWidget> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (mounted) {
-        context.read<GameNotifier>().incrementTimer();
-      }
+      if (!mounted) return;
+      // Any dialog/menu above the puzzle (settings, give-up, retry, clear…)
+      // should freeze play time. Pause overlay uses GameNotifier.isPaused.
+      final route = ModalRoute.of(context);
+      if (route != null && !route.isCurrent) return;
+      context.read<GameNotifier>().incrementTimer();
     });
   }
 

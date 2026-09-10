@@ -97,7 +97,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pauseTooltip => '暂停';
 
   @override
+  String get pauseTitle => '暂停';
+
+  @override
   String get retryTooltip => '重玩';
+
+  @override
+  String get retryTitle => '要从头再玩这道谜题吗？';
+
+  @override
+  String get retryMessage => '本局的输入、计时和失误会被清除。';
+
+  @override
+  String get retryConfirm => '重玩';
 
   @override
   String get autoCompleteTooltip => '自动完成';
@@ -481,7 +493,19 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get pauseTooltip => '暫停';
 
   @override
+  String get pauseTitle => '暫停';
+
+  @override
   String get retryTooltip => '重玩';
+
+  @override
+  String get retryTitle => '要從頭再玩這道謎題嗎？';
+
+  @override
+  String get retryMessage => '本局的輸入、計時和失誤會被清除。';
+
+  @override
+  String get retryConfirm => '重玩';
 
   @override
   String get autoCompleteTooltip => '自動完成';

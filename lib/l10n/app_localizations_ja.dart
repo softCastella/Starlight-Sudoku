@@ -97,7 +97,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pauseTooltip => '一時停止';
 
   @override
+  String get pauseTitle => '一時停止';
+
+  @override
   String get retryTooltip => 'やり直す';
+
+  @override
+  String get retryTitle => '最初からやり直しますか？';
+
+  @override
+  String get retryMessage => 'この盤面の入力・タイマー・ミスは消えます。';
+
+  @override
+  String get retryConfirm => 'やり直す';
 
   @override
   String get autoCompleteTooltip => '自動完成';

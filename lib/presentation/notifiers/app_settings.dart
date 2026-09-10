@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 
@@ -8,6 +9,25 @@ import 'package:sudoku_game/presentation/audio/game_bgm.dart';
 class AppSettings extends ChangeNotifier {
   static const privacyPolicyUrl =
       'https://spark.tycheworks.com/starlight-sudoku/privacy/';
+
+  /// spark privacy page `privacy-i18n.js` keys: ko / en / ja / zh-CN / zh-TW.
+  static String privacyPolicyUrlFor(Locale locale) {
+    final lang = privacyLangCodeFromLocale(locale);
+    if (lang == 'ko') return privacyPolicyUrl;
+    return Uri.parse(privacyPolicyUrl).replace(
+      queryParameters: {'lang': lang},
+    ).toString();
+  }
+
+  static String privacyLangCodeFromLocale(Locale locale) {
+    if (locale.languageCode == 'zh' && locale.countryCode == 'TW') {
+      return 'zh-TW';
+    }
+    if (locale.languageCode == 'zh') return 'zh-CN';
+    if (locale.languageCode == 'ja') return 'ja';
+    if (locale.languageCode == 'en') return 'en';
+    return 'ko';
+  }
 
   static const _bgmKey = 'settings_bgm_on';
   static const _sfxKey = 'settings_sfx_on';

@@ -265,11 +265,35 @@ abstract class AppLocalizations {
   /// **'Pause'**
   String get pauseTooltip;
 
+  /// No description provided for @pauseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get pauseTitle;
+
   /// No description provided for @retryTooltip.
   ///
   /// In en, this message translates to:
   /// **'Retry'**
   String get retryTooltip;
+
+  /// No description provided for @retryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start this puzzle over?'**
+  String get retryTitle;
+
+  /// No description provided for @retryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your entries, timer, and mistakes on this board will be cleared.'**
+  String get retryMessage;
+
+  /// No description provided for @retryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryConfirm;
 
   /// No description provided for @autoCompleteTooltip.
   ///

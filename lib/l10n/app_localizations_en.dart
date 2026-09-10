@@ -97,7 +97,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pauseTooltip => 'Pause';
 
   @override
+  String get pauseTitle => 'Paused';
+
+  @override
   String get retryTooltip => 'Retry';
+
+  @override
+  String get retryTitle => 'Start this puzzle over?';
+
+  @override
+  String get retryMessage =>
+      'Your entries, timer, and mistakes on this board will be cleared.';
+
+  @override
+  String get retryConfirm => 'Retry';
 
   @override
   String get autoCompleteTooltip => 'Auto complete';

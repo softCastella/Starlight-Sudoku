@@ -15,6 +15,7 @@ class ParchmentModal extends StatelessWidget {
     this.aspectRatio,
     this.target = PlayUiTarget.common,
     this.alignment = Alignment.center,
+    this.embedded = false,
   });
 
   static const windowAsset =
@@ -38,6 +39,8 @@ class ParchmentModal extends StatelessWidget {
   final double? aspectRatio;
   final PlayUiTarget target;
   final Alignment alignment;
+  /// When true, skip [Dialog] (pause overlay stacked on the puzzle).
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +86,36 @@ class ParchmentModal extends StatelessWidget {
     final padBottom = PlayUi.modalPadBottom;
     final innerW = math.max(0.0, maxW - padX * 2);
 
+    final panel = Transform.translate(
+      offset: Offset(PlayUi.modalOffsetX, PlayUi.modalOffsetY),
+      child: ConstrainedBox(
+        key: const Key('parchment-window'),
+        constraints: BoxConstraints(maxWidth: maxW, maxHeight: maxH),
+        child: aspectRatio == null
+            ? _parchmentBody(
+                padX,
+                padTop,
+                padBottom,
+                innerW,
+                shrinkContent,
+                hug: true,
+              )
+            : AspectRatio(
+                aspectRatio: aspectRatio!,
+                child: _parchmentBody(
+                  padX,
+                  padTop,
+                  padBottom,
+                  innerW,
+                  shrinkContent,
+                  hug: false,
+                ),
+              ),
+      ),
+    );
+
+    if (embedded) return panel;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       alignment: panelOpen ? Alignment.topCenter : Alignment.center,
@@ -92,33 +125,7 @@ class ParchmentModal extends StatelessWidget {
         PlayUi.modalInset,
         PlayUi.modalInsetY + panelHeight,
       ),
-      child: Transform.translate(
-        offset: Offset(PlayUi.modalOffsetX, PlayUi.modalOffsetY),
-        child: ConstrainedBox(
-          key: const Key('parchment-window'),
-          constraints: BoxConstraints(maxWidth: maxW, maxHeight: maxH),
-          child: aspectRatio == null
-              ? _parchmentBody(
-                  padX,
-                  padTop,
-                  padBottom,
-                  innerW,
-                  shrinkContent,
-                  hug: true,
-                )
-              : AspectRatio(
-                  aspectRatio: aspectRatio!,
-                  child: _parchmentBody(
-                    padX,
-                    padTop,
-                    padBottom,
-                    innerW,
-                    shrinkContent,
-                    hug: false,
-                  ),
-                ),
-        ),
-      ),
+      child: panel,
     );
   }
 
