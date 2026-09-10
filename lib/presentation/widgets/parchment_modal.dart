@@ -45,7 +45,8 @@ class ParchmentModal extends StatelessWidget {
     );
     final maxH = size.height - PlayUi.modalInsetY * 2;
     final padX = PlayUi.modalPadX;
-    final padY = PlayUi.modalPadY;
+    final padTop = PlayUi.modalPadTop;
+    final padBottom = PlayUi.modalPadBottom;
     final innerW = math.max(0.0, maxW - padX * 2);
 
     return Dialog(
@@ -62,7 +63,7 @@ class ParchmentModal extends StatelessWidget {
             aspectRatio: aspectRatio,
             child: _ParchmentFrame(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(padX, padY, padX, padY),
+                padding: EdgeInsets.fromLTRB(padX, padTop, padX, padBottom),
                 child: Center(
                   child: shrinkContent
                       ? FittedBox(

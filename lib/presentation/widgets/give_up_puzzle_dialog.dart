@@ -28,7 +28,7 @@ class GiveUpPuzzleDialog extends StatelessWidget {
             textAlign: TextAlign.center,
             style: PlayUi.bodyStyle(),
           ),
-          SizedBox(height: PlayUi.rowGap * 1.75),
+          SizedBox(height: PlayUi.rowGap * 1.5),
           Row(
             children: [
               Expanded(

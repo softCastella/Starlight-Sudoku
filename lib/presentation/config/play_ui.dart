@@ -64,7 +64,16 @@ class PlayUi {
   static double get modalInset => _v('modalInset');
   static double get modalPadX => _v('modalPadX');
   static double get modalPadY => _v('modalPadY');
-  static double get modalPadTop => modalPadY;
+  /// Short confirm modals: parchment bottom art is heavier; bump top.
+  static double get modalPadTop {
+    switch (currentTarget) {
+      case PlayUiTarget.giveUp:
+      case PlayUiTarget.trialEnd:
+        return modalPadY + 8;
+      default:
+        return modalPadY;
+    }
+  }
   static double get modalPadBottom => modalPadY;
   static double get modalMinWidth => _v('modalMinWidth');
   static double get modalMaxWidth => _v('modalMaxWidth');

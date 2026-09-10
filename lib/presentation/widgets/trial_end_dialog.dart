@@ -83,7 +83,7 @@ class _TrialEndDialogState extends State<TrialEndDialog> {
               height: 1.4,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: PlayUi.rowGap * 1.5),
           Row(
             children: [
               Expanded(
