@@ -33,11 +33,16 @@ class AppSettings extends ChangeNotifier {
     final storedBgmOn = preferences.getBool(_bgmKey) ?? true;
     final storedSfxOn = preferences.getBool(_sfxKey) ?? true;
     var id = preferences.getString(_userIdKey) ?? '';
-    if (id.isEmpty) {
-      id = _createUserId();
-      await preferences.setString(_userIdKey, id);
+    // Web is one-shot: do not create or keep an anonymous device id.
+    if (!kIsWeb) {
+      if (id.isEmpty) {
+        id = _createUserId();
+        await preferences.setString(_userIdKey, id);
+      }
+      _userId = id;
+    } else {
+      _userId = '';
     }
-    _userId = id;
     if (!kIsWeb) {
       if (_bgmSelectionRevision == bgmRevision) {
         _bgmOn = storedBgmOn;
