@@ -1,4 +1,7 @@
-name: Deploy Flutter web to GitHub Pages
+name: Redirect old Pages to WebDemo
+
+# 옛 github.io/Starlight-Sudoku → Starlight-Sudoku-WebDemo
+# 마케팅 CTA(https://starlight-sudoku.tycheworks.com/)가 아직 옛 URL을 가리킴.
 
 on:
   push:
@@ -11,43 +14,21 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-redirect
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.2'
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Verify web demo harnesses
-        run: flutter test --dart-define=WEB_DEMO=true test/web_bgm_contract_test.dart test/web_sfx_contract_test.dart test/web_audio_gate_harness_test.dart test/web_audio_preference_harness_test.dart test/web_demo_progress_session_test.dart test/trial_end_modal_harness_test.dart
-
-      - name: Build web release
-        run: flutter build web --release --base-href "/Starlight-Sudoku/" --dart-define=WEB_DEMO=true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/web
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Upload redirect site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: redirect-site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
